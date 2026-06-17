@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ news_item.title }} - البوابة الخدمية{% endblock %}
+
+{% block content %}
+<div style="padding-top: 40px; background: white;"></div>
+
+<!-- Article Content -->
+<section class="section-padding" style="background: white;">
+    <div style="width: 100%; padding: 0 5%;">
+        
+        <!-- Main Content (No Sidebar) -->
+        <div style="background: white; padding: 20px 0;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px;">
+                <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--primary-dark); margin: 0; line-height: 1.4;">{{ news_item.title }}</h1>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">
+                <span><i class="fa-regular fa-calendar" style="color: var(--gold);"></i> تاريخ النشر: {{ news_item.date|date:"d M Y" }}</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span style="font-weight: 600;">مشاركة:</span>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" style="color: #1877f2; font-size: 1.2rem;"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ news_item.title }}" target="_blank" style="color: #1da1f2; font-size: 1.2rem;"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="https://wa.me/?text={{ news_item.title }} - {{ request.build_absolute_uri }}" target="_blank" style="color: #25d366; font-size: 1.2rem;"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div style="font-size: 1.3rem; line-height: 2; color: #111; font-family: 'Cairo', sans-serif; font-weight: 500; text-align: justify;">
+                {% if news_item.image %}
+                <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" style="float: left; width: 45%; max-width: 600px; margin: 10px 30px 20px 0; object-fit: contain; background: #f8f9fa; border: 1px solid var(--border-color); padding: 5px;">
+                {% endif %}
+                
+                {{ news_item.content|linebreaks }}
+                
+                <div style="clear: both;"></div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<!-- Add hover effect for sidebar items -->
+<style>
+    a[href^="/news/"]:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md) !important;
+    }
+</style>
+
+{% endblock %}

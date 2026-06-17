@@ -1,0 +1,86 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}إدارة الاستفسارات{% endblock %}
+{% block page_title %}الاستفسارات ومقترحات التطوير{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span> الاستفسارات ومقترحات التطوير
+</div>
+
+<!-- Filter Tabs -->
+<div style="margin-bottom: 20px;">
+    <div class="filter-tabs" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'core:dashboard_complaints' %}" class="filter-tab {% if not status_filter %}active{% endif %}">الكل</a>
+            <a href="?status=new" class="filter-tab {% if status_filter == 'new' %}active{% endif %}">جديدة</a>
+            <a href="?status=in_progress" class="filter-tab {% if status_filter == 'in_progress' %}active{% endif %}">قيد المراجعة</a>
+            <a href="?status=resolved" class="filter-tab {% if status_filter == 'resolved' %}active{% endif %}">تم الحل</a>
+        </div>
+        <form method="GET" style="display: flex; gap: 10px; max-width: 400px; flex-grow: 1;">
+            {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+            <input type="text" name="q" value="{{ q }}" placeholder="ابحث بالاسم، الهاتف، أو الموضوع..." class="form-control" style="padding: 8px 15px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+            {% if q %}
+            <a href="{% url 'core:dashboard_complaints' %}{% if status_filter %}?status={{ status_filter }}{% endif %}" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i></a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الموضوع</th>
+                    <th>مقدم الطلب</th>
+                    <th>رقم الهاتف</th>
+                    <th>التفاصيل</th>
+                    <th>الحالة</th>
+                    <th>تاريخ التقديم</th>
+                    <th>تحديث الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in complaints %}
+                <tr>
+                    <td style="color:var(--text-muted);">{{ forloop.counter }}</td>
+                    <td><strong>{{ c.subject }}</strong></td>
+                    <td>{{ c.name }}</td>
+                    <td><a href="tel:{{ c.phone }}" style="color:inherit;">{{ c.phone }}</a></td>
+                    <td style="max-width: 220px; color: var(--text-muted); font-size: 0.85rem;">{{ c.message|truncatechars:60 }}</td>
+                    <td>
+                        {% if c.status == 'new' %}<span class="badge badge-danger">جديدة</span>
+                        {% elif c.status == 'in_progress' %}<span class="badge badge-warning">قيد المراجعة</span>
+                        {% else %}<span class="badge badge-success">تم الحل</span>{% endif %}
+                    </td>
+                    <td style="color:var(--text-muted); font-size:0.85rem;">{{ c.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'core:dashboard_complaint_update' c.pk %}" style="display:flex; gap:5px; align-items:center;">
+                            {% csrf_token %}
+                            <select name="status" class="form-control" style="padding: 6px 10px; font-size: 0.82rem; width: auto;">
+                                <option value="new" {% if c.status == 'new' %}selected{% endif %}>جديدة</option>
+                                <option value="in_progress" {% if c.status == 'in_progress' %}selected{% endif %}>قيد المراجعة</option>
+                                <option value="resolved" {% if c.status == 'resolved' %}selected{% endif %}>تم الحل</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-inbox"></i>
+                            <h3>لا توجد شكاوى في هذا التصنيف</h3>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

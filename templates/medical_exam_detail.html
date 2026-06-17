@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ exam.title }} - نقابة المحامين الفرعية بالفيوم{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 60px 0;">
+    
+    <div style="margin-bottom: 40px;">
+        <a href="{% url 'core:forensic' %}" style="color: var(--gold); text-decoration: none; font-weight: bold;">
+            <i class="fa-solid fa-arrow-right"></i> العودة للطب الشرعي والكشف الطبي
+        </a>
+    </div>
+
+    <div style="background: #fff; border-radius: 15px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px;">
+        <h1 style="color: var(--primary); margin: 0 0 15px 0; line-height: 1.4;">{{ exam.title }}</h1>
+        <div style="display: flex; gap: 20px; color: var(--text-muted); font-size: 0.95rem;">
+            <span><i class="fa-regular fa-calendar-check"></i> تاريخ الكشف: {{ exam.exam_date|date:"Y-m-d" }}</span>
+            <span><i class="fa-solid fa-clock"></i> تاريخ الرفع: {{ exam.created_at|date:"Y-m-d" }}</span>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+        {% for img in exam.images.all %}
+        <div style="border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer;" onclick="openImageModal('{{ img.image.url }}')">
+            <img src="{{ img.image.url }}" alt="صورة كشف طبي" style="width: 100%; height: auto; display: block; transition: transform 0.3s ease;" class="exam-img">
+            <div style="background: var(--primary); color: #fff; text-align: center; padding: 10px; font-size: 0.9rem;">
+                <i class="fa-solid fa-magnifying-glass-plus"></i> اضغط لتكبير الصورة
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #f9f9f9; border-radius: 10px;">
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">لم يتم إرفاق أي صور لهذا الكشف.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" style="display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.95); align-items: center; justify-content: center; flex-direction: column;">
+    <span onclick="closeImageModal()" style="position: absolute; top: 15px; right: 25px; color: #fff; font-size: 50px; font-weight: bold; cursor: pointer; z-index: 100000; text-shadow: 0 0 15px #000; line-height: 1;">&times;</span>
+    <img id="modalImg" style="max-width: 95vw; max-height: 95vh; object-fit: contain; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
+</div>
+
+<style>
+    .exam-img:hover { transform: scale(1.05); }
+</style>
+
+<script>
+    function openImageModal(imgUrl) {
+        var modal = document.getElementById("imageModal");
+        var modalImg = document.getElementById("modalImg");
+        modal.style.display = "flex";
+        modalImg.src = imgUrl;
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeImageModal() {
+        var modal = document.getElementById("imageModal");
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+
+    // Close modal when clicking outside the image
+    window.onclick = function(event) {
+        var modal = document.getElementById("imageModal");
+        if (event.target == modal) {
+            closeImageModal();
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}إدارة معهد المحاماة | لوحة التحكم{% endblock %}
+{% block page_title %}معهد المحاماة{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: var(--primary);">أخبار وإعلانات المعهد</h3>
+        <a href="{% url 'core:dashboard_institute_add' %}" class="btn btn-gold">
+            <i class="fa-solid fa-plus"></i> إضافة خبر جديد
+        </a>
+    </div>
+
+    {% for lec in lectures %}
+    <div style="display: flex; gap: 15px; align-items: flex-start; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 12px; background: #fafafa;">
+        {% if lec.image %}
+        <img src="{{ lec.image.url }}" alt="صورة" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+        {% else %}
+        <div style="width: 80px; height: 80px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i class="fa-solid fa-image" style="color: #ccc; font-size: 1.5rem;"></i>
+        </div>
+        {% endif %}
+
+        <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                <strong style="color: var(--primary); font-size: 1rem;">{{ lec.title }}</strong>
+                <span style="color: var(--text-muted); font-size: 0.85rem; white-space: nowrap;">
+                    <i class="fa-regular fa-calendar"></i> {{ lec.lecture_date|date:"Y-m-d"|default:"غير محدد" }}
+                </span>
+            </div>
+            {% if lec.description %}
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 8px 0 0 0; line-height: 1.5;">
+                {{ lec.description|truncatechars:150 }}
+            </p>
+            {% endif %}
+        </div>
+
+        <form action="{% url 'core:dashboard_institute_delete' lec.id %}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا الخبر؟');" style="flex-shrink: 0; display:flex; gap:6px;">
+            {% csrf_token %}
+            <a href="{% url 'core:dashboard_institute_edit' lec.id %}" class="btn btn-sm btn-gold" title="تعديل"><i class="fa-solid fa-pen"></i></a>
+            <button type="submit" class="btn btn-sm btn-danger" title="حذف"><i class="fa-solid fa-trash"></i></button>
+        </form>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+        <i class="fa-solid fa-bullhorn" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+        <p>لا توجد أي أخبار أو إعلانات مسجلة حالياً.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

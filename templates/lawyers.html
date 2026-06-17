@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}سجل المحامين - البوابة الخدمية{% endblock %}
+
+{% block content %}
+<section style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 60px 0; color: white; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">سجل المحامين</h1>
+        <p style="font-size: 1.1rem; opacity: 0.85;">البحث الشامل في سجلات المحامين المعتمدين بنقابة الفيوم</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <!-- Search Filter -->
+        <div class="card" style="padding: 30px; margin-bottom: 40px; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+            <form method="GET" style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 20px; align-items: end;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">الاسم أو رقم القيد</label>
+                    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="ابحث هنا...">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">درجة القيد</label>
+                    <select name="degree" class="form-control">
+                        <option value="">الكل</option>
+                        <option value="1" {% if degree == '1' %}selected{% endif %}>جدول عام</option>
+                        <option value="2" {% if degree == '2' %}selected{% endif %}>ابتدائي</option>
+                        <option value="3" {% if degree == '3' %}selected{% endif %}>استئناف</option>
+                        <option value="4" {% if degree == '4' %}selected{% endif %}>نقض</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">حالة القيد</label>
+                    <select name="status" class="form-control">
+                        <option value="">الكل</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>مشتغل</option>
+                        <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>موقوف</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0; display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="padding: 14px 20px;"><i class="fa-solid fa-search"></i> بحث</button>
+                    {% if query or degree or status_filter %}
+                        <a href="{% url 'core:lawyers' %}" class="btn btn-outline" style="padding: 14px 20px;">مسح</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+        <!-- Results -->
+        <div style="background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: #f8f9fa; border-bottom: 2px solid var(--border-color);">
+                    <tr>
+                        <th style="padding: 15px 20px; text-align: right; color: var(--text-muted);">الاسم الرباعي</th>
+                        <th style="padding: 15px 20px; text-align: right; color: var(--text-muted);">رقم القيد</th>
+                        <th style="padding: 15px 20px; text-align: right; color: var(--text-muted);">الدرجة</th>
+                        <th style="padding: 15px 20px; text-align: right; color: var(--text-muted);">الحالة</th>
+                        <th style="padding: 15px 20px; text-align: right; color: var(--text-muted);">العنوان</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lawyer in lawyers %}
+                    <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.2s;">
+                        <td style="padding: 15px 20px;"><strong>{{ lawyer.name }}</strong></td>
+                        <td style="padding: 15px 20px;"><code style="background:#f0f2f5; padding:5px 8px; border-radius:5px;">{{ lawyer.registration_number }}</code></td>
+                        <td style="padding: 15px 20px;">{{ lawyer.get_degree_display }}</td>
+                        <td style="padding: 15px 20px;">
+                            {% if lawyer.status == 'active' %}<span class="badge badge-success" style="background:#d1fae5; color:#065f46; padding:5px 10px; border-radius:15px; font-size:0.85rem;">مشتغل</span>
+                            {% elif lawyer.status == 'suspended' %}<span class="badge badge-danger" style="background:#fee2e2; color:#991b1b; padding:5px 10px; border-radius:15px; font-size:0.85rem;">موقوف</span>
+                            {% else %}<span class="badge badge-secondary" style="background:#e5e7eb; color:#374151; padding:5px 10px; border-radius:15px; font-size:0.85rem;">غير مشتغل</span>{% endif %}
+                        </td>
+                        <td style="padding: 15px 20px; color: var(--text-muted);">{{ lawyer.address|default:"غير مسجل" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 50px;">
+                            <i class="fa-solid fa-users-slash" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+                            <h3 style="color: var(--text-muted);">لا توجد نتائج مطابقة للبحث</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}إنشاء حساب - البوابة الخدمية{% endblock %}
+
+{% block content %}
+<div class="container section-padding">
+    <div class="form-card" style="max-width: 800px;">
+        <div style="text-align:center; margin-bottom: 30px;">
+            <i class="fa-solid fa-user-plus" style="font-size: 3rem; color: var(--primary); margin-bottom:15px;"></i>
+            <h2 style="color: var(--primary-dark);">إنشاء حساب جديد</h2>
+            <p style="color: var(--text-muted);">للوصول إلى الخدمات النقابية والقانونية المخصصة لك</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">الاسم الأول</label>
+                    <input type="text" name="first_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الاسم الأخير</label>
+                    <input type="text" name="last_name" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">الرقم القومي (14 رقم)</label>
+                    <input type="text" name="national_id" class="form-control" maxlength="14" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">رقم الهاتف المحمول</label>
+                    <input type="tel" name="phone" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">صفة المستخدم</label>
+                    <select name="user_type" class="form-control" required>
+                        <option value="citizen">مواطن طالب خدمة</option>
+                        <option value="lawyer">محامٍ مقيد بالنقابة</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label class="form-label">اسم المستخدم (للدخول)</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">تأكيد كلمة المرور</label>
+                    <input type="password" name="password2" class="form-control" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-submit" style="margin-top: 20px;">إنشاء الحساب الآن</button>
+        </form>
+
+        <div style="text-align:center; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+            <p>لديك حساب بالفعل؟ <a href="{% url 'core:login' %}" style="font-weight:700;">تسجيل الدخول</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{% if lawyer %}تعديل بيانات محامٍ{% else %}إضافة محامٍ جديد{% endif %}{% endblock %}
+{% block page_title %}{% if lawyer %}تعديل: {{ lawyer.name }}{% else %}إضافة محامٍ جديد{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="{% url 'core:dashboard_lawyers' %}">المحامون</a>
+    <span class="sep">/</span>
+    {% if lawyer %}تعديل{% else %}إضافة{% endif %}
+</div>
+
+<div class="card" style="max-width: 900px;">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-user-tie" style="color:var(--gold);"></i> بيانات المحامي</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group form-full">
+                    <label class="form-label">الاسم الرباعي *</label>
+                    <input type="text" name="name" class="form-control" value="{{ lawyer.name|default:'' }}" required placeholder="مثال: أحمد محمد عبدالله إبراهيم">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">رقم القيد *</label>
+                    <input type="text" name="registration_number" class="form-control" value="{{ lawyer.registration_number|default:'' }}" required placeholder="مثال: FY-12345">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">الرقم القومي *</label>
+                    <input type="text" name="national_id" class="form-control" value="{{ lawyer.national_id|default:'' }}" required placeholder="14 رقم" maxlength="14">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">درجة القيد *</label>
+                    <select name="degree" class="form-control" required>
+                        <option value="">-- اختر الدرجة --</option>
+                        <option value="1" {% if lawyer.degree == '1' %}selected{% endif %}>جدول عام</option>
+                        <option value="2" {% if lawyer.degree == '2' %}selected{% endif %}>ابتدائي</option>
+                        <option value="3" {% if lawyer.degree == '3' %}selected{% endif %}>استئناف</option>
+                        <option value="4" {% if lawyer.degree == '4' %}selected{% endif %}>نقض</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">حالة العضوية *</label>
+                    <select name="status" class="form-control" required>
+                        <option value="active" {% if lawyer.status == 'active' or not lawyer %}selected{% endif %}>مشتغل</option>
+                        <option value="inactive" {% if lawyer.status == 'inactive' %}selected{% endif %}>غير مشتغل</option>
+                        <option value="suspended" {% if lawyer.status == 'suspended' %}selected{% endif %}>موقوف</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">رقم الهاتف</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ lawyer.phone|default:'' }}" placeholder="01xxxxxxxxx">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" name="email" class="form-control" value="{{ lawyer.email|default:'' }}" placeholder="example@email.com">
+                </div>
+
+                <div class="form-group form-full">
+                    <label class="form-label">العنوان</label>
+                    <textarea name="address" class="form-control" rows="2" placeholder="عنوان السكن أو مقر المكتب">{{ lawyer.address|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:10px;">
+                <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ البيانات</button>
+                <a href="{% url 'core:dashboard_lawyers' %}" class="btn btn-outline">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

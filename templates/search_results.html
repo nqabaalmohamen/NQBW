@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}نتائج البحث - البوابة الخدمية{% endblock %}
+
+{% block content %}
+<section style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 60px 0; color: white; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">نتائج البحث</h1>
+        <p style="font-size: 1.1rem; opacity: 0.85;">نتائج بحثك عن: <strong style="color:var(--gold);">"{{ query }}"</strong></p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+
+        <!-- Search Form Again -->
+        <div class="card" style="margin-bottom: 40px; background: white; padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+            <form action="{% url 'core:search' %}" method="GET" style="display:flex; gap:10px;">
+                <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="ابحث مرة أخرى..." style="flex:1;">
+                <button type="submit" class="btn-submit" style="width:auto; padding:0 30px;">بحث</button>
+            </form>
+        </div>
+
+        {% if not query %}
+        <div style="text-align: center; padding: 50px;">
+            <i class="fa-solid fa-search" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+            <h3 style="color: var(--text-muted);">الرجاء إدخال كلمة للبحث</h3>
+        </div>
+        {% elif not news and not faqs and not council and not services %}
+        <div style="text-align: center; padding: 50px;">
+            <i class="fa-solid fa-folder-open" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+            <h3 style="color: var(--text-muted);">لم يتم العثور على أي نتائج مطابقة لكلمة "{{ query }}"</h3>
+            <p style="color: var(--text-muted); margin-top:10px;">تأكد من كتابة الكلمة بشكل صحيح وجرب مرة أخرى.</p>
+        </div>
+        {% else %}
+            
+            <div style="display: flex; flex-direction: column; gap: 40px;">
+
+                <!-- Services Results -->
+                {% if services %}
+                <div>
+                    <h3 style="color: var(--primary-dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold); display:inline-block;"><i class="fa-solid fa-laptop-file" style="color:var(--gold);"></i> الخدمات المطابقة</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                        {% for item in services %}
+                        <a href="{% url item.url %}" style="display:flex; align-items:center; gap:15px; background:white; border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); border:1px solid var(--border-color); color:var(--text-color);">
+                            <div style="width: 50px; height: 50px; background: rgba(206,17,38,0.1); color: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                <i class="fa-solid {{ item.icon }}"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin:0; color:var(--primary-dark);">{{ item.title }}</h4>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">{{ item.desc }}</span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Council Results -->
+                {% if council %}
+                <div>
+                    <h3 style="color: var(--primary-dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold); display:inline-block;"><i class="fa-solid fa-users-gear" style="color:var(--gold);"></i> نتائج مجلس النقابة</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                        {% for member in council %}
+                        <div style="background:white; border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); border:1px solid var(--border-color); text-align:center;">
+                            <div style="width:80px; height:80px; background:var(--bg-color); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:2rem; color:var(--text-muted);">
+                                {% if member.image %}<img src="{{ member.image.url }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">{% else %}<i class="fa-solid fa-user-tie"></i>{% endif %}
+                            </div>
+                            <h4 style="margin:0; color:var(--primary-dark);">{{ member.name }}</h4>
+                            <span style="font-size: 0.9rem; color: var(--gold); font-weight:bold;">{{ member.position }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- News Results -->
+                {% if news %}
+                <div>
+                    <h3 style="color: var(--primary-dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold); display:inline-block;"><i class="fa-solid fa-newspaper" style="color:var(--gold);"></i> نتائج الأخبار والقرارات</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                        {% for item in news %}
+                        <a href="{% url 'core:news_detail' item.id %}" style="display:block; background:white; border-radius:var(--radius); padding:25px; box-shadow:var(--shadow-sm); border:1px solid var(--border-color); color:var(--text-color); transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)';">
+                            <div style="color:var(--gold-dark); font-size:0.85rem; margin-bottom:10px; font-weight:bold;">{{ item.get_category_display }}</div>
+                            <h4 style="margin-bottom:10px; color:var(--primary-dark);">{{ item.title }}</h4>
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">{{ item.content|truncatechars:100 }}</p>
+                            <span style="color:var(--text-muted); font-size:0.85rem;"><i class="fa-regular fa-calendar" style="color:var(--gold);"></i> {{ item.date|date:"d M Y" }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- FAQs Results -->
+                {% if faqs %}
+                <div>
+                    <h3 style="color: var(--primary-dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--gold); display:inline-block;"><i class="fa-solid fa-circle-question" style="color:var(--gold);"></i> الأسئلة الشائعة</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        {% for faq in faqs %}
+                        <div style="background:white; border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); border:1px solid var(--border-color);">
+                            <h4 style="margin-bottom:10px; color:var(--primary-dark);"><i class="fa-solid fa-q" style="color:var(--gold); margin-left:5px;"></i> {{ faq.question }}</h4>
+                            <p style="color:var(--text-muted); margin:0;">{{ faq.answer }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

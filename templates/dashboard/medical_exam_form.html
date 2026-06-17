@@ -1,0 +1,38 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}رفع كشف طبي | لوحة التحكم{% endblock %}
+{% block page_title %}رفع كشف طبي جديد{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="margin-top: 0; color: var(--primary); margin-bottom: 20px;">بيانات الكشف الطبي</h3>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label class="form-label">عنوان أو صيغة الكشف</label>
+            <input type="text" name="title" class="form-control" required placeholder="مثال: نتيجة الكشف الطبي للسادة المحامين الجدد..." value="نتيجة الكشف الطبي للسادة المحامين الجدد">
+            <small style="color:var(--text-muted);">عنوان يوضح طبيعة هذا الكشف ليظهر للمحامين.</small>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label class="form-label">تاريخ الكشف</label>
+            <input type="date" name="exam_date" class="form-control" required>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label class="form-label">صور الكشف (يمكنك تحديد أكثر من صورة معاً)</label>
+            <input type="file" name="images" class="form-control" accept="image/*" multiple required>
+            <small style="color:var(--text-muted); display:block; margin-top:5px;">
+                قم بتظليل أكثر من صورة في نفس الوقت لرفعهم معاً لنفس التاريخ.
+            </small>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> حفظ ورفع الكشف</button>
+            <a href="{% url 'core:dashboard_medical_exams' %}" class="btn btn-secondary">إلغاء الرجوع</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

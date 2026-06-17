@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{% if member %}تعديل عضو{% else %}إضافة عضو مجلس{% endif %}{% endblock %}
+{% block page_title %}{% if member %}تعديل: {{ member.name }}{% else %}إضافة عضو مجلس جديد{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="{% url 'core:dashboard_council' %}">مجلس النقابة</a>
+    <span class="sep">/</span>
+    {% if member %}تعديل{% else %}إضافة{% endif %}
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-user-gear" style="color:var(--gold);"></i> بيانات العضو</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">الاسم الكامل *</label>
+                <input type="text" name="name" class="form-control" value="{{ member.name|default:'' }}" required placeholder="مثال: الأستاذ/ محمد أحمد إبراهيم">
+            </div>
+            <div class="form-group">
+                <label class="form-label">المنصب في المجلس *</label>
+                <input type="text" name="position" class="form-control" value="{{ member.position|default:'' }}" required placeholder="مثال: نقيب المحامين بالفيوم">
+            </div>
+            <div class="form-group">
+                <label class="form-label">التصنيف / المجموعة (يحدد مكان ظهوره في الصفحة) *</label>
+                <select name="role" class="form-control" required>
+                    <option value="president" {% if member.role == 'president' %}selected{% endif %}>نقيب المحامين</option>
+                    <option value="vice" {% if member.role == 'vice' %}selected{% endif %}>وكلاء النقابة</option>
+                    <option value="general_sec" {% if member.role == 'general_sec' %}selected{% endif %}>الأمانة العامة</option>
+                    <option value="treasurer" {% if member.role == 'treasurer' %}selected{% endif %}>أمانة الصندوق</option>
+                    <option value="youth" {% if member.role == 'youth' %}selected{% endif %}>مقعد الشباب</option>
+                    <option value="member" {% if member.role == 'member' or not member %}selected{% endif %}>أعضاء المجلس (أخرى)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">الترتيب (الأصغر يظهر أولاً)</label>
+                <input type="number" name="order" class="form-control" value="{{ member.order|default:'0' }}" min="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">الصورة الشخصية</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
+                {% if member.image %}
+                <div style="margin-top:10px; display:flex; align-items:center; gap:12px;">
+                    <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--gold);">
+                    <small style="color:var(--text-muted);">الصورة الحالية — ارفع صورة جديدة للتغيير</small>
+                </div>
+                {% endif %}
+            </div>
+            <div style="display:flex; gap:12px; margin-top:10px;">
+                <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
+                <a href="{% url 'core:dashboard_council' %}" class="btn btn-outline">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}إدارة المحامين{% endblock %}
+{% block page_title %}إدارة المحامين{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span> المحامون
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="search-form">
+            <form method="GET" style="display:flex; gap:10px; flex:1;">
+                <input type="text" name="q" value="{{ query }}" placeholder="ابحث بالاسم أو رقم القيد...">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-search"></i></button>
+                {% if query %}<a href="{% url 'core:dashboard_lawyers' %}" class="btn btn-outline btn-sm">مسح</a>{% endif %}
+            </form>
+        </div>
+        <a href="{% url 'core:dashboard_lawyer_add' %}" class="btn btn-gold">
+            <i class="fa-solid fa-user-plus"></i> إضافة محامٍ
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الاسم الرباعي</th>
+                    <th>رقم القيد</th>
+                    <th>الرقم القومي</th>
+                    <th>درجة القيد</th>
+                    <th>رقم الهاتف</th>
+                    <th>الحالة</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lawyer in lawyers %}
+                <tr>
+                    <td style="color:var(--text-muted);">{{ forloop.counter }}</td>
+                    <td><strong>{{ lawyer.name }}</strong></td>
+                    <td><code style="background:#f0f2f5; padding:3px 8px; border-radius:5px;">{{ lawyer.registration_number }}</code></td>
+                    <td>{{ lawyer.national_id }}</td>
+                    <td>{{ lawyer.get_degree_display }}</td>
+                    <td>{{ lawyer.phone|default:"—" }}</td>
+                    <td>
+                        {% if lawyer.status == 'active' %}<span class="badge badge-success">مشتغل</span>
+                        {% elif lawyer.status == 'suspended' %}<span class="badge badge-danger">موقوف</span>
+                        {% else %}<span class="badge badge-secondary">غير مشتغل</span>{% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-actions">
+                            <a href="{% url 'core:dashboard_lawyer_edit' lawyer.pk %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i></a>
+                            <form method="POST" action="{% url 'core:dashboard_lawyer_delete' lawyer.pk %}" onsubmit="return confirm('هل أنت متأكد من حذف {{ lawyer.name }}؟');" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-user-slash"></i>
+                            <h3>لا توجد بيانات{% if query %} مطابقة لـ "{{ query }}"{% endif %}</h3>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

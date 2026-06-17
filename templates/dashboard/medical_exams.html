@@ -1,0 +1,56 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}إدارة الكشوفات الطبية | لوحة التحكم{% endblock %}
+{% block page_title %}الكشوفات الطبية{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <div>
+            <h3 style="margin:0; font-size:1.3rem; color:var(--primary);">الكشوفات الطبية للمحامين الجدد</h3>
+            <p style="margin:5px 0 0 0; color:var(--text-muted); font-size:0.9rem;">
+                إدارة نتائج الكشف الطبي، يمكنك رفع صور كشوفات جديدة أو حذف القديمة.
+            </p>
+        </div>
+        <a href="{% url 'core:dashboard_medical_exam_add' %}" class="btn btn-gold">
+            <i class="fa-solid fa-plus"></i> رفع كشف طبي جديد
+        </a>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        {% for exam in exams %}
+        <div style="border:1px solid #eee; border-radius:10px; padding:15px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+                <div>
+                    <h4 style="margin:0; color:var(--primary); font-size:1.1rem; line-height:1.4;">{{ exam.title }}</h4>
+                    <span style="font-size:0.85rem; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> بتاريخ: {{ exam.exam_date|date:"Y-m-d" }}</span>
+                </div>
+                <form action="{% url 'core:dashboard_medical_exam_delete' exam.id %}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف الكشف بالكامل وجميع صوره؟');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger" title="حذف الكشف"><i class="fa-solid fa-trash"></i></button>
+                </form>
+            </div>
+            
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; padding-top:10px; border-top:1px dashed #eee;">
+                {% for img in exam.images.all %}
+                <div style="position:relative; width:80px; height:80px; border-radius:5px; overflow:hidden; border:1px solid #ddd;">
+                    <img src="{{ img.image.url }}" alt="صورة كشف" style="width:100%; height:100%; object-fit:cover;">
+                    <form action="{% url 'core:dashboard_medical_exam_image_delete' exam.id img.id %}" method="POST" style="position:absolute; top:2px; left:2px;" onsubmit="return confirm('حذف هذه الصورة؟');">
+                        {% csrf_token %}
+                        <button type="submit" style="background:rgba(220,53,69,0.9); color:white; border:none; border-radius:3px; width:20px; height:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.7rem;"><i class="fa-solid fa-xmark"></i></button>
+                    </form>
+                </div>
+                {% empty %}
+                <span style="color:var(--text-muted); font-size:0.8rem;">لا توجد صور لهذا الكشف.</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; border: 1px dashed #ccc; border-radius: 10px;">
+            <i class="fa-solid fa-notes-medical" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin:0;">لا توجد أي كشوفات طبية مرفوعة حتى الآن.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

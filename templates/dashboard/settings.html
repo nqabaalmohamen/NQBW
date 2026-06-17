@@ -1,0 +1,44 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}إعدادات الموقع العامة | لوحة التحكم{% endblock %}
+{% block page_title %}إعدادات الموقع العامة{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-sliders"></i> إعدادات واجهة المستخدم</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{% url 'core:dashboard_settings' %}" class="form-grid">
+            {% csrf_token %}
+            
+            <div class="form-group form-full">
+                <label class="form-label">سرعة تقليب السليدر الرئيسي (بالميلي ثانية)</label>
+                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">
+                    القيمة الافتراضية هي 4000 (أي 4 ثواني). إذا كنت ترغب في إبطاء الحركة اجعلها 6000 مثلاً، أو لتسريعها اجعلها 2500.
+                </div>
+                <input type="number" name="slider_speed" class="form-control" value="{{ settings.slider_speed }}" min="1000" max="15000" step="500" required>
+            </div>
+
+            <hr style="border-top: 1px solid #eee; margin: 30px 0;">
+            <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-building-columns"></i> إعدادات معهد المحاماة</h3>
+
+            <div class="form-group form-full" style="display: flex; align-items: center; gap: 15px;">
+                <input type="checkbox" name="is_institute_open" id="is_institute_open" style="width:20px; height:20px;" {% if settings.is_institute_open %}checked{% endif %}>
+                <label for="is_institute_open" style="font-weight: bold; font-size: 1.1rem; cursor: pointer; margin: 0;">تفعيل التسجيل في معهد المحاماة وإظهار زر التقديم</label>
+            </div>
+
+            <div class="form-group form-full" style="margin-top: 20px;">
+                <label class="form-label">رابط استمارة التسجيل (Google Form / Microsoft Form)</label>
+                <input type="url" name="institute_registration_link" class="form-control" value="{{ settings.institute_registration_link|default:'' }}" placeholder="https://docs.google.com/forms/...">
+                <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">
+                    الرابط الذي سيتم توجيه المحامي إليه عند الضغط على "رابط التقديم في معهد المحاماة".
+                </div>
+            </div>
+            
+            <div class="form-group form-full" style="margin-top: 20px;">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> حفظ الإعدادات</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

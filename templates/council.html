@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}مجلس النقابة - نقابة المحامين بالفيوم{% endblock %}
+
+{% block content %}
+<section class="page-header" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 120px 0 60px; color: white; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 3rem; margin-bottom: 20px;">مجلس النقابة</h1>
+        <p style="font-size: 1.2rem; opacity: 0.9;">أعضاء مجلس نقابة المحامين بالفيوم الموقرين</p>
+    </div>
+</section>
+
+<section class="section-padding bg-light">
+    <div class="container-fluid" style="padding: 0 30px;">
+        
+        <style>
+            .council-card { 
+                background: white; 
+                border-radius: var(--border-radius); 
+                overflow: hidden; 
+                box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+                transition: all 0.3s ease; 
+                text-align: center; 
+                border: 1px solid rgba(0,0,0,0.05); 
+            }
+            .council-card:hover { 
+                transform: translateY(-10px); 
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+            }
+            .member-image { 
+                height: 380px; 
+                background: #fdfdfd; 
+                overflow: hidden; 
+                padding: 15px; 
+            }
+            .member-image img { 
+                width: 100%; 
+                height: 100%; 
+                object-fit: contain; 
+            }
+            .member-info { 
+                padding: 22px 15px; 
+                background: white;
+                border-top: 1px solid rgba(0,0,0,0.05);
+            }
+            .member-name-text {
+                width: 100%;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+                gap: 5px;
+                overflow: hidden;
+            }
+            .member-name-text h3 {
+                color: var(--primary-dark); 
+                font-size: 1.05rem; 
+                margin: 0; 
+                font-weight: 800;
+                line-height: 1.5;
+            }
+            .member-name-text p {
+                color: var(--gold); 
+                font-weight: 800; 
+                font-size: 1rem; 
+                margin: 0; 
+                line-height: 1.5;
+            }
+            .separator {
+                color: rgba(0,0,0,0.2);
+                font-size: 1.1rem;
+                font-weight: 300;
+                margin: 0 5px;
+            }
+            .group-title { text-align: center; color: var(--primary-dark); margin: 60px 0 30px; font-size: 2.2rem; position: relative; font-weight: 800; }
+            .group-title::after { content: ''; display: block; width: 60px; height: 4px; background: var(--gold); margin: 15px auto 0; border-radius: 2px; }
+            .flex-center { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; width: 100%; }
+            .grid-standard { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; width: 100%; }
+            .card-wrapper { flex: 1 1 450px; width: 100%; max-width: 100%; }
+            
+            @media (max-width: 768px) {
+                .grid-standard { grid-template-columns: 1fr; }
+                .member-name-text { white-space: normal; }
+            }
+        </style>
+
+        <!-- 1. النقيب -->
+        {% if grouped.president %}
+        <h2 class="group-title" style="margin-top: 0;">نقيب المحامين</h2>
+        <div class="flex-center">
+            {% for member in grouped.president %}
+            <div class="card-wrapper">
+                <div class="council-card" style="box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);">
+                    <div class="member-image">
+                        {% if member.image %}<img src="{{ member.image.url }}" alt="{{ member.name }}">{% else %}<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#ccc;"><i class="fa-solid fa-user-tie"></i></div>{% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-text">
+                            <h3>{{ member.name }}</h3>
+                            <span class="separator">|</span>
+                            <p>{{ member.position }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 2. وكلاء النقابة -->
+        {% if grouped.vice %}
+        <h2 class="group-title">وكلاء النقابة</h2>
+        <div class="flex-center">
+            {% for member in grouped.vice %}
+            <div class="card-wrapper">
+                <div class="council-card">
+                    <div class="member-image">
+                        {% if member.image %}<img src="{{ member.image.url }}" alt="{{ member.name }}">{% else %}<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#ccc;"><i class="fa-solid fa-user-tie"></i></div>{% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-text">
+                            <h3>{{ member.name }}</h3>
+                            <span class="separator">|</span>
+                            <p>{{ member.position }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 3. الأمانة العامة -->
+        {% if grouped.general_sec %}
+        <h2 class="group-title">الأمانة العامة</h2>
+        <div class="flex-center">
+            {% for member in grouped.general_sec %}
+            <div class="card-wrapper">
+                <div class="council-card">
+                    <div class="member-image">
+                        {% if member.image %}<img src="{{ member.image.url }}" alt="{{ member.name }}">{% else %}<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#ccc;"><i class="fa-solid fa-user-tie"></i></div>{% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-text">
+                            <h3>{{ member.name }}</h3>
+                            <span class="separator">|</span>
+                            <p>{{ member.position }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 4. أمانة الصندوق -->
+        {% if grouped.treasurer %}
+        <h2 class="group-title">أمانة الصندوق</h2>
+        <div class="flex-center">
+            {% for member in grouped.treasurer %}
+            <div class="card-wrapper">
+                <div class="council-card">
+                    <div class="member-image">
+                        {% if member.image %}<img src="{{ member.image.url }}" alt="{{ member.name }}">{% else %}<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#ccc;"><i class="fa-solid fa-user-tie"></i></div>{% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-text">
+                            <h3>{{ member.name }}</h3>
+                            <span class="separator">|</span>
+                            <p>{{ member.position }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 5. مقعد الشباب -->
+        {% if grouped.youth %}
+        <h2 class="group-title">مقعد الشباب</h2>
+        <div class="flex-center">
+            {% for member in grouped.youth %}
+            <div class="card-wrapper">
+                <div class="council-card">
+                    <div class="member-image">
+                        {% if member.image %}<img src="{{ member.image.url }}" alt="{{ member.name }}">{% else %}<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#ccc;"><i class="fa-solid fa-user-tie"></i></div>{% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name-text">
+                            <h3>{{ member.name }}</h3>
+                            <span class="separator">|</span>
+                            <p>{{ member.position }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 6. باقي الأعضاء -->
+        {% if grouped.others %}
+        <h2 class="group-title">أعضاء مجلس النقابة</h2>
+        <div class="grid-standard">
+            {% for member in grouped.others %}
+            <div class="council-card">
+                <div class="member-image">
+                    {% if member.image %}<img src="{{ member.image.url }}" alt="{{ member.name }}">{% else %}<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#ccc;"><i class="fa-solid fa-user-tie"></i></div>{% endif %}
+                </div>
+                <div class="member-info">
+                    <div class="member-name-text">
+                        <h3>{{ member.name }}</h3>
+                        <span class="separator">|</span>
+                        <p>{{ member.position }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}عن النقابة - نقابة المحامين بالفيوم{% endblock %}
+
+{% block content %}
+<section class="page-header" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 120px 0 60px; color: white; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 3rem; margin-bottom: 20px;">عن النقابة الفرعية بالفيوم</h1>
+        <p style="font-size: 1.2rem; opacity: 0.9;">تاريخ عريق وحاضر مشرق في خدمة المحاماة والمجتمع</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container" style="max-width: 900px;">
+        <div class="about-content" style="background: white; padding: 50px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); line-height: 1.8;">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <i class="fa-solid fa-scale-balanced" style="font-size: 5rem; color: var(--gold); margin-bottom: 20px;"></i>
+                <h2 style="color: var(--primary); font-size: 2rem;">رسالتنا ورؤيتنا</h2>
+                <div style="width: 80px; height: 4px; background: var(--gold); margin: 15px auto; border-radius: 2px;"></div>
+            </div>
+
+            <p style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 20px; text-align: justify;">
+                نقابة المحامين الفرعية بالفيوم هي صرح قانوني شامخ يمثل السادة المحامين بمحافظة الفيوم. تأسست النقابة لترعى مصالح أعضائها وتدافع عن حقوقهم، ولتكون حصناً منيعاً للعدالة في مصر.
+            </p>
+            
+            <p style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 30px; text-align: justify;">
+                نحن نؤمن بأن المحاماة رسالة قبل أن تكون مهنة، ونسعى من خلال مجلس النقابة الموقر إلى تقديم أحدث وأفضل الخدمات الرقمية واللوجستية للسادة الأعضاء، للارتقاء بالمستوى المهني والعلمي.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 50px;">
+                <div style="background: var(--bg-main); padding: 30px; border-radius: 12px; border-right: 4px solid var(--gold);">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;"><i class="fa-solid fa-bullseye" style="color: var(--gold);"></i> الأهداف</h3>
+                    <ul style="list-style-type: none; padding: 0;">
+                        <li style="margin-bottom: 10px;"><i class="fa-solid fa-check text-gold"></i> حماية حقوق المحامين المهنية.</li>
+                        <li style="margin-bottom: 10px;"><i class="fa-solid fa-check text-gold"></i> توفير الرعاية الصحية والاجتماعية.</li>
+                        <li style="margin-bottom: 10px;"><i class="fa-solid fa-check text-gold"></i> تطوير المنظومة الرقمية للخدمات.</li>
+                    </ul>
+                </div>
+                
+                <div style="background: var(--bg-main); padding: 30px; border-radius: 12px; border-right: 4px solid var(--primary);">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;"><i class="fa-solid fa-eye" style="color: var(--primary);"></i> الرؤية</h3>
+                    <ul style="list-style-type: none; padding: 0;">
+                        <li style="margin-bottom: 10px;"><i class="fa-solid fa-check text-gold"></i> رقمنة كافة العمليات النقابية.</li>
+                        <li style="margin-bottom: 10px;"><i class="fa-solid fa-check text-gold"></i> توفير أرشيف إلكتروني متكامل.</li>
+                        <li style="margin-bottom: 10px;"><i class="fa-solid fa-check text-gold"></i> تعزيز التواصل المستمر والفعال.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

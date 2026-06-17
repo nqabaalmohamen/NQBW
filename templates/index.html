@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<!-- Swiper CSS for News Slider -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<style>
+    /* Hero Slider Styles */
+    .news-slider-container {
+        position: relative;
+        z-index: 10;
+        background: var(--primary-dark);
+    }
+    .swiper-button-next:after, .swiper-button-prev:after {
+        font-size: 1.2rem !important;
+        font-weight: bold;
+    }
+    .swiper-pagination-bullet {
+        background: white;
+        opacity: 0.5;
+        width: 10px;
+        height: 10px;
+    }
+    .swiper-pagination-bullet-active {
+        opacity: 1;
+        background: var(--gold);
+        transform: scale(1.3);
+    }
+    /* Responsive Slider */
+    @media (max-width: 768px) {
+        .nosi-slide-wrapper {
+            flex-direction: column !important;
+        }
+        .nosi-text-side {
+            width: 100% !important;
+            height: 60%;
+            padding: 40px 20px !important;
+        }
+        .nosi-image-side {
+            width: 100% !important;
+            height: 40%;
+        }
+        .nosi-slide-wrapper > svg {
+            display: none !important;
+        }
+        .nosi-text-side h2 {
+            font-size: 1.8rem !important;
+            max-width: 100% !important;
+        }
+        .nosi-text-side p {
+            font-size: 1rem !important;
+            max-width: 100% !important;
+        }
+        .swiper-pagination {
+            width: 100% !important;
+            padding-right: 0 !important;
+            text-align: center !important;
+            bottom: 15px !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="news-slider-container" style="padding: 0; background: #fff;">
+    <div class="swiper mySwiper" style="width: 100%; height: 55vh; min-height: 400px; max-height: 550px;">
+        <div class="swiper-wrapper">
+            {% for item in latest_news %}
+            <div class="swiper-slide">
+                <div class="nosi-slide-wrapper" style="width: 100%; height: 100%; display: flex; align-items: stretch; position: relative;">
+                    
+                    <!-- Text Section (Right side in RTL) -->
+                    <div class="nosi-text-side" style="width: 60%; background: var(--primary); position: relative; z-index: 2; padding: 60px 10%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; overflow: hidden;">
+                        
+                        <!-- Abstract Background Circles -->
+                        <div style="position: absolute; top: -150px; right: -100px; width: 400px; height: 400px; border-radius: 50%; border: 50px solid rgba(255,255,255,0.03); z-index: 0;"></div>
+                        <div style="position: absolute; bottom: -50px; left: 10%; width: 250px; height: 250px; border-radius: 50%; border: 40px solid rgba(255,255,255,0.05); z-index: 0;"></div>
+                        
+                        <!-- Content -->
+                        <div style="position: relative; z-index: 1;">
+                            <h2 style="color: white; font-size: 2.8rem; margin-bottom: 20px; line-height: 1.4; font-weight: 800; max-width: 90%;">
+                                {{ item.title }}
+                            </h2>
+                            <p style="color: rgba(255,255,255,0.85); font-size: 1.3rem; margin-bottom: 40px; line-height: 1.8; max-width: 85%;">
+                                {{ item.content|truncatechars:150 }}
+                            </p>
+                            <a href="{% url 'core:news_detail' item.id %}" style="display: inline-flex; align-items: center; background: white; color: var(--primary); text-decoration: none; padding: 12px 35px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                                للمزيد من التفاصيل 
+                                <span style="display: flex; align-items: center; justify-content: center; background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; margin-right: 15px;">
+                                    <i class="fa-solid fa-arrow-left fa-sm"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SVG Curve connecting Text and Image -->
+                    <svg style="position: absolute; left: 40%; top: 0; height: 100%; width: 120px; z-index: 3; transform: translateX(-50%); pointer-events: none;" preserveAspectRatio="none" viewBox="0 0 100 100">
+                        <path d="M100,0 L100,100 L0,100 C60,80 60,20 0,0 Z" fill="var(--primary)" />
+                    </svg>
+
+                    <!-- Image Section (Left side) -->
+                    <div class="nosi-image-side" style="width: 40%; position: relative; z-index: 1; background: #f8f9fa; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                        {% else %}
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-scale-balanced" style="font-size: 8rem; color: rgba(255,255,255,0.2);"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+            {% empty %}
+            <div class="swiper-slide">
+                <div class="nosi-slide-wrapper" style="width: 100%; height: 100%; display: flex; align-items: stretch; position: relative;">
+                    <div class="nosi-text-side" style="width: 60%; background: var(--primary); position: relative; z-index: 2; padding: 60px 10%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; overflow: hidden;">
+                        <div style="position: relative; z-index: 1;">
+                            <h2 style="color: white; font-size: 2.8rem; margin-bottom: 20px; line-height: 1.4; font-weight: 800;">مرحباً بكم في البوابة الرقمية</h2>
+                            <p style="color: rgba(255,255,255,0.85); font-size: 1.3rem; margin-bottom: 40px; line-height: 1.8;">لا توجد أخبار مضافة حالياً.</p>
+                        </div>
+                    </div>
+                    <svg style="position: absolute; left: 40%; top: 0; height: 100%; width: 120px; z-index: 3; transform: translateX(-50%); pointer-events: none;" preserveAspectRatio="none" viewBox="0 0 100 100">
+                        <path d="M100,0 L100,100 L0,100 C60,80 60,20 0,0 Z" fill="var(--primary)" />
+                    </svg>
+                    <div class="nosi-image-side" style="width: 40%; background: var(--bg-color);"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        <div class="swiper-pagination" style="bottom: 30px; text-align: right; padding-right: 10%; width: 60%;"></div>
+    </div>
+</section>
+
+<!-- SERVICES HIGHLIGHT -->
+<section class="section-padding">
+    <div class="container">
+        <div class="section-title">
+            <h2>الخدمات الإلكترونية المتاحة</h2>
+            <p>نقدم مجموعة من الخدمات لتسهيل الإجراءات وتوفير الوقت والمجهود.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;">
+            <a href="{% url 'core:institute' %}" class="card" style="display:block; text-align:center; padding:40px 20px; transition: transform 0.3s; border-bottom: 4px solid var(--primary); background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                <div style="width:70px; height:70px; background:rgba(17,63,103,0.1); color:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 20px;">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <h3 style="margin-bottom:10px; color: var(--primary-dark);">معهد المحاماة</h3>
+                <p style="color:var(--text-muted); font-size:0.95rem;">الاشتراك ومتابعة دورات معهد المحاماة إلكترونياً.</p>
+            </a>
+
+            <a href="{% url 'core:forensic' %}" class="card" style="display:block; text-align:center; padding:40px 20px; transition: transform 0.3s; border-bottom: 4px solid var(--primary); background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                <div style="width:70px; height:70px; background:rgba(17,63,103,0.1); color:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 20px;">
+                    <i class="fa-solid fa-microscope"></i>
+                </div>
+                <h3 style="margin-bottom:10px; color: var(--primary-dark);">الطب الشرعي</h3>
+                <p style="color:var(--text-muted); font-size:0.95rem;">خدمات وتقارير الطب الشرعي المعتمدة.</p>
+            </a>
+
+            <a href="{% url 'core:contact' %}" class="card" style="display:block; text-align:center; padding:40px 20px; transition: transform 0.3s; border-bottom: 4px solid var(--gold); background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                <div style="width:70px; height:70px; background:rgba(212,175,55,0.1); color:var(--gold-dark); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 20px;">
+                    <i class="fa-solid fa-comment-dots"></i>
+                </div>
+                <h3 style="margin-bottom:10px; color: var(--primary-dark);">تقديم شكوى أو مقترح</h3>
+                <p style="color:var(--text-muted); font-size:0.95rem;">منظومة تلقي الشكاوى الرسمية ومتابعة حالة الطلب.</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var swiper = new Swiper('.mySwiper', {
+            slidesPerView: 1,
+            loop: true,
+            autoplay: {
+                delay: {{ site_settings.slider_speed|default:4000 }},
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الإدارة | نقابة المحامين بالفيوم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f1423 0%, #1A2238 50%, #2c3859 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%);
+            top: -100px; right: -100px;
+            border-radius: 50%;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+            bottom: -100px; left: -100px;
+            border-radius: 50%;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 420px;
+            max-width: 95vw;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            position: relative;
+            z-index: 1;
+        }
+        .logo-area { text-align: center; margin-bottom: 35px; }
+        .logo-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #D4AF37, #AA8B2C);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem; color: #1A2238;
+            box-shadow: 0 8px 25px rgba(212,175,55,0.4);
+        }
+        .logo-area h1 { color: #fff; font-size: 1.4rem; margin-bottom: 5px; }
+        .logo-area p { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 8px; font-weight: 600; }
+        .input-group {
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            right: 15px; top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.4);
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+        input:focus {
+            border-color: #D4AF37;
+            background: rgba(255,255,255,0.12);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
+        }
+        input::placeholder { color: rgba(255,255,255,0.3); }
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #D4AF37, #AA8B2C);
+            color: #1A2238;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212,175,55,0.4);
+        }
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: rgba(255,255,255,0.5); font-size: 0.9rem; text-decoration: none; transition: color 0.3s; }
+        .back-link a:hover { color: #D4AF37; }
+        .error-msg {
+            background: rgba(220,53,69,0.2);
+            border: 1px solid rgba(220,53,69,0.4);
+            color: #ff8a8a;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+            <h1>نقابة المحامين بالفيوم</h1>
+            <p>لوحة إدارة النقابة الذكية</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>اسم المستخدم</label>
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" name="username" placeholder="أدخل اسم المستخدم" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-login">
+                <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a href="/"><i class="fa-solid fa-arrow-right"></i> العودة إلى الموقع</a>
+        </div>
+    </div>
+</body>
+</html>

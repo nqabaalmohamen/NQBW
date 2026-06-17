@@ -1,0 +1,56 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{% if news %}تعديل الخبر{% else %}إضافة خبر جديد{% endif %}{% endblock %}
+{% block page_title %}{% if news %}تعديل: {{ news.title|truncatechars:40 }}{% else %}إضافة خبر أو قرار جديد{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="{% url 'core:dashboard_news' %}">الأخبار</a>
+    <span class="sep">/</span>
+    {% if news %}تعديل{% else %}إضافة{% endif %}
+</div>
+
+<div class="card" style="max-width: 800px;">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-newspaper" style="color:var(--gold);"></i> بيانات الخبر</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">عنوان الخبر أو القرار *</label>
+                <input type="text" name="title" class="form-control" value="{{ news.title|default:'' }}" required placeholder="أدخل عنوان الخبر أو القرار النقابي">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">المحتوى التفصيلي *</label>
+                <textarea name="content" class="form-control" rows="8" required placeholder="أدخل النص الكامل للخبر أو القرار...">{{ news.content|default:'' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">صورة الخبر (اختياري)</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
+                {% if news.image %}
+                <div style="margin-top:10px;">
+                    <small style="color:var(--text-muted);">الصورة الحالية:</small>
+                    <img src="{{ news.image.url }}" alt="صورة الخبر" style="display:block; max-height:150px; margin-top:8px; border-radius:8px; border:1px solid var(--border);">
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                    <input type="checkbox" name="is_published" {% if news.is_published or not news %}checked{% endif %} style="width:18px; height:18px; accent-color: var(--gold);">
+                    <span class="form-label" style="margin:0;">نشر الخبر فوراً على الموقع</span>
+                </label>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:10px;">
+                <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ الخبر</button>
+                <a href="{% url 'core:dashboard_news' %}" class="btn btn-outline">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

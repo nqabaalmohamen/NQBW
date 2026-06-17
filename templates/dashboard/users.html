@@ -1,0 +1,98 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}إدارة المستخدمين | لوحة التحكم{% endblock %}
+{% block page_title %}إدارة المستخدمين{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3>قائمة المستخدمين المسجلين</h3>
+        
+        <form method="GET" style="display: flex; gap: 10px;">
+            <input type="text" name="q" value="{{ q }}" placeholder="ابحث باسم المستخدم أو البريد..." class="form-control" style="width: 300px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> بحث</button>
+            {% if q %}
+            <a href="{% url 'core:dashboard_users' %}" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i></a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>المستخدم (الاسم / الإيميل)</th>
+                    <th>اسم الدخول (Username)</th>
+                    <th>الرقم السري</th>
+                    <th>رقم الهاتف</th>
+                    <th>الرقم القومي</th>
+                    <th>تاريخ التسجيل</th>
+                    <th>آخر حركة (آخر تسجيل دخول)</th>
+                    <th>الصلاحية</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <strong>{{ user.get_full_name|default:"لم يسجل الاسم" }}</strong><br>
+                        <span style="color:var(--text-muted); font-size: 0.85rem;">{{ user.email|default:"لا يوجد إيميل" }}</span>
+                    </td>
+                    <td><strong style="color: var(--primary);">{{ user.username }}</strong></td>
+                    <td>
+                        {% if user.profile.plain_password %}
+                            <span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:5px; font-size:0.85rem; font-weight:bold; font-family:monospace;">
+                                {{ user.profile.plain_password }}
+                            </span>
+                        {% else %}
+                            <span style="color:var(--text-muted); font-size:0.8rem;">غير محفوظة</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="tel:{{ user.profile.phone }}" style="color: var(--gold); text-decoration: none;">{{ user.profile.phone|default:"غير متوفر" }}</a></td>
+                    <td>{{ user.profile.national_id|default:"غير متوفر" }}</td>
+                    <td style="font-size: 0.85rem; color:var(--text-muted);">{{ user.date_joined|date:"Y-m-d g:i A" }}</td>
+                    <td>
+                        {% if user.last_login %}
+                            <span style="color: var(--success); font-size: 0.9rem; font-weight: bold;">متصل سابقاً</span><br>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ user.last_login|date:"Y-m-d g:i A" }}</span>
+                        {% else %}
+                            <span style="color: var(--danger); font-size: 0.85rem;">لم يسجل دخول قط</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.is_superuser %}
+                            <span class="badge" style="background: var(--danger);">مدير عام النظام</span>
+                        {% elif user.is_staff %}
+                            <span class="badge" style="background: var(--primary);">لوحة التحكم (موظف)</span>
+                        {% else %}
+                            <span class="badge" style="background: var(--secondary);">{{ user.profile.get_user_type_display|default:"مستخدم عادي" }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="display:flex; flex-direction:column; gap:6px;">
+                        {% if not user.is_superuser %}
+                        <form action="{% url 'core:dashboard_user_delete' user.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" style="width:100%; font-size: 0.82rem;"><i class="fa-solid fa-trash"></i> حذف</button>
+                        </form>
+                        <form action="{% url 'core:dashboard_user_change_password' user.id %}" method="POST" style="display:flex; gap:4px;" onsubmit="return confirm('تغيير كلمة المرور؟');">
+                            {% csrf_token %}
+                            <input type="text" name="new_password" placeholder="كلمة مرور جديدة" required
+                                style="padding:4px 6px; border:1px solid #ccc; border-radius:6px; font-size:0.78rem; width:120px; font-family:'Cairo',sans-serif;">
+                            <button type="submit" class="btn btn-sm" style="background:var(--gold); color:var(--primary); font-size:0.78rem; white-space:nowrap;"><i class="fa-solid fa-key"></i> تغيير</button>
+                        </form>
+                        {% else %}
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">مدير النظام</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 30px;">لا يوجد مستخدمين مسجلين حالياً.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

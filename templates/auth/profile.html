@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}الملف الشخصي - البوابة الخدمية{% endblock %}
+
+{% block content %}
+<div class="container section-padding">
+    <div style="max-width: 800px; margin: 0 auto;">
+        
+        <!-- User Info Header -->
+        <div class="card" style="margin-bottom: 30px; display:flex; align-items:center; gap:30px; padding:40px;">
+            <div style="width: 100px; height: 100px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold;">
+                {{ request.user.first_name|first|default:request.user.username|first|upper }}
+            </div>
+            <div>
+                <h2 style="margin-bottom: 5px;">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                <div style="display:inline-block; background: {% if profile.user_type == 'lawyer' %}var(--gold){% else %}var(--success){% endif %}; color: {% if profile.user_type == 'lawyer' %}var(--primary-dark){% else %}white{% endif %}; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; margin-bottom: 10px;">
+                    {{ profile.get_user_type_display }}
+                </div>
+                <p style="color: var(--text-muted);"><i class="fa-solid fa-id-card"></i> الرقم القومي: {{ profile.national_id }}</p>
+                <p style="color: var(--text-muted);"><i class="fa-solid fa-phone"></i> رقم الهاتف: {{ profile.phone }}</p>
+            </div>
+        </div>
+
+        <!-- Lawyer Details if User is Lawyer -->
+        {% if lawyer %}
+        <div class="card" style="border-top: 4px solid var(--gold);">
+            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h3><i class="fa-solid fa-scale-balanced" style="color: var(--gold);"></i> بيانات العضوية النقابية</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">رقم القيد</span>
+                    <strong style="font-size: 1.1rem;">{{ lawyer.registration_number }}</strong>
+                </div>
+                <div>
+                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">الدرجة</span>
+                    <strong style="font-size: 1.1rem;">{{ lawyer.get_degree_display }}</strong>
+                </div>
+                <div>
+                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">حالة القيد</span>
+                    {% if lawyer.status == 'active' %}
+                        <strong style="color: var(--success); font-size: 1.1rem;">مشتغل</strong>
+                    {% elif lawyer.status == 'suspended' %}
+                        <strong style="color: var(--danger); font-size: 1.1rem;">موقوف</strong>
+                    {% else %}
+                        <strong style="color: var(--text-muted); font-size: 1.1rem;">غير مشتغل</strong>
+                    {% endif %}
+                </div>
+                <div>
+                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">عنوان المكتب</span>
+                    <strong style="font-size: 1.1rem;">{{ lawyer.address|default:"غير مسجل" }}</strong>
+                </div>
+            </div>
+        </div>
+        {% elif profile.user_type == 'lawyer' and not lawyer %}
+        <div class="alert alert-error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            حسابك مسجل كمحامٍ، ولكن لم يتم العثور على بيانات قيد مطابقة للرقم القومي ({{ profile.national_id }}). يرجى مراجعة النقابة لتحديث بياناتك.
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

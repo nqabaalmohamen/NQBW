@@ -1,0 +1,74 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}إدارة مجلس النقابة{% endblock %}
+{% block page_title %}مجلس النقابة{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span> مجلس النقابة
+</div>
+
+<div class="card">
+    <div class="card-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+        <h3><i class="fa-solid fa-users-gear" style="color:var(--gold);"></i> أعضاء المجلس</h3>
+        
+        <form method="GET" style="display: flex; gap: 10px; flex-grow: 1; max-width: 400px;">
+            <input type="text" name="q" value="{{ q }}" placeholder="ابحث عن عضو..." class="form-control" style="padding: 8px 15px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+            {% if q %}
+            <a href="{% url 'core:dashboard_council' %}" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i></a>
+            {% endif %}
+        </form>
+
+        <a href="{% url 'core:dashboard_council_add' %}" class="btn btn-gold">
+            <i class="fa-solid fa-user-plus"></i> إضافة عضو
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>الترتيب</th>
+                    <th>الصورة</th>
+                    <th>الاسم</th>
+                    <th>المنصب</th>
+                    <th>التصنيف/المجموعة</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td><span class="badge badge-secondary">{{ member.order }}</span></td>
+                    <td>
+                        {% if member.image %}
+                        <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width:45px; height:45px; border-radius:50%; object-fit:contain; background:#fff; border:2px solid var(--gold);">
+                        {% else %}
+                        <div style="width:45px; height:45px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:1.3rem; color:var(--text-muted);">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ member.name }}</strong></td>
+                    <td style="color: var(--gold); font-weight:600;">{{ member.position }}</td>
+                    <td>
+                        <span class="badge" style="background: var(--primary);">{{ member.get_role_display }}</span>
+                    </td>
+                    <td>
+                        <div class="btn-actions">
+                            <a href="{% url 'core:dashboard_council_edit' member.pk %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i> تعديل</a>
+                            <form method="POST" action="{% url 'core:dashboard_council_delete' member.pk %}" onsubmit="return confirm('حذف {{ member.name }} من المجلس؟');" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-users"></i><h3>لم يتم إضافة أي أعضاء بعد</h3></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

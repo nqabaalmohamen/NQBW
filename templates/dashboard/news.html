@@ -1,0 +1,65 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}إدارة الأخبار{% endblock %}
+{% block page_title %}الأخبار والقرارات{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span> الأخبار والقرارات
+</div>
+
+<div class="card">
+    <div class="card-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+        <h3><i class="fa-solid fa-newspaper" style="color:var(--gold);"></i> جميع الأخبار</h3>
+        
+        <form method="GET" style="display: flex; gap: 10px; flex-grow: 1; max-width: 400px;">
+            <input type="text" name="q" value="{{ q }}" placeholder="ابحث في الأخبار..." class="form-control" style="padding: 8px 15px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+            {% if q %}
+            <a href="{% url 'core:dashboard_news' %}" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i></a>
+            {% endif %}
+        </form>
+
+        <a href="{% url 'core:dashboard_news_add' %}" class="btn btn-gold">
+            <i class="fa-solid fa-plus"></i> إضافة خبر جديد
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>عنوان الخبر</th>
+                    <th>تاريخ النشر</th>
+                    <th>الحالة</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in news_items %}
+                <tr>
+                    <td style="color:var(--text-muted);">{{ forloop.counter }}</td>
+                    <td><strong>{{ item.title }}</strong></td>
+                    <td style="color:var(--text-muted);">{{ item.date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if item.is_published %}<span class="badge badge-success">منشور</span>
+                        {% else %}<span class="badge badge-secondary">مسودة</span>{% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-actions">
+                            <a href="{% url 'core:dashboard_news_edit' item.pk %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i> تعديل</a>
+                            <form method="POST" action="{% url 'core:dashboard_news_delete' item.pk %}" onsubmit="return confirm('حذف هذا الخبر نهائياً؟');" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-newspaper"></i><h3>لا توجد أخبار بعد</h3></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
