@@ -193,5 +193,11 @@ class SiteSettings(models.Model):
 
     @classmethod
     def get_settings(cls):
-        settings, created = cls.objects.get_or_create(pk=1)
-        return settings
+        from django.db import OperationalError
+        try:
+            settings, created = cls.objects.get_or_create(pk=1)
+            return settings
+        except OperationalError:
+            # Fallback for read-only environments (e.g. Vercel with SQLite)
+            # Returns an unsaved default instance so the site doesn't crash
+            return cls(pk=1)
