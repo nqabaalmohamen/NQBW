@@ -571,3 +571,13 @@ def serve_db_media(request, name):
         return HttpResponse(db_file.data, content_type='application/octet-stream')
     except DatabaseFile.DoesNotExist:
         raise Http404('File not found')
+
+
+def run_migrations_secret(request):
+    from django.core.management import call_command
+    from django.http import HttpResponse
+    try:
+        call_command('migrate')
+        return HttpResponse('Migrations applied successfully!')
+    except Exception as e:
+        return HttpResponse(f'Error applying migrations: {str(e)}')
