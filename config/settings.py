@@ -144,7 +144,15 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-DEFAULT_FILE_STORAGE = 'core.storage.DatabaseStorage'
+# Use Database Storage for Media to bypass Vercel read-only filesystem
+STORAGES = {
+    "default": {
+        "BACKEND": "core.storage.DatabaseStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
