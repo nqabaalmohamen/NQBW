@@ -164,6 +164,35 @@
             transform: rotate(-90deg);
         }
     }
+    
+    .autoplay-progress-desktop {
+        position: absolute;
+        right: 4%;
+        bottom: 20px;
+        z-index: 10;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+    }
+    .autoplay-progress-desktop svg {
+        --progress: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+        stroke-width: 3px;
+        stroke: white;
+        fill: none;
+        stroke-dashoffset: calc(125.6 * (1 - var(--progress)));
+        stroke-dasharray: 125.6;
+        transform: rotate(-90deg);
+    }
 </style>
 {% endblock %}
 
@@ -238,6 +267,13 @@
         
         <!-- Pagination -->
         <div class="swiper-pagination desktop-pagination" style="bottom: 30px; text-align: right; padding-right: 10%; width: 60%;"></div>
+
+        <!-- Autoplay Progress -->
+        <div class="autoplay-progress-desktop" slot="container-end">
+            <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="20"></circle>
+            </svg>
+        </div>
     </div>
 
     <!-- MOBILE SLIDER -->
@@ -347,6 +383,12 @@
             pagination: {
                 el: '.desktop-pagination',
                 clickable: true,
+            },
+            on: {
+                autoplayTimeLeft(s, time, progress) {
+                    const progressCircle = document.querySelector(".autoplay-progress-desktop svg");
+                    if (progressCircle) progressCircle.style.setProperty("--progress", 1 - progress);
+                }
             }
         });
 
