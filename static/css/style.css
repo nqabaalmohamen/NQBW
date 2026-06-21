@@ -535,23 +535,35 @@ img { max-width: 100%; display: block; }
         max-width: 160px;
     }
 
-    /* Hide desktop nav completely */
+    /* Elegant Mobile Menu */
     .nav-links {
         position: fixed;
-        top: 60px;
+        top: 0;
         right: -100%;
-        width: min(290px, 80vw);
-        height: calc(100vh - 60px);
-        background: var(--white);
+        width: min(320px, 85vw);
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(15px);
         flex-direction: column;
         align-items: stretch;
         overflow-y: auto;
-        box-shadow: -4px 0 20px rgba(0,0,0,0.15);
-        z-index: 999;
-        transition: right 0.3s ease;
-        padding: 8px 0 40px;
+        box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+        z-index: 1000;
+        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        padding: 80px 0 40px; /* Space for close btn/header */
         gap: 0;
         justify-content: flex-start;
+        border-radius: 20px 0 0 20px;
+    }
+    .nav-links::before {
+        content: 'القائمة الرئيسية';
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--primary-dark);
     }
     .nav-links.mobile-open { right: 0; }
 
@@ -579,12 +591,13 @@ img { max-width: 100%; display: block; }
         border: none;
         border-right: 3px solid var(--gold);
         border-radius: 0;
-        background: #f4f6f9;
+        background: rgba(0,75,135,0.03);
         margin: 0;
     }
     .dropdown-menu li a {
-        padding: 11px 28px;
-        font-size: 0.88rem;
+        padding: 12px 30px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
     }
 
     /* Mobile user links */
@@ -612,7 +625,7 @@ img { max-width: 100%; display: block; }
     .header-date { display: none; }
 
     /* Show hamburger */
-    .hamburger-btn { display: flex; }
+    .hamburger-btn { display: flex; z-index: 1001; }
 
     /* Search */
     .search-bar-full { top: 60px; padding: 10px 14px; }
@@ -627,6 +640,8 @@ img { max-width: 100%; display: block; }
     .section-padding { padding: 40px 0; }
     .section-title h2 { font-size: 1.4rem; }
     .section-title p { font-size: 0.88rem; }
+    
+    .news-slider-container { margin-top: 20px; border-radius: 15px; overflow: hidden; margin-left: 15px; margin-right: 15px; }
 
     /* Form */
     .form-card { padding: 22px 16px; margin: 16px; }

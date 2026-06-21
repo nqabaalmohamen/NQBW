@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -122,6 +124,43 @@ def search(request):
             results['services'].append({'title': 'الشكاوى والمقترحات', 'url': 'core:contact', 'desc': 'تقديم ومتابعة الشكاوى', 'icon': 'fa-comment-dots'})
 
     return render(request, 'search_results.html', results)
+
+def search_api(request):
+    query = request.GET.get('q', '').strip()
+    if not query:
+        return JsonResponse({'results': []})
+    
+    words = query.split()
+    news_q = Q()
+    council_q = Q()
+    for word in words:
+        news_q |= Q(title__icontains=word)
+        council_q |= Q(name__icontains=word) | Q(position__icontains=word)
+        
+    results = []
+    
+    # Services
+    query_lower = query.lower()
+    if "معهد" in query_lower or "محاماة" in query_lower:
+        results.append({'title': 'معهد المحاماة', 'url': reverse('core:institute'), 'type': 'خدمة'})
+    if "طب" in query_lower or "شرعي" in query_lower:
+        results.append({'title': 'الطب الشرعي', 'url': reverse('core:forensic'), 'type': 'خدمة'})
+    if "كشف" in query_lower or "طبي" in query_lower:
+        results.append({'title': 'الكشف الطبي', 'url': reverse('core:dashboard_medical_exams'), 'type': 'خدمة'})
+    if "شك" in query_lower or "مقترح" in query_lower:
+        results.append({'title': 'الشكاوى والمقترحات', 'url': reverse('core:contact'), 'type': 'خدمة'})
+        
+    # Council
+    council = CouncilMember.objects.filter(council_q).distinct()[:3]
+    for c in council:
+        results.append({'title': c.name, 'url': reverse('core:council'), 'type': 'عضو مجلس'})
+        
+    # News
+    news = News.objects.filter(news_q, is_published=True).distinct()[:5]
+    for n in news:
+        results.append({'title': n.title, 'url': reverse('core:news_detail', args=[n.pk]), 'type': 'خبر'})
+        
+    return JsonResponse({'results': results})
 
 def institute_page(request):
     lectures = InstituteLecture.objects.all()

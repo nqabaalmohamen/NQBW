@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=10.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=11.0">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -115,11 +115,15 @@
     <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
 
     <!-- Full Width Search Bar (Hidden by Default) -->
-    <div id="fullWidthSearch" class="search-bar-full" style="display:none;">
+    <div id="fullWidthSearch" class="search-bar-full" style="display:none; position: relative;">
         <form action="{% url 'core:search' %}" method="GET" class="search-form-full">
-            <input type="text" name="q" id="searchInput" placeholder="ابحث عن الخدمات، الأخبار، أو المحامين..." required>
+            <input type="text" name="q" id="searchInput" placeholder="ابحث عن الخدمات، الأخبار، أو المحامين..." required autocomplete="off">
             <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
+        <!-- Search Suggestions Dropdown -->
+        <div id="searchSuggestions" class="search-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 8px 8px; z-index: 1000; overflow: hidden; max-height: 300px; overflow-y: auto;">
+            <!-- Results injected here -->
+        </div>
     </div>
 
     <script>
@@ -161,7 +165,80 @@
                 document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
             }
         });
+
+        // Live Search Autocomplete Logic
+        const searchInput = document.getElementById('searchInput');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+            
+            if (query.length < 2) {
+                searchSuggestions.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`{% url 'core:search_api' %}?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        searchSuggestions.innerHTML = '';
+                        if (data.results && data.results.length > 0) {
+                            data.results.forEach(item => {
+                                const el = document.createElement('a');
+                                el.href = item.url;
+                                el.className = 'suggestion-item';
+                                el.innerHTML = `
+                                    <span class="suggestion-type">${item.type}</span>
+                                    <span class="suggestion-title">${item.title}</span>
+                                `;
+                                searchSuggestions.appendChild(el);
+                            });
+                            searchSuggestions.style.display = 'block';
+                        } else {
+                            searchSuggestions.innerHTML = '<div style="padding: 15px; color: var(--text-muted); text-align: center;">لا توجد نتائج مطابقة</div>';
+                            searchSuggestions.style.display = 'block';
+                        }
+                    })
+                    .catch(err => console.error('Search error:', err));
+            }, 300);
+        });
+
+        // Hide search suggestions on blur
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#fullWidthSearch')) {
+                searchSuggestions.style.display = 'none';
+            }
+        });
     </script>
+    <style>
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background: rgba(0,75,135,0.05); }
+        .suggestion-type {
+            background: rgba(0,75,135,0.1);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .suggestion-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
 
     <!-- Messages System -->
     {% if messages %}

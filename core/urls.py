@@ -13,6 +13,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('faq/', views.faq_page, name='faq'),
     path('search/', views.search, name='search'),
+    path('search/api/', views.search_api, name='search_api'),
 
     # ── New Services ──
     path('institute/', views.institute_page, name='institute'),
