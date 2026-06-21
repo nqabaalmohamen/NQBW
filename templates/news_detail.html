@@ -19,21 +19,20 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">
                 <span><i class="fa-regular fa-calendar" style="color: var(--gold);"></i> تاريخ النشر: {{ news_item.date|date:"d M Y" }}</span>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <span style="font-weight: 600;">مشاركة:</span>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" style="color: #1877f2; font-size: 1.2rem;"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ news_item.title }}" target="_blank" style="color: #1da1f2; font-size: 1.2rem;"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="https://wa.me/?text={{ news_item.title }} - {{ request.build_absolute_uri }}" target="_blank" style="color: #25d366; font-size: 1.2rem;"><i class="fa-brands fa-whatsapp"></i></a>
+                    <span style="font-weight: 600;">تواصل معنا:</span>
+                    <a href="https://www.facebook.com/profile.php?id=61583287921147&locale=ar_AR" target="_blank" style="color: #1877f2; font-size: 1.2rem;"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://wa.me/201095043989" target="_blank" style="color: #25d366; font-size: 1.2rem;"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
             </div>
 
-            <div style="font-size: 1.3rem; line-height: 2; color: #111; font-family: 'Cairo', sans-serif; font-weight: 500; text-align: justify;">
+            <div style="font-size: 1.15rem; line-height: 2; color: #333; font-family: 'Cairo', sans-serif; font-weight: 500; text-align: justify; padding-bottom: 30px;">
                 {% if news_item.image %}
-                <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" style="float: left; width: 45%; max-width: 600px; margin: 10px 30px 20px 0; object-fit: contain; background: #f8f9fa; border: 1px solid var(--border-color); padding: 5px;">
+                <div style="text-align: center; margin-bottom: 35px; background: #f8f9fa; border-radius: var(--radius-md); padding: 10px; border: 1px solid #eee;">
+                    <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" style="max-width: 100%; height: auto; max-height: 500px; object-fit: contain; border-radius: var(--radius-sm);">
+                </div>
                 {% endif %}
                 
                 {{ news_item.content|linebreaks }}
-                
-                <div style="clear: both;"></div>
             </div>
             
         </div>

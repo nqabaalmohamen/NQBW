@@ -82,6 +82,12 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
 
+                <!-- Social Links (Desktop) -->
+                <div class="social-links-header" style="display:flex; gap:10px; margin-left: 15px;">
+                    <a href="https://www.facebook.com/profile.php?id=61583287921147&locale=ar_AR" target="_blank" title="فيسبوك" style="color:var(--gold); font-size:1.2rem;"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="https://wa.me/201095043989" target="_blank" title="واتساب" style="color:var(--gold); font-size:1.2rem;"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+
                 <!-- User Actions (Desktop) -->
                 <div class="user-actions">
                     {% if request.user.is_authenticated %}
@@ -280,9 +286,12 @@
                 </div>
                 <div class="footer-col contact-col">
                     <h4>تواصل معنا</h4>
-                    <p><i class="fa-solid fa-location-dot"></i> الفيوم، وسط البلد، بجوار مجمع المحاكم</p>
-                    <p><i class="fa-solid fa-phone"></i> الخط الساخن: 19XXX</p>
-                    <p><i class="fa-solid fa-envelope"></i> info@fayoumbar.gov.eg</p>
+                    <p><i class="fa-solid fa-location-dot"></i> الفيوم بجوار كلية طب الاسنان</p>
+                    <p><i class="fa-solid fa-phone"></i> هاتف / واتساب: <a href="https://wa.me/201095043989" dir="ltr" style="color:var(--gold);text-decoration:none;">01095043989</a></p>
+                    <div style="margin-top: 15px;">
+                        <a href="https://www.facebook.com/profile.php?id=61583287921147&locale=ar_AR" target="_blank" style="color:var(--gold); font-size:1.5rem; margin-left:10px;"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://wa.me/201095043989" target="_blank" style="color:var(--gold); font-size:1.5rem;"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="footer-bottom">
