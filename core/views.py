@@ -296,30 +296,42 @@ def dashboard_news(request):
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_news_add(request):
     if request.method == 'POST':
-        News.objects.create(
-            title=request.POST.get('title'),
-            category=request.POST.get('category', 'news'),
-            content=request.POST.get('content'),
-            is_published=request.POST.get('is_published') == 'on',
-            image=request.FILES.get('image'),
-        )
-        messages.success(request, 'تم إضافة الخبر.')
-        return redirect('core:dashboard_news')
+        try:
+            News.objects.create(
+                title=request.POST.get('title'),
+                category=request.POST.get('category', 'news'),
+                content=request.POST.get('content'),
+                is_published=request.POST.get('is_published') == 'on',
+                image=request.FILES.get('image'),
+            )
+            messages.success(request, 'تم إضافة الخبر.')
+            return redirect('core:dashboard_news')
+        except Exception as e:
+            if 'Read-only file system' in str(e) or 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/news_form.html', {'news': None})
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_news_edit(request, pk):
     news = get_object_or_404(News, pk=pk)
     if request.method == 'POST':
-        news.title = request.POST.get('title')
-        news.category = request.POST.get('category', 'news')
-        news.content = request.POST.get('content')
-        news.is_published = request.POST.get('is_published') == 'on'
-        if request.FILES.get('image'):
-            news.image = request.FILES.get('image')
-        news.save()
-        messages.success(request, 'تم تحديث الخبر.')
-        return redirect('core:dashboard_news')
+        try:
+            news.title = request.POST.get('title')
+            news.category = request.POST.get('category', 'news')
+            news.content = request.POST.get('content')
+            news.is_published = request.POST.get('is_published') == 'on'
+            if request.FILES.get('image'):
+                news.image = request.FILES.get('image')
+            news.save()
+            messages.success(request, 'تم تحديث الخبر.')
+            return redirect('core:dashboard_news')
+        except Exception as e:
+            if 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/news_form.html', {'news': news})
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
@@ -344,30 +356,42 @@ def dashboard_council(request):
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_council_add(request):
     if request.method == 'POST':
-        CouncilMember.objects.create(
-            name=request.POST.get('name'),
-            position=request.POST.get('position'),
-            role=request.POST.get('role', 'member'),
-            order=request.POST.get('order', 0),
-            image=request.FILES.get('image'),
-        )
-        messages.success(request, 'تم إضافة العضو.')
-        return redirect('core:dashboard_council')
+        try:
+            CouncilMember.objects.create(
+                name=request.POST.get('name'),
+                position=request.POST.get('position'),
+                role=request.POST.get('role', 'member'),
+                order=request.POST.get('order', 0),
+                image=request.FILES.get('image'),
+            )
+            messages.success(request, 'تم إضافة العضو.')
+            return redirect('core:dashboard_council')
+        except Exception as e:
+            if 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/council_form.html', {'member': None})
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_council_edit(request, pk):
     member = get_object_or_404(CouncilMember, pk=pk)
     if request.method == 'POST':
-        member.name = request.POST.get('name')
-        member.position = request.POST.get('position')
-        member.role = request.POST.get('role', 'member')
-        member.order = request.POST.get('order', 0)
-        if request.FILES.get('image'):
-            member.image = request.FILES.get('image')
-        member.save()
-        messages.success(request, 'تم تحديث بيانات العضو.')
-        return redirect('core:dashboard_council')
+        try:
+            member.name = request.POST.get('name')
+            member.position = request.POST.get('position')
+            member.role = request.POST.get('role', 'member')
+            member.order = request.POST.get('order', 0)
+            if request.FILES.get('image'):
+                member.image = request.FILES.get('image')
+            member.save()
+            messages.success(request, 'تم تحديث بيانات العضو.')
+            return redirect('core:dashboard_council')
+        except Exception as e:
+            if 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/council_form.html', {'member': member})
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
@@ -441,21 +465,27 @@ def dashboard_medical_exam_add(request):
         title = request.POST.get('title')
         exam_date = request.POST.get('exam_date')
         
-        exam = MedicalExam.objects.create(
-            title=title,
-            exam_date=exam_date
-        )
-        
-        # Handle multiple images
-        images = request.FILES.getlist('images')
-        for idx, img in enumerate(images):
-            MedicalExamImage.objects.create(
-                exam=exam,
-                image=img,
-                order=idx
+        try:
+            exam = MedicalExam.objects.create(
+                title=title,
+                exam_date=exam_date
             )
             
-        messages.success(request, 'تم رفع الكشف الطبي بنجاح.')
+            # Handle multiple images
+            images = request.FILES.getlist('images')
+            for idx, img in enumerate(images):
+                MedicalExamImage.objects.create(
+                    exam=exam,
+                    image=img,
+                    order=idx
+                )
+                
+            messages.success(request, 'تم رفع الكشف الطبي بنجاح.')
+        except Exception as e:
+            if 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
         return redirect('core:dashboard_medical_exams')
     return render(request, 'dashboard/medical_exam_form.html')
 
@@ -484,19 +514,22 @@ def dashboard_institute(request):
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_institute_add(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description', '')
-        lecture_date = request.POST.get('lecture_date') or None
-        image = request.FILES.get('image')
-        
-        InstituteLecture.objects.create(
-            title=title,
-            description=description,
-            lecture_date=lecture_date,
-            image=image
-        )
-        messages.success(request, 'تم نشر الخبر بنجاح.')
-        return redirect('core:dashboard_institute')
+        try:
+            InstituteLecture.objects.create(
+                title=request.POST.get('title'),
+                description=request.POST.get('description', ''),
+                video_link=request.POST.get('video_link', ''),
+                lecture_date=request.POST.get('lecture_date') or None,
+                image=request.FILES.get('image'),
+                file=request.FILES.get('file'),
+            )
+            messages.success(request, 'تم إضافة الخبر/المحاضرة بنجاح.')
+            return redirect('core:dashboard_institute')
+        except Exception as e:
+            if 'Read-only file system' in str(e) or 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/institute_form.html')
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
@@ -510,12 +543,21 @@ def dashboard_institute_delete(request, pk):
 def dashboard_institute_edit(request, pk):
     lecture = get_object_or_404(InstituteLecture, pk=pk)
     if request.method == 'POST':
-        lecture.title = request.POST.get('title')
-        lecture.description = request.POST.get('description', '')
-        lecture.lecture_date = request.POST.get('lecture_date') or None
-        if request.FILES.get('image'):
-            lecture.image = request.FILES.get('image')
-        lecture.save()
-        messages.success(request, 'تم تحديث الخبر بنجاح.')
-        return redirect('core:dashboard_institute')
+        try:
+            lecture.title = request.POST.get('title')
+            lecture.description = request.POST.get('description', '')
+            lecture.video_link = request.POST.get('video_link', '')
+            lecture.lecture_date = request.POST.get('lecture_date') or None
+            if request.FILES.get('image'):
+                lecture.image = request.FILES.get('image')
+            if request.FILES.get('file'):
+                lecture.file = request.FILES.get('file')
+            lecture.save()
+            messages.success(request, 'تم تحديث الخبر بنجاح.')
+            return redirect('core:dashboard_institute')
+        except Exception as e:
+            if 'Read-only' in str(e):
+                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/institute_edit_form.html', {'lecture': lecture})
