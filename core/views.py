@@ -208,12 +208,10 @@ def user_register(request):
     if request.user.is_authenticated:
         return redirect('core:home')
     if request.method == 'POST':
-        first_name = request.POST.get('first_name', '').strip()
-        last_name  = request.POST.get('last_name', '').strip()
-        username   = request.POST.get('username', '').strip()
-        email      = request.POST.get('email', '').strip()
+        full_name  = request.POST.get('full_name', '').strip()
         phone      = request.POST.get('phone', '').strip()
         national_id = request.POST.get('national_id', '').strip()
+        syndicate_id = request.POST.get('syndicate_id', '').strip()
         user_type  = request.POST.get('user_type', 'citizen')
         password   = request.POST.get('password')
         password2  = request.POST.get('password2')
@@ -222,22 +220,23 @@ def user_register(request):
             messages.error(request, 'كلمتا المرور غير متطابقتين.')
             return render(request, 'auth/register.html')
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'اسم المستخدم مستخدم بالفعل، اختر اسماً آخر.')
+        if User.objects.filter(username=phone).exists():
+            messages.error(request, 'رقم الهاتف مستخدم بالفعل. يرجى تسجيل الدخول.')
             return render(request, 'auth/register.html')
 
         user = User.objects.create_user(
-            username=username, email=email,
+            username=phone,
             password=password,
-            first_name=first_name, last_name=last_name
+            first_name=full_name
         )
         UserProfile.objects.create(
             user=user, user_type=user_type,
             phone=phone, national_id=national_id,
+            syndicate_id=syndicate_id,
             plain_password=password
         )
         login(request, user)
-        messages.success(request, f'مرحباً بك {first_name}! تم إنشاء حسابك بنجاح.')
+        messages.success(request, f'مرحباً بك {full_name}! تم إنشاء حسابك بنجاح.')
         return redirect('core:home')
     return render(request, 'auth/register.html')
 
@@ -641,3 +640,4 @@ def run_migrations_view(request):
         return HttpResponse(f"Migrations successful:\n{out.getvalue()}", content_type="text/plain")
     except Exception as e:
         return HttpResponse(f"Migrations failed:\n{str(e)}", content_type="text/plain", status=500)
+

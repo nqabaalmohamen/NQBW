@@ -10,6 +10,7 @@ class UserProfile(models.Model):
     user_type = models.CharField(max_length=20, choices=USER_TYPE, default='citizen')
     phone = models.CharField(max_length=20, blank=True)
     national_id = models.CharField(max_length=14, blank=True)
+    syndicate_id = models.CharField(max_length=10, blank=True, null=True, verbose_name="رقم القيد")
     plain_password = models.CharField(max_length=255, blank=True, verbose_name="كلمة المرور")
     created_at = models.DateTimeField(auto_now_add=True)
 
