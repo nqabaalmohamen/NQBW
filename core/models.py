@@ -201,3 +201,15 @@ class SiteSettings(models.Model):
             # Fallback for read-only environments (e.g. Vercel with SQLite)
             # Returns an unsaved default instance so the site doesn't crash
             return cls(pk=1)
+
+class DatabaseFile(models.Model):
+    name = models.CharField(max_length=255, unique=True, verbose_name="اسم الملف")
+    data = models.BinaryField(verbose_name="بيانات الملف")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "ملف قاعدة بيانات"
+        verbose_name_plural = "ملفات قاعدة البيانات"
+
+    def __str__(self):
+        return self.name

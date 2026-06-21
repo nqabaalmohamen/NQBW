@@ -561,3 +561,13 @@ def dashboard_institute_edit(request, pk):
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/institute_edit_form.html', {'lecture': lecture})
+
+
+from django.http import HttpResponse, Http404
+def serve_db_media(request, name):
+    from core.models import DatabaseFile
+    try:
+        db_file = DatabaseFile.objects.get(name=name)
+        return HttpResponse(db_file.data, content_type='application/octet-stream')
+    except DatabaseFile.DoesNotExist:
+        raise Http404('File not found')

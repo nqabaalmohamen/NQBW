@@ -15,88 +15,110 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=9.0">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Header & Navigation -->
-    <header class="main-header" style="background: white; box-shadow: var(--shadow-md); position: sticky; top: 0; z-index: 1000;">
-        <div style="width: 100%; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; min-height: 120px;">
+    <header class="main-header">
+        <div class="header-inner">
             
             <!-- Logo & Brand -->
-            <a href="{% url 'core:home' %}" style="display: flex; align-items: center; gap: 15px; text-decoration: none; padding: 10px 0;">
-                <img src="{% static 'img/logo.jpg' %}" alt="شعار نقابة المحامين" style="width: auto; height: 105px; object-fit: contain; background: transparent;">
-                <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <h1 style="font-size: 1.8rem; margin: 0; line-height: 1.2; color: var(--primary-dark); font-family: 'Tajawal', sans-serif; font-weight: 800;">نقابة المحامين بالفيوم</h1>
+            <a href="{% url 'core:home' %}" class="brand-link">
+                <img src="{% static 'img/logo.jpg' %}" alt="شعار نقابة المحامين" class="brand-logo-img">
+                <div class="brand-text-wrap">
+                    <h1 class="brand-title">نقابة المحامين بالفيوم</h1>
                 </div>
             </a>
 
-            <!-- Main Navigation Links -->
-            <ul class="nav-links" style="display: flex; gap: 5px; margin: 0; padding: 0; list-style: none;">
+            <!-- Main Navigation Links (Desktop) -->
+            <ul class="nav-links" id="navLinks">
                 <li><a href="{% url 'core:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">الرئيسية</a></li>
                 
-                <li class="dropdown" style="position: relative;">
-                    <a href="javascript:void(0);" onclick="toggleDropdown(event)" class="{% if request.resolver_match.url_name == 'institute' or request.resolver_match.url_name == 'forensic' %}active{% endif %}">الخدمات <i class="fa-solid fa-chevron-down fa-xs"></i></a>
-                    <ul id="servicesDropdown" class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; min-width: 200px; display: none; box-shadow: var(--shadow-md); z-index: 1000; padding: 0; border-radius: 0 0 var(--radius) var(--radius); border-top: 3px solid var(--gold);">
-                        <li><a href="{% url 'core:institute' %}" style="display: block; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-color);">معهد المحاماة</a></li>
-                        <li><a href="{% url 'core:forensic' %}" style="display: block; padding: 15px 20px; color: var(--text-color);">الطب الشرعي</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" onclick="toggleDropdown(event, 'servicesDropdown')" class="{% if request.resolver_match.url_name == 'institute' or request.resolver_match.url_name == 'forensic' %}active{% endif %}">الخدمات <i class="fa-solid fa-chevron-down fa-xs"></i></a>
+                    <ul id="servicesDropdown" class="dropdown-menu">
+                        <li><a href="{% url 'core:institute' %}">معهد المحاماة</a></li>
+                        <li><a href="{% url 'core:forensic' %}">الطب الشرعي</a></li>
                     </ul>
                 </li>
 
                 <li><a href="{% url 'core:news' %}" class="{% if request.resolver_match.url_name == 'news' %}active{% endif %}">المركز الإعلامي</a></li>
                 <li><a href="{% url 'core:council' %}" class="{% if request.resolver_match.url_name == 'council' %}active{% endif %}">مجلس النقابة</a></li>
                 
-                <li class="dropdown" style="position: relative;">
-                    <a href="javascript:void(0);" onclick="toggleContactDropdown(event)" class="{% if request.resolver_match.url_name == 'contact' or request.resolver_match.url_name == 'faq' %}active{% endif %}">التواصل <i class="fa-solid fa-chevron-down fa-xs"></i></a>
-                    <ul id="contactDropdown" class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; min-width: 200px; display: none; box-shadow: var(--shadow-md); z-index: 1000; padding: 0; border-radius: 0 0 var(--radius) var(--radius); border-top: 3px solid var(--gold);">
-                        <li><a href="{% url 'core:contact' %}" style="display: block; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-color);">تواصل معنا</a></li>
-                        <li><a href="{% url 'core:faq' %}" style="display: block; padding: 15px 20px; color: var(--text-color);">الأسئلة الشائعة</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" onclick="toggleDropdown(event, 'contactDropdown')" class="{% if request.resolver_match.url_name == 'contact' or request.resolver_match.url_name == 'faq' %}active{% endif %}">التواصل <i class="fa-solid fa-chevron-down fa-xs"></i></a>
+                    <ul id="contactDropdown" class="dropdown-menu">
+                        <li><a href="{% url 'core:contact' %}">تواصل معنا</a></li>
+                        <li><a href="{% url 'core:faq' %}">الأسئلة الشائعة</a></li>
                     </ul>
+                </li>
+
+                <!-- Mobile-only user actions -->
+                <li class="mobile-only-nav">
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.is_staff %}
+                        <a href="{% url 'core:dashboard_home' %}"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a>
+                        {% endif %}
+                        <a href="{% url 'core:profile' %}"><i class="fa-solid fa-id-card-clip"></i> ملفي الشخصي</a>
+                        <a href="{% url 'core:logout' %}"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a>
+                    {% else %}
+                        <a href="{% url 'core:login' %}"><i class="fa-solid fa-user-lock"></i> دخول</a>
+                        <a href="{% url 'core:register' %}"><i class="fa-solid fa-user-plus"></i> حساب جديد</a>
+                    {% endif %}
                 </li>
             </ul>
 
-            <!-- Nav Actions (Date, Search & User) -->
-            <div style="display: flex; align-items: center; gap: 15px; padding: 10px 0;">
-                
+            <!-- Nav Actions (Desktop) -->
+            <div class="nav-actions">
                 <!-- Date -->
-                <div style="font-weight: 600; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
-                    <i class="fa-regular fa-calendar-days" style="color: var(--gold);"></i>
+                <div class="header-date">
+                    <i class="fa-regular fa-calendar-days"></i>
                     <span id="current-date"></span>
                 </div>
 
                 <!-- Search Toggle -->
-                <button onclick="toggleSearch()" style="background: transparent; border: none; color: var(--primary-dark); font-size: 1.2rem; cursor: pointer; padding: 5px; transition: color 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--primary-dark)'" title="بحث">
+                <button onclick="toggleSearch()" class="search-btn" title="بحث">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
 
-                <!-- User Actions -->
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <!-- User Actions (Desktop) -->
+                <div class="user-actions">
                     {% if request.user.is_authenticated %}
                         {% if request.user.is_staff %}
-                            <a href="{% url 'core:dashboard_home' %}" class="btn" style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; font-size: 0.85rem;"><i class="fa-solid fa-gauge"></i> الإدارة</a>
+                            <a href="{% url 'core:dashboard_home' %}" class="btn btn-outline-sm"><i class="fa-solid fa-gauge"></i> الإدارة</a>
                         {% endif %}
-                        <div class="user-dropdown" style="position: relative;">
-                            <button class="btn" style="background: var(--bg-color); color: var(--primary-dark); border: 1px solid var(--border-color); padding: 6px 12px; font-size: 0.9rem;"><i class="fa-solid fa-user-circle" style="color: var(--gold);"></i> {{ request.user.first_name|default:request.user.username }} <i class="fa-solid fa-chevron-down fa-xs"></i></button>
-                            <div class="user-dropdown-content" style="top: 130%;">
+                        <div class="user-dropdown">
+                            <button class="btn btn-user-sm"><i class="fa-solid fa-user-circle"></i> {{ request.user.first_name|default:request.user.username }} <i class="fa-solid fa-chevron-down fa-xs"></i></button>
+                            <div class="user-dropdown-content">
                                 <a href="{% url 'core:profile' %}"><i class="fa-solid fa-id-card-clip"></i> ملفي الشخصي</a>
                                 <a href="{% url 'core:logout' %}"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a>
                             </div>
                         </div>
                     {% else %}
-                        <a href="{% url 'core:login' %}" class="btn" style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; font-size: 0.85rem;"><i class="fa-solid fa-user-lock"></i> دخول</a>
-                        <a href="{% url 'core:register' %}" class="btn" style="background: var(--gold); color: white; border: none; padding: 6px 12px; font-size: 0.85rem;"><i class="fa-solid fa-user-plus"></i> حساب جديد</a>
+                        <a href="{% url 'core:login' %}" class="btn btn-outline-sm"><i class="fa-solid fa-user-lock"></i> دخول</a>
+                        <a href="{% url 'core:register' %}" class="btn btn-gold-sm"><i class="fa-solid fa-user-plus"></i> حساب جديد</a>
                     {% endif %}
                 </div>
-            </div>
 
+                <!-- Hamburger Button (Mobile) -->
+                <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="القائمة">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </header>
 
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
     <!-- Full Width Search Bar (Hidden by Default) -->
-    <div id="fullWidthSearch" style="display: none; width: 100%; background: var(--bg-color); padding: 20px; border-top: 1px solid var(--border-color); box-shadow: inset 0 2px 8px rgba(0,0,0,0.03); position: sticky; top: 100px; z-index: 999;">
-        <form action="{% url 'core:search' %}" method="GET" style="display: flex; width: 100%; max-width: 800px; margin: 0 auto; background: white; border-radius: 30px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
-            <input type="text" name="q" id="searchInput" placeholder="ابحث عن الخدمات، الأخبار، أو المحامين..." required style="background: transparent; border: none; padding: 15px 25px; color: var(--text-color); outline: none; font-family: 'Cairo'; width: 100%; font-size: 1.1rem;">
-            <button type="submit" style="background: var(--primary); border: none; color: white; padding: 0 30px; cursor: pointer; font-size: 1.2rem; transition: background 0.3s;"><i class="fa-solid fa-magnifying-glass"></i></button>
+    <div id="fullWidthSearch" class="search-bar-full" style="display:none;">
+        <form action="{% url 'core:search' %}" method="GET" class="search-form-full">
+            <input type="text" name="q" id="searchInput" placeholder="ابحث عن الخدمات، الأخبار، أو المحامين..." required>
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
     </div>
 
@@ -104,59 +126,41 @@
         function toggleSearch() {
             const searchBar = document.getElementById('fullWidthSearch');
             const searchInput = document.getElementById('searchInput');
-            if (searchBar.style.display === 'none') {
-                searchBar.style.display = 'block';
-                searchInput.focus();
-            } else {
-                searchBar.style.display = 'none';
-            }
-        }
-        function toggleDropdown(e) {
-            e.preventDefault();
-            const dropdown = document.getElementById('servicesDropdown');
-            if (dropdown.style.display === 'block') {
-                dropdown.style.display = 'none';
-            } else {
-                document.getElementById('contactDropdown').style.display = 'none';
-                dropdown.style.display = 'block';
-            }
-        }
-        function toggleContactDropdown(e) {
-            e.preventDefault();
-            const dropdown = document.getElementById('contactDropdown');
-            if (dropdown.style.display === 'block') {
-                dropdown.style.display = 'none';
-            } else {
-                document.getElementById('servicesDropdown').style.display = 'none';
-                dropdown.style.display = 'block';
-            }
-        }
-        
-        // إغلاق القوائم عند النقر خارجها
-        window.onclick = function(event) {
-            if (!event.target.matches('.dropdown > a')) {
-                var dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.style.display === 'block') {
-                        openDropdown.style.display = 'none';
-                    }
-                }
-            }
+            searchBar.style.display = searchBar.style.display === 'none' ? 'block' : 'none';
+            if (searchBar.style.display === 'block') searchInput.focus();
         }
 
-        // Close dropdown when clicking outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.dropdown a')) {
-                const dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (openDropdown.style.display === 'block') {
-                        openDropdown.style.display = 'none';
-                    }
-                }
-            }
+        function toggleDropdown(e, id) {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropdown = document.getElementById(id);
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+            allDropdowns.forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+            dropdown.classList.toggle('open');
         }
+
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('hamburgerBtn');
+            navLinks.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            document.getElementById('navLinks').classList.remove('mobile-open');
+            document.getElementById('mobileOverlay').classList.remove('active');
+            document.getElementById('hamburgerBtn').classList.remove('active');
+            document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
+            }
+        });
     </script>
 
     <!-- Messages System -->
@@ -213,7 +217,8 @@
     <script>
         // Set current date in Arabic
         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
+        const dateEl = document.getElementById('current-date');
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
     </script>
     {% block extra_js %}{% endblock %}
 </body>
