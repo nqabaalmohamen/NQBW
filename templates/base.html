@@ -57,6 +57,15 @@
                 <!-- Mobile-only user actions -->
                 <li class="mobile-only-nav">
                     {% if request.user.is_authenticated %}
+                        <div style="padding: 12px 20px; background: rgba(255,255,255,0.07); border-radius: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
+                            <div style="width:40px; height:40px; background: var(--gold); color: var(--primary-dark); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; flex-shrink:0;">
+                                {{ request.user.first_name|first|default:request.user.username|first|upper }}
+                            </div>
+                            <div>
+                                <div style="color:white; font-weight:700; font-size:0.95rem;">{{ request.user.first_name|default:request.user.username }}</div>
+                                <div style="color:rgba(255,255,255,0.5); font-size:0.78rem;">{{ request.user.username }}</div>
+                            </div>
+                        </div>
                         {% if request.user.is_staff %}
                         <a href="{% url 'core:dashboard_home' %}"><i class="fa-solid fa-gauge"></i> لوحة الإدارة</a>
                         {% endif %}
