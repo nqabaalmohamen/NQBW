@@ -629,5 +629,15 @@ def serve_db_media(request, name):
         db_file = DatabaseFile.objects.get(name=name)
         return HttpResponse(db_file.data, content_type='application/octet-stream')
     except DatabaseFile.DoesNotExist:
+        raise Http404('File not found')
 
-
+def run_migrations_view(request):
+    from django.core.management import call_command
+    from django.http import HttpResponse
+    import io
+    out = io.StringIO()
+    try:
+        call_command('migrate', stdout=out)
+        return HttpResponse(f"Migrations successful:\n{out.getvalue()}", content_type="text/plain")
+    except Exception as e:
+        return HttpResponse(f"Migrations failed:\n{str(e)}", content_type="text/plain", status=500)
