@@ -98,7 +98,7 @@ class CouncilMember(models.Model):
         ('vice', 'وكلاء النقابة'),
         ('general_sec', 'الأمانة العامة'),
         ('treasurer', 'أمانة الصندوق'),
-        ('youth', 'مقعد الشباب'),
+        ('youth', 'عضو الشباب'),
         ('member', 'أعضاء المجلس'),
     ]
     name = models.CharField(max_length=255, verbose_name="الاسم")
