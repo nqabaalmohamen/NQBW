@@ -64,5 +64,4 @@ urlpatterns = [
     path('dashboard/institute/<int:pk>/edit/', views.dashboard_institute_edit, name='dashboard_institute_edit'),
     path('dashboard/institute/<int:pk>/delete/', views.dashboard_institute_delete, name='dashboard_institute_delete'),
     path('media/db/<str:name>', views.serve_db_media, name='serve_db_media'),
-    path('run-migrations-secret/', views.run_migrations_view, name='run_migrations_view'),
 ]
