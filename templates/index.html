@@ -289,7 +289,6 @@
             <svg viewBox="0 0 48 48">
                 <circle cx="24" cy="24" r="20"></circle>
             </svg>
-            <span></span>
         </div>
     </div>
 </section>
@@ -366,9 +365,7 @@
             on: {
                 autoplayTimeLeft(s, time, progress) {
                     const progressCircle = document.querySelector(".autoplay-progress-mobile svg");
-                    const progressContent = document.querySelector(".autoplay-progress-mobile span");
                     if (progressCircle) progressCircle.style.setProperty("--progress", 1 - progress);
-                    if (progressContent) progressContent.textContent = Math.ceil(time / 1000) + "s";
                 }
             }
         });
