@@ -51,6 +51,7 @@ urlpatterns = [
     path('dashboard/users/', views.dashboard_users, name='dashboard_users'),
     path('dashboard/users/<int:pk>/delete/', views.dashboard_user_delete, name='dashboard_user_delete'),
     path('dashboard/users/<int:pk>/change-password/', views.dashboard_user_change_password, name='dashboard_user_change_password'),
+    path('dashboard/users/<int:pk>/update-syndicate/', views.dashboard_user_update_syndicate, name='dashboard_user_update_syndicate'),
 
     # ── Medical Exams ──
     path('dashboard/medical-exams/', views.dashboard_medical_exams, name='dashboard_medical_exams'),

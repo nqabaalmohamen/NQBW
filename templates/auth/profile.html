@@ -1,63 +1,223 @@
 {% extends 'base.html' %}
 {% block title %}الملف الشخصي - البوابة الخدمية{% endblock %}
 
+{% block extra_css %}
+<style>
+.profile-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    padding: 120px 0 60px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.profile-hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    border-radius: 50%;
+}
+.profile-avatar {
+    width: 110px; height: 110px;
+    background: rgba(255,255,255,0.15);
+    border: 4px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(10px);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; font-weight: 700;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.profile-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 30px;
+}
+.profile-card {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #eef2f7;
+}
+.profile-card h3 {
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+    display: flex; align-items: center; gap: 10px;
+}
+.info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { color: var(--text-muted); font-size: 0.9rem; }
+.info-value { font-weight: 600; color: var(--primary-dark); }
+.form-control { 
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    margin-top: 6px;
+    transition: border-color 0.2s;
+}
+.form-control:focus { border-color: var(--primary); outline: none; }
+.form-group { margin-bottom: 16px; }
+.form-label { color: var(--text-muted); font-size: 0.88rem; font-weight: 600; }
+.btn-update {
+    width: 100%; padding: 11px;
+    background: var(--primary);
+    color: white; border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    margin-top: 5px;
+}
+.btn-update:hover { background: var(--primary-dark); transform: translateY(-1px); }
+@media (max-width: 768px) {
+    .profile-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container section-padding">
-    <div style="max-width: 800px; margin: 0 auto;">
-        
-        <!-- User Info Header -->
-        <div class="card" style="margin-bottom: 30px; display:flex; align-items:center; gap:30px; padding:40px;">
-            <div style="width: 100px; height: 100px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold;">
-                {{ request.user.first_name|first|default:request.user.username|first|upper }}
-            </div>
-            <div>
-                <h2 style="margin-bottom: 5px;">{{ request.user.get_full_name|default:request.user.username }}</h2>
-                <div style="display:inline-block; background: {% if profile.user_type == 'lawyer' %}var(--gold){% else %}var(--success){% endif %}; color: {% if profile.user_type == 'lawyer' %}var(--primary-dark){% else %}white{% endif %}; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; margin-bottom: 10px;">
-                    {{ profile.get_user_type_display }}
-                </div>
-                <p style="color: var(--text-muted);"><i class="fa-solid fa-id-card"></i> الرقم القومي: {{ profile.national_id }}</p>
-                <p style="color: var(--text-muted);"><i class="fa-solid fa-phone"></i> رقم الهاتف: {{ profile.phone }}</p>
-            </div>
-        </div>
-
-        <!-- Lawyer Details if User is Lawyer -->
-        {% if lawyer %}
-        <div class="card" style="border-top: 4px solid var(--gold);">
-            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
-                <h3><i class="fa-solid fa-scale-balanced" style="color: var(--gold);"></i> بيانات العضوية النقابية</h3>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">رقم القيد</span>
-                    <strong style="font-size: 1.1rem;">{{ lawyer.registration_number }}</strong>
-                </div>
-                <div>
-                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">الدرجة</span>
-                    <strong style="font-size: 1.1rem;">{{ lawyer.get_degree_display }}</strong>
-                </div>
-                <div>
-                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">حالة القيد</span>
-                    {% if lawyer.status == 'active' %}
-                        <strong style="color: var(--success); font-size: 1.1rem;">مشتغل</strong>
-                    {% elif lawyer.status == 'suspended' %}
-                        <strong style="color: var(--danger); font-size: 1.1rem;">موقوف</strong>
-                    {% else %}
-                        <strong style="color: var(--text-muted); font-size: 1.1rem;">غير مشتغل</strong>
-                    {% endif %}
-                </div>
-                <div>
-                    <span style="display:block; color:var(--text-muted); font-size:0.9rem;">عنوان المكتب</span>
-                    <strong style="font-size: 1.1rem;">{{ lawyer.address|default:"غير مسجل" }}</strong>
-                </div>
-            </div>
-        </div>
-        {% elif profile.user_type == 'lawyer' and not lawyer %}
-        <div class="alert alert-error">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            حسابك مسجل كمحامٍ، ولكن لم يتم العثور على بيانات قيد مطابقة للرقم القومي ({{ profile.national_id }}). يرجى مراجعة النقابة لتحديث بياناتك.
-        </div>
+<!-- Hero -->
+<div class="profile-hero">
+    <div class="container">
+        <div class="profile-avatar">{{ request.user.first_name|first|default:"م"|upper }}</div>
+        <h2 style="font-size:1.8rem; margin-bottom:8px;">{{ request.user.first_name|default:"مستخدم" }}</h2>
+        {% if profile %}
+        <span class="profile-badge" style="background: {% if profile.user_type == 'lawyer' %}#D4AF37{% else %}rgba(255,255,255,0.25){% endif %}; color: {% if profile.user_type == 'lawyer' %}#1A2238{% else %}white{% endif %};">
+            {{ profile.get_user_type_display }}
+        </span>
         {% endif %}
-
+        <p style="margin-top:8px; opacity:0.75; font-size:0.95rem;"><i class="fa-solid fa-phone fa-sm"></i> {{ request.user.username }}</p>
     </div>
+</div>
+
+<div class="container section-padding" style="max-width:900px;">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if 'خطأ' in message.message or 'غير' in message.message %}error{% else %}success{% endif %}" style="margin-bottom:20px;">
+            <i class="fa-solid fa-{% if 'خطأ' in message.message or 'غير' in message.message %}circle-exclamation{% else %}circle-check{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="profile-grid">
+        <!-- Current Info -->
+        <div class="profile-card">
+            <h3><i class="fa-solid fa-id-card" style="color:var(--primary);"></i> بياناتي</h3>
+            <div class="info-row">
+                <span class="info-label">الاسم الرباعي</span>
+                <span class="info-value">{{ request.user.first_name|default:"—" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">رقم الهاتف (للدخول)</span>
+                <span class="info-value" style="color:var(--primary);">{{ request.user.username }}</span>
+            </div>
+            {% if profile %}
+            <div class="info-row">
+                <span class="info-label">الرقم القومي</span>
+                <span class="info-value">{{ profile.national_id|default:"—" }}</span>
+            </div>
+            {% if profile.syndicate_id %}
+            <div class="info-row">
+                <span class="info-label">رقم القيد</span>
+                <span class="info-value" style="color:var(--gold);">{{ profile.syndicate_id }}</span>
+            </div>
+            {% endif %}
+            {% endif %}
+            <div class="info-row">
+                <span class="info-label">تاريخ التسجيل</span>
+                <span class="info-value" style="font-size:0.9rem;">{{ request.user.date_joined|date:"Y/m/d" }}</span>
+            </div>
+        </div>
+
+        <!-- Edit Name -->
+        <div class="profile-card">
+            <h3><i class="fa-solid fa-user-pen" style="color:var(--gold);"></i> تعديل الاسم</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_name">
+                <div class="form-group">
+                    <label class="form-label">الاسم الرباعي الجديد</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="اكتب اسمك الرباعي..." value="{{ request.user.first_name }}" required>
+                </div>
+                <button type="submit" class="btn-update"><i class="fa-solid fa-floppy-disk"></i> حفظ الاسم</button>
+            </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="profile-card" style="grid-column: 1 / -1;">
+            <h3><i class="fa-solid fa-lock" style="color:var(--danger);"></i> تغيير كلمة المرور</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; align-items:end;">
+                <form method="POST" style="display:contents;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_password">
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور الحالية <span style="color:red;">*</span></label>
+                        <input type="password" name="old_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور الجديدة <span style="color:red;">*</span></label>
+                        <input type="password" name="new_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تأكيد كلمة المرور الجديدة <span style="color:red;">*</span></label>
+                        <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div style="grid-column:1/-1;">
+                        <button type="submit" class="btn-update" style="background:#e53e3e; max-width:280px;">
+                            <i class="fa-solid fa-key"></i> تغيير كلمة المرور
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lawyer Section -->
+    {% if lawyer %}
+    <div class="profile-card" style="margin-top:25px; border-top:4px solid var(--gold);">
+        <h3><i class="fa-solid fa-scale-balanced" style="color:var(--gold);"></i> بيانات العضوية النقابية</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div class="info-row"><span class="info-label">رقم القيد</span><strong>{{ lawyer.registration_number }}</strong></div>
+            <div class="info-row"><span class="info-label">الدرجة</span><strong>{{ lawyer.get_degree_display }}</strong></div>
+            <div class="info-row">
+                <span class="info-label">حالة القيد</span>
+                <strong style="color:{% if lawyer.status == 'active' %}var(--success){% elif lawyer.status == 'suspended' %}var(--danger){% else %}var(--text-muted){% endif %};">
+                    {% if lawyer.status == 'active' %}مشتغل{% elif lawyer.status == 'suspended' %}موقوف{% else %}غير مشتغل{% endif %}
+                </strong>
+            </div>
+            <div class="info-row"><span class="info-label">عنوان المكتب</span><strong>{{ lawyer.address|default:"غير مسجل" }}</strong></div>
+        </div>
+    </div>
+    {% elif profile.user_type == 'lawyer' and not lawyer %}
+    <div class="alert alert-error" style="margin-top:20px;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        حسابك مسجل كمحامٍ، ولكن لم يتم العثور على بيانات قيد مطابقة للرقم القومي. يرجى مراجعة النقابة لتحديث بياناتك.
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

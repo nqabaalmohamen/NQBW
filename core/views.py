@@ -59,10 +59,12 @@ def council(request):
 
 def news_list(request):
     category = request.GET.get('cat', '')
-    news_items = News.objects.filter(is_published=True)
+    news_items = News.objects.filter(is_published=True).order_by('-date')
     if category:
         news_items = news_items.filter(category=category)
-    return render(request, 'news.html', {'news_items': news_items, 'category': category})
+    latest_news = news_items.first()
+    rest_news = news_items[1:] if latest_news else news_items
+    return render(request, 'news.html', {'news_items': rest_news, 'latest_news': latest_news, 'category': category})
 
 def news_detail(request, pk):
     news_item = get_object_or_404(News, pk=pk, is_published=True)
@@ -168,7 +170,7 @@ def institute_page(request):
     return render(request, 'institute.html', {'lectures': lectures, 'settings': settings})
 
 def forensic_page(request):
-    exams = MedicalExam.objects.prefetch_related('images').all()
+    exams = MedicalExam.objects.prefetch_related('images').all().order_by('-exam_date')
     return render(request, 'forensic.html', {'exams': exams})
 
 def medical_exam_detail(request, pk):
@@ -264,7 +266,40 @@ def user_logout(request):
 @login_required(login_url='/login/')
 def user_profile(request):
     profile = getattr(request.user, 'profile', None)
-    return render(request, 'auth/profile.html', {'profile': profile})
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'update_name':
+            new_name = request.POST.get('full_name', '').strip()
+            if new_name:
+                request.user.first_name = new_name
+                request.user.save()
+                messages.success(request, 'تم تحديث الاسم بنجاح.')
+            else:
+                messages.error(request, 'يرجى إدخال الاسم.')
+        elif action == 'update_password':
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            if not request.user.check_password(old_password):
+                messages.error(request, 'كلمة المرور الحالية غير صحيحة.')
+            elif new_password != confirm_password:
+                messages.error(request, 'كلمتا المرور الجديدتان غير متطابقتين.')
+            elif len(new_password) < 4:
+                messages.error(request, 'كلمة المرور يجب أن تكون 4 أحرف على الأقل.')
+            else:
+                request.user.set_password(new_password)
+                request.user.save()
+                if profile:
+                    profile.plain_password = new_password
+                    profile.save()
+                login(request, request.user)
+                messages.success(request, 'تم تغيير كلمة المرور بنجاح.')
+        return redirect('core:profile')
+    from members.models import Lawyer
+    lawyer = None
+    if profile and profile.user_type == 'lawyer' and profile.national_id:
+        lawyer = Lawyer.objects.filter(national_id=profile.national_id).first()
+    return render(request, 'auth/profile.html', {'profile': profile, 'lawyer': lawyer})
 
 # ══════════════════════════════════════════
 #  DASHBOARD AUTH
@@ -525,6 +560,19 @@ def dashboard_user_change_password(request, pk):
             messages.success(request, f'تم تغيير كلمة مرور المستخدم ({user.username}) بنجاح.')
         else:
             messages.error(request, 'يرجى إدخال كلمة مرور جديدة.')
+    return redirect('core:dashboard_users')
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_user_update_syndicate(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        syndicate_id = request.POST.get('syndicate_id', '').strip()
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        profile.syndicate_id = syndicate_id if syndicate_id else None
+        if syndicate_id:
+            profile.user_type = 'lawyer'
+        profile.save()
+        messages.success(request, f'تم تحديث رقم القيد للمستخدم ({user.username}) بنجاح.')
     return redirect('core:dashboard_users')
 
 

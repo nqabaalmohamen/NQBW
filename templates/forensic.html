@@ -17,7 +17,10 @@
             <div style="padding: 20px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
                     <span style="background: rgba(200, 160, 90, 0.1); color: var(--gold); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">
-                        <i class="fa-regular fa-calendar-check"></i> {{ exam.exam_date|date:"Y-m-d" }}
+                        <i class="fa-regular fa-calendar-check"></i>
+                        {{ exam.exam_date|date:"j" }}
+                        {% with m=exam.exam_date|date:"n" %}{% if m == "1" %}يناير{% elif m == "2" %}فبراير{% elif m == "3" %}مارس{% elif m == "4" %}أبريل{% elif m == "5" %}مايو{% elif m == "6" %}يونيو{% elif m == "7" %}يوليو{% elif m == "8" %}أغسطس{% elif m == "9" %}سبتمبر{% elif m == "10" %}أكتوبر{% elif m == "11" %}نوفمبر{% else %}ديسمبر{% endif %}{% endwith %}
+                        {{ exam.exam_date|date:"Y" }}
                     </span>
                     <span style="color: var(--text-muted); font-size: 0.85rem;">
                         <i class="fa-solid fa-image"></i> {{ exam.images.count }} صور
