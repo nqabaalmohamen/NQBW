@@ -77,9 +77,10 @@ class News(models.Model):
     title = models.CharField(max_length=255, verbose_name="العنوان")
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='news', verbose_name="التصنيف")
     content = models.TextField(verbose_name="المحتوى")
-    image = models.ImageField(upload_to='news/', blank=True, null=True, verbose_name="الصورة")
-    date = models.DateField(auto_now_add=True, verbose_name="تاريخ النشر")
+    image = models.ImageField(upload_to='news/', blank=True, null=True, verbose_name="صورة الخبر")
     is_published = models.BooleanField(default=True, verbose_name="منشور")
+    in_slider = models.BooleanField(default=True, verbose_name="عرض في السلايدر الرئيسي")
+    date = models.DateField(auto_now_add=True, verbose_name="تاريخ النشر")
 
     class Meta:
         verbose_name = "خبر"
@@ -183,6 +184,9 @@ class SiteSettings(models.Model):
     slider_speed = models.IntegerField(default=4000, verbose_name="سرعة السليدر (بالميلي ثانية)")
     institute_registration_link = models.URLField(verbose_name="رابط التقديم في معهد المحاماة (مثل Google Form)", blank=True, null=True)
     is_institute_open = models.BooleanField(default=False, verbose_name="تفعيل زر التقديم لمعهد المحاماة")
+    
+    is_under_maintenance = models.BooleanField(default=False, verbose_name="وضع الصيانة (قيد التطوير)")
+    maintenance_end_date = models.DateTimeField(blank=True, null=True, verbose_name="موعد انتهاء التطوير (للعد التنازلي)")
     
     class Meta:
         verbose_name = "إعدادات الموقع"

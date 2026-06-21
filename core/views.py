@@ -20,7 +20,7 @@ def is_admin(user):
 
 def home(request):
     ctx = {
-        'latest_news': News.objects.filter(is_published=True)[:6],
+        'latest_news': News.objects.filter(is_published=True, in_slider=True)[:6],
         'news_count': News.objects.filter(is_published=True).count(),
         'council_members': CouncilMember.objects.all()[:5],
         'site_settings': SiteSettings.get_settings(),
@@ -290,6 +290,13 @@ def dashboard_settings(request):
         settings.institute_registration_link = request.POST.get('institute_registration_link', '')
         settings.is_institute_open = request.POST.get('is_institute_open') == 'on'
         
+        settings.is_under_maintenance = request.POST.get('is_under_maintenance') == 'on'
+        end_date = request.POST.get('maintenance_end_date')
+        if end_date:
+            settings.maintenance_end_date = end_date
+        else:
+            settings.maintenance_end_date = None
+            
         settings.save()
         messages.success(request, "تم تحديث إعدادات الموقع بنجاح!")
         return redirect('core:dashboard_settings')
@@ -341,6 +348,7 @@ def dashboard_news_add(request):
                 category=request.POST.get('category', 'news'),
                 content=request.POST.get('content'),
                 is_published=request.POST.get('is_published') == 'on',
+                in_slider=request.POST.get('in_slider') == 'on',
                 image=request.FILES.get('image'),
             )
             messages.success(request, 'تم إضافة الخبر.')
@@ -361,6 +369,7 @@ def dashboard_news_edit(request, pk):
             news.category = request.POST.get('category', 'news')
             news.content = request.POST.get('content')
             news.is_published = request.POST.get('is_published') == 'on'
+            news.in_slider = request.POST.get('in_slider') == 'on'
             if request.FILES.get('image'):
                 news.image = request.FILES.get('image')
             news.save()
