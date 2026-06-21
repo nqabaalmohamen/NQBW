@@ -308,7 +308,7 @@ def dashboard_news_add(request):
             return redirect('core:dashboard_news')
         except Exception as e:
             if 'Read-only file system' in str(e) or 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/news_form.html', {'news': None})
@@ -329,7 +329,7 @@ def dashboard_news_edit(request, pk):
             return redirect('core:dashboard_news')
         except Exception as e:
             if 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/news_form.html', {'news': news})
@@ -368,7 +368,7 @@ def dashboard_council_add(request):
             return redirect('core:dashboard_council')
         except Exception as e:
             if 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/council_form.html', {'member': None})
@@ -389,7 +389,7 @@ def dashboard_council_edit(request, pk):
             return redirect('core:dashboard_council')
         except Exception as e:
             if 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/council_form.html', {'member': member})
@@ -483,7 +483,7 @@ def dashboard_medical_exam_add(request):
             messages.success(request, 'تم رفع الكشف الطبي بنجاح.')
         except Exception as e:
             if 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
         return redirect('core:dashboard_medical_exams')
@@ -527,7 +527,7 @@ def dashboard_institute_add(request):
             return redirect('core:dashboard_institute')
         except Exception as e:
             if 'Read-only file system' in str(e) or 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/institute_form.html')
@@ -557,7 +557,7 @@ def dashboard_institute_edit(request, pk):
             return redirect('core:dashboard_institute')
         except Exception as e:
             if 'Read-only' in str(e):
-                messages.error(request, 'عفواً، رفع الصور والملفات غير مدعوم حالياً في هذه الاستضافة السحابية.')
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
             else:
                 messages.error(request, f'حدث خطأ: {str(e)}')
     return render(request, 'dashboard/institute_edit_form.html', {'lecture': lecture})
