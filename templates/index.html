@@ -10,6 +10,18 @@
         z-index: 10;
         background: var(--primary-dark);
     }
+
+    /* Desktop: fixed height for slider */
+    .mySwiper {
+        height: 55vh;
+        min-height: 400px;
+        max-height: 550px;
+    }
+    .nosi-slide-wrapper {
+        width: 100%;
+        height: 100%;
+    }
+
     .swiper-button-next:after, .swiper-button-prev:after {
         font-size: 1.2rem !important;
         font-weight: bold;
@@ -25,44 +37,65 @@
         background: var(--gold);
         transform: scale(1.3);
     }
-    /* Responsive Slider */
+
+    /* ─── Mobile Responsive Slider ─── */
     @media (max-width: 768px) {
+        .mySwiper {
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+        }
         .nosi-slide-wrapper {
-            flex-direction: column !important;
+            flex-direction: column-reverse !important;
+            height: auto !important;
         }
         .nosi-text-side {
             width: 100% !important;
-            height: 60%;
-            padding: 40px 20px !important;
+            height: auto !important;
+            padding: 35px 20px 55px !important;
+            align-items: center !important;
+            text-align: center !important;
         }
         .nosi-image-side {
             width: 100% !important;
-            height: 40%;
+            height: 200px !important;
         }
         .nosi-slide-wrapper > svg {
             display: none !important;
         }
         .nosi-text-side h2 {
-            font-size: 1.8rem !important;
+            font-size: 1.5rem !important;
             max-width: 100% !important;
+            margin-bottom: 12px !important;
         }
         .nosi-text-side p {
-            font-size: 1rem !important;
+            font-size: 0.95rem !important;
             max-width: 100% !important;
+            margin-bottom: 20px !important;
+        }
+        .nosi-text-side a {
+            font-size: 0.9rem !important;
+            padding: 10px 22px !important;
         }
         .swiper-pagination {
             width: 100% !important;
             padding-right: 0 !important;
             text-align: center !important;
-            bottom: 15px !important;
+            bottom: 12px !important;
         }
+    }
+
+    @media (max-width: 480px) {
+        .nosi-image-side { height: 160px !important; }
+        .nosi-text-side { padding: 28px 16px 50px !important; }
+        .nosi-text-side h2 { font-size: 1.3rem !important; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="news-slider-container" style="padding: 0; background: #fff;">
-    <div class="swiper mySwiper" style="width: 100%; height: 55vh; min-height: 400px; max-height: 550px;">
+    <div class="swiper mySwiper" style="width: 100%;">
         <div class="swiper-wrapper">
             {% for item in latest_news %}
             <div class="swiper-slide">

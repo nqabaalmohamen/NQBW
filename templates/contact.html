@@ -2,6 +2,19 @@
 
 {% block title %}الاستفسارات ومقترحات التطوير - البوابة الخدمية{% endblock %}
 
+{% block extra_css %}
+<style>
+    .contact-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .full-width { grid-column: 1 / -1; }
+    
+    @media (max-width: 768px) {
+        .contact-grid, .form-grid { grid-template-columns: 1fr; gap: 20px; }
+        .full-width { grid-column: 1 / -1; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 60px 0; color: white; text-align: center;">
     <div class="container">
@@ -11,16 +24,16 @@
 </section>
 
 <section class="section-padding">
-    <div class="container" style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start;">
+    <div class="container contact-grid">
         
         <!-- Form -->
         <div class="form-card" style="margin: 0; max-width: 100%;">
             <h2 style="margin-bottom: 25px; color: var(--primary-dark);">نموذج تقديم طلب جديد</h2>
             <form method="POST">
                 {% csrf_token %}
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-grid">
                     
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group full-width">
                         <label class="form-label">نوع الطلب</label>
                         <select name="complaint_type" class="form-control" required>
                             <option value="inquiry">استفسار عام</option>
@@ -38,17 +51,17 @@
                         <input type="tel" name="phone" class="form-control" value="{{ request.user.profile.phone|default:'' }}" required>
                     </div>
 
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group full-width">
                         <label class="form-label">البريد الإلكتروني (اختياري)</label>
                         <input type="email" name="email" class="form-control" value="{{ request.user.email|default:'' }}">
                     </div>
 
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group full-width">
                         <label class="form-label">موضوع الطلب</label>
                         <input type="text" name="subject" class="form-control" required>
                     </div>
 
-                    <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-group full-width">
                         <label class="form-label">تفاصيل الطلب بوضوح</label>
                         <textarea name="message" class="form-control" rows="6" required></textarea>
                     </div>

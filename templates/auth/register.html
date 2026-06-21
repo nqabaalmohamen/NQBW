@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}إنشاء حساب - البوابة الخدمية{% endblock %}
 
+{% block extra_css %}
+<style>
+    .register-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .register-full { grid-column: 1 / -1; }
+    @media (max-width: 768px) {
+        .register-grid { grid-template-columns: 1fr; gap: 15px; }
+        .register-full { grid-column: 1 / -1; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container section-padding">
     <div class="form-card" style="max-width: 800px;">
@@ -13,7 +24,7 @@
         <form method="POST">
             {% csrf_token %}
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="register-grid">
                 <div class="form-group">
                     <label class="form-label">الاسم الأول</label>
                     <input type="text" name="first_name" class="form-control" required>
@@ -44,7 +55,7 @@
                     </select>
                 </div>
 
-                <div class="form-group" style="grid-column: 1 / -1;">
+                <div class="form-group register-full">
                     <label class="form-label">اسم المستخدم (للدخول)</label>
                     <input type="text" name="username" class="form-control" required>
                 </div>
