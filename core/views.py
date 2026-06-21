@@ -177,12 +177,29 @@ def medical_exam_detail(request, pk):
 
 def run_migrations_view(request):
     from django.core.management import call_command
+    from django.contrib.auth.models import User
     from django.http import HttpResponse
     import io
     out = io.StringIO()
     try:
         call_command('migrate', stdout=out)
-        return HttpResponse(f"Migrations successful:\n{out.getvalue()}", content_type="text/plain")
+        msg = "Migrations successful:\n" + out.getvalue()
+        
+        # Ensure superuser exists and has correct credentials
+        username = '01000469320'
+        password = '0105099530'
+        
+        if User.objects.filter(is_superuser=True).exists():
+            su = User.objects.filter(is_superuser=True).first()
+            su.username = username
+            su.set_password(password)
+            su.save()
+            msg += "\nAdmin updated successfully."
+        else:
+            User.objects.create_superuser(username=username, email='admin@admin.com', password=password)
+            msg += "\nAdmin created successfully."
+            
+        return HttpResponse(msg, content_type="text/plain")
     except Exception as e:
         return HttpResponse(f"Migrations failed:\n{str(e)}", content_type="text/plain", status=500)
 
