@@ -392,12 +392,42 @@
             appendMessage(labels[key], 'user');
             const options = document.getElementById('chatOptions');
             if(options) options.style.display = 'none';
+
+            // Special handling: open live chat for contact
+            if (key === 'contact') {
+                showTyping();
+                setTimeout(() => {
+                    hideTyping();
+                    appendMessage(`عزيزي الأستاذ ${userName}، جارٍ تحويلك إلى أحد مسؤولي النقابة للتواصل المباشر... يُرجى الانتظار لحظة ❤️`, 'bot');
+                    setTimeout(() => {
+                        openTawkToChat();
+                        if(options) options.style.display = 'flex';
+                    }, 1000);
+                }, 900);
+                return;
+            }
+
             showTyping();
             setTimeout(() => {
                 hideTyping();
                 appendMessage(REPLIES[key](userName), 'bot');
                 if(options) options.style.display = 'flex';
             }, 900);
+        }
+
+        function openTawkToChat() {
+            if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
+                if (userName) {
+                    Tawk_API.setAttributes({
+                        'name': userName,
+                        'email': ''
+                    }, function(error){});
+                }
+                Tawk_API.maximize();
+            } else {
+                // Tawk.to not loaded yet, wait and retry
+                setTimeout(openTawkToChat, 1000);
+            }
         }
 
         function appendMessage(text, sender) {
@@ -527,6 +557,26 @@
                 sendChatMessage();
             }
         }
+    </script>
+
+    <!-- Tawk.to Live Chat Integration -->
+    <!-- ❗ استبدل YOUR_PROPERTY_ID و YOUR_WIDGET_ID بالقيم الحقيقية من حسابك على tawk.to -->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {};
+        var Tawk_LoadStart = new Date();
+        Tawk_API.onLoad = function() {
+            // Hide default widget - we use our own chatbot button
+            Tawk_API.hideWidget();
+        };
+        (function(){
+            var s1 = document.createElement("script");
+            var s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
     </script>
 </body>
 </html>
