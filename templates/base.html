@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=11.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=12.0">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -316,5 +316,184 @@
         if (dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
     </script>
     {% block extra_js %}{% endblock %}
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header" onclick="toggleChatbot()">
+            <div class="chatbot-header-info">
+                <i class="fa-solid fa-robot"></i>
+                <span>المساعد الآلي</span>
+            </div>
+            <button class="chatbot-toggle-btn"><i class="fa-solid fa-chevron-down" id="chatbotToggleIcon"></i></button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-message bot-message" id="welcomeMsg">
+                مرحباً بك في بوابة نقابة المحامين بالفيوم. ما هو اسمك الكريم؟
+            </div>
+            <!-- Options -->
+            <div class="chat-options" id="chatOptions" style="display: none;">
+                <button class="chat-option-btn" onclick="sendChatOption('الاستعلام عن الخدمات', 'يمكنك الوصول إلى الخدمات مثل معهد المحاماة والطب الشرعي من قائمة الخدمات في الأعلى.')">الاستعلام عن الخدمات</button>
+                <button class="chat-option-btn" onclick="sendChatOption('مواعيد العمل', 'مواعيد العمل الرسمية من السبت إلى الخميس، من الساعة 9 صباحاً حتى 3 عصراً.')">مواعيد العمل</button>
+                <button class="chat-option-btn" onclick="sendChatOption('التواصل مع الدعم', 'يمكنك التواصل معنا عبر الواتساب على الرقم: 01095043989')">التواصل مع الدعم</button>
+                <button class="chat-option-btn" onclick="sendChatOption('الاشتراكات والمعاشات', 'بالنسبة لتجديد الاشتراكات والمعاشات، يرجى مراجعة مقر النقابة أو متابعة القرارات النقابية في المركز الإعلامي.')">الاشتراكات والمعاشات</button>
+                <button class="chat-option-btn" onclick="sendChatOption('القرارات والأخبار', 'يمكنك متابعة أحدث القرارات والأخبار النقابية من خلال صفحة المركز الإعلامي في الأعلى.')">القرارات والأخبار</button>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleChatInput(event)">
+            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+    
+    <button class="chatbot-float-btn" id="chatbotFloatBtn" onclick="toggleChatbot()" title="تحدث معنا">
+        <i class="fa-solid fa-comment-dots"></i>
+    </button>
+
+    <script>
+        let userName = '';
+        let chatStep = 'ask_name';
+
+        function toggleChatbot() {
+            const container = document.getElementById('chatbotContainer');
+            const floatBtn = document.getElementById('chatbotFloatBtn');
+            const icon = document.getElementById('chatbotToggleIcon');
+            
+            if (container.classList.contains('active')) {
+                container.classList.remove('active');
+                setTimeout(() => { container.style.display = 'none'; }, 300);
+            } else {
+                container.style.display = 'flex';
+                setTimeout(() => { container.classList.add('active'); }, 10);
+                document.getElementById('chatInput').focus();
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const body = document.getElementById('chatbotBody');
+            const options = document.getElementById('chatOptions');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${sender}-message`;
+            msgDiv.textContent = text;
+            
+            if (typingIndicator) {
+                body.insertBefore(msgDiv, typingIndicator);
+            } else {
+                body.appendChild(msgDiv);
+            }
+            
+            if (options && sender === 'bot' && chatStep !== 'ask_name') {
+                body.appendChild(options);
+            }
+            
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function showTyping() {
+            let typingIndicator = document.getElementById('typingIndicator');
+            if (!typingIndicator) {
+                typingIndicator = document.createElement('div');
+                typingIndicator.id = 'typingIndicator';
+                typingIndicator.className = 'typing-indicator';
+                typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+                document.getElementById('chatbotBody').appendChild(typingIndicator);
+            }
+            typingIndicator.style.display = 'flex';
+            const body = document.getElementById('chatbotBody');
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.style.display = 'none';
+            }
+        }
+
+        function sendChatOption(question, answer) {
+            appendMessage(question, 'user');
+            
+            const options = document.getElementById('chatOptions');
+            if(options) options.style.display = 'none';
+            
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+                let finalAnswer = answer;
+                if(userName) {
+                    finalAnswer = `عزيزي الأستاذ ${userName}، ${answer}`;
+                }
+                appendMessage(finalAnswer, 'bot');
+                if(options && chatStep !== 'ask_name') options.style.display = 'flex';
+            }, 800);
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (text === '') return;
+            
+            appendMessage(text, 'user');
+            input.value = '';
+            
+            const options = document.getElementById('chatOptions');
+            if(options) options.style.display = 'none';
+            
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+
+                if (chatStep === 'ask_name') {
+                    let extractedName = text.replace(/(اسمي|أنا|الاسم|اسمي هو|اسمي يكون|انا)\s*/gi, '').trim();
+                    if(extractedName.split(' ').length > 2) {
+                        extractedName = extractedName.split(' ').slice(0, 2).join(' ');
+                    }
+                    userName = extractedName || 'أستاذي';
+                    chatStep = 'normal_chat';
+                    
+                    let reply = `أهلاً بك يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟ يمكنك الاختيار من الخدمات التالية أو كتابة استفسارك.`;
+                    appendMessage(reply, 'bot');
+                    if(options) options.style.display = 'flex';
+                    return;
+                }
+                
+                let reply = `عذراً يا أستاذ ${userName}، أنا مجرد مساعد آلي ولا يمكنني فهم كل شيء. يمكنك الاختيار من الخيارات المتاحة أو التواصل مع الدعم لمساعدتك بشكل أفضل.`;
+                const lowerText = text.toLowerCase();
+                
+                if (lowerText.includes('سلام') || lowerText.includes('مرحبا') || lowerText.includes('اهلا')) {
+                    reply = `وعليكم السلام! أهلاً بك يا أستاذ ${userName} في نقابة المحامين بالفيوم. كيف يمكنني مساعدتك؟`;
+                } else if (lowerText.includes('رقم') || lowerText.includes('تواصل') || lowerText.includes('واتساب') || lowerText.includes('تليفون') || lowerText.includes('اتصال')) {
+                    reply = `يمكنك التواصل معنا عبر الواتساب أو الهاتف يا أستاذ ${userName} على الرقم: 01095043989`;
+                } else if (lowerText.includes('عنوان') || lowerText.includes('مكان') || lowerText.includes('موقع') || lowerText.includes('مقر')) {
+                    reply = `مقر النقابة يا أستاذ ${userName} يقع في: الفيوم - بجوار كلية طب الأسنان.`;
+                } else if (lowerText.includes('مواعيد') || lowerText.includes('عمل') || lowerText.includes('ساعة') || lowerText.includes('متى')) {
+                    reply = `نعمل من السبت إلى الخميس، من الساعة 9 صباحاً حتى 3 عصراً يا أستاذ ${userName}.`;
+                } else if (lowerText.includes('شكرا') || lowerText.includes('يعطيك') || lowerText.includes('تسلم')) {
+                    reply = `العفو يا أستاذ ${userName}! نحن دائماً في خدمتك، لا تتردد في طلب المساعدة.`;
+                } else if (lowerText.includes('معهد') || lowerText.includes('محاماة')) {
+                    reply = `بالنسبة لمعهد المحاماة يا أستاذ ${userName}، يمكنك زيارة قسم "الخدمات > معهد المحاماة" من القائمة العلوية لمعرفة الشروط والمستندات المطلوبة.`;
+                } else if (lowerText.includes('طب') || lowerText.includes('شرعي') || lowerText.includes('كشف')) {
+                    reply = `لخدمات الطب الشرعي يا أستاذ ${userName}، يمكنك الدخول إلى "الخدمات > الطب الشرعي" لتقديم الطلبات ومتابعة الحالة.`;
+                } else if (lowerText.includes('كارنيه') || lowerText.includes('بطاقة') || lowerText.includes('تجديد') || lowerText.includes('اشتراك') || lowerText.includes('معاش')) {
+                    reply = `تجديد الكارنيهات والاشتراكات والمعاشات يتم من خلال مقر النقابة، ويرجى إحضار المستندات المطلوبة الخاصة بالعام الحالي يا أستاذ ${userName}.`;
+                } else if (lowerText.includes('نقيب') || lowerText.includes('مجلس')) {
+                    reply = `يمكنك التعرف على أعضاء مجلس النقابة والسيد النقيب من خلال صفحة "مجلس النقابة" في القائمة الرئيسية يا أستاذ ${userName}.`;
+                }
+                
+                appendMessage(reply, 'bot');
+                if(options) options.style.display = 'flex';
+            }, 1000);
+        }
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+    </script>
 </body>
 </html>
