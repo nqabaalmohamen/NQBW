@@ -27,7 +27,10 @@
             <a href="{% url 'core:home' %}" class="brand-link">
                 <img src="{% static 'img/logo.jpg' %}" alt="شعار نقابة المحامين" class="brand-logo-img">
                 <div class="brand-text-wrap">
-                    <h1 class="brand-title">نقابة المحامين بالفيوم</h1>
+                    <h1 class="brand-title">
+                        <span class="brand-line-top">نقابة المحامين</span>
+                        <span class="brand-line-fayoum">الـفـيـوم</span>
+                    </h1>
                 </div>
             </a>
 
@@ -319,45 +322,49 @@
 
     <!-- Chatbot Widget -->
     <div class="chatbot-container" id="chatbotContainer">
-        <div class="chatbot-header" onclick="toggleChatbot()">
+        <div class="chatbot-header">
             <div class="chatbot-header-info">
-                <i class="fa-solid fa-robot"></i>
-                <span>المساعد الآلي</span>
+                <div class="chatbot-avatar"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div>
+                    <div class="chatbot-name">مساعد النقابة</div>
+                    <div class="chatbot-status"><span class="status-dot"></span> متاح الآن</div>
+                </div>
             </div>
-            <button class="chatbot-toggle-btn"><i class="fa-solid fa-chevron-down" id="chatbotToggleIcon"></i></button>
+            <button class="chatbot-toggle-btn" onclick="toggleChatbot()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="chatbot-body" id="chatbotBody">
-            <div class="chat-message bot-message" id="welcomeMsg">
-                مرحباً بك في بوابة نقابة المحامين بالفيوم. ما هو اسمك الكريم؟
+            <div class="chat-message bot-message">
+                أهلاً بكم في البوابة الإلكترونية لنقابة المحامين بالفيوم 🏛️<br>للبدء، تفضل بإدخال اسمك الكريم.
             </div>
-            <!-- Options -->
             <div class="chat-options" id="chatOptions" style="display: none;">
-                <button class="chat-option-btn" onclick="sendChatOption('الاستعلام عن الخدمات', 'يمكنك الوصول إلى الخدمات مثل معهد المحاماة والطب الشرعي من قائمة الخدمات في الأعلى.')">الاستعلام عن الخدمات</button>
-                <button class="chat-option-btn" onclick="sendChatOption('مواعيد العمل', 'مواعيد العمل الرسمية من السبت إلى الخميس، من الساعة 9 صباحاً حتى 3 عصراً.')">مواعيد العمل</button>
-                <button class="chat-option-btn" onclick="sendChatOption('التواصل مع الدعم', 'يمكنك التواصل معنا عبر الواتساب على الرقم: 01095043989')">التواصل مع الدعم</button>
-                <button class="chat-option-btn" onclick="sendChatOption('الاشتراكات والمعاشات', 'بالنسبة لتجديد الاشتراكات والمعاشات، يرجى مراجعة مقر النقابة أو متابعة القرارات النقابية في المركز الإعلامي.')">الاشتراكات والمعاشات</button>
-                <button class="chat-option-btn" onclick="sendChatOption('القرارات والأخبار', 'يمكنك متابعة أحدث القرارات والأخبار النقابية من خلال صفحة المركز الإعلامي في الأعلى.')">القرارات والأخبار</button>
+                <button class="chat-option-btn" onclick="handleOption('services')">⚖️ الخدمات النقابية</button>
+                <button class="chat-option-btn" onclick="handleOption('hours')">🕐 مواعيد العمل</button>
+                <button class="chat-option-btn" onclick="handleOption('location')">📍 موقع النقابة</button>
+                <button class="chat-option-btn" onclick="handleOption('contact')">📞 التواصل معنا</button>
+                <button class="chat-option-btn" onclick="handleOption('membership')">🪪 الاشتراكات والكارنيهات</button>
+                <button class="chat-option-btn" onclick="handleOption('council')">👨‍⚖️ مجلس النقابة</button>
+                <button class="chat-option-btn" onclick="handleOption('news')">📰 القرارات والأخبار</button>
             </div>
         </div>
         <div class="chatbot-input">
             <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleChatInput(event)">
-            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <button onclick="sendChatMessage()" title="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
-    
-    <button class="chatbot-float-btn" id="chatbotFloatBtn" onclick="toggleChatbot()" title="تحدث معنا">
-        <i class="fa-solid fa-comment-dots"></i>
+
+    <button class="chatbot-float-btn" id="chatbotFloatBtn" onclick="toggleChatbot()" title="تحدث مع مساعد النقابة">
+        <i class="fa-solid fa-scale-balanced"></i>
+        <span class="chatbot-badge">1</span>
     </button>
 
     <script>
         let userName = '';
         let chatStep = 'ask_name';
+        let badgeHidden = false;
 
         function toggleChatbot() {
             const container = document.getElementById('chatbotContainer');
-            const floatBtn = document.getElementById('chatbotFloatBtn');
-            const icon = document.getElementById('chatbotToggleIcon');
-            
+            const badge = document.querySelector('.chatbot-badge');
             if (container.classList.contains('active')) {
                 container.classList.remove('active');
                 setTimeout(() => { container.style.display = 'none'; }, 300);
@@ -365,7 +372,35 @@
                 container.style.display = 'flex';
                 setTimeout(() => { container.classList.add('active'); }, 10);
                 document.getElementById('chatInput').focus();
+                if(badge) badge.style.display = 'none';
             }
+        }
+
+        const REPLIES = {
+            services: (n) => `عزيزي الأستاذ ${n}، تقدم نقابة المحامين بالفيوم الخدمات التالية:\n• معهد المحاماة: تدريب وتأهيل المحامين الجدد.\n• الطب الشرعي: إعداد التقارير الطبية الشرعية المعتمدة.\n• تقديم الشكاوى والمقترحات إلكترونياً.\nيمكنك الوصول إليها من قائمة (الخدمات) في أعلى الصفحة.`,
+            hours: (n) => `عزيزي الأستاذ ${n}، مواعيد العمل الرسمية:\n• الأيام: السبت حتى الخميس\n• التوقيت: من 9:00 صباحاً حتى 3:00 مساءً\nملاحظة: يوم الجمعة إجازة رسمية.`,
+            location: (n) => `عزيزي الأستاذ ${n}، مقر نقابة المحامين بالفيوم:\n📍 الفيوم - بجوار كلية طب الأسنان\nيمكنك التواصل معنا للاستفسار عن الاتجاهات.`,
+            contact: (n) => `عزيزي الأستاذ ${n}، طرق التواصل معنا:\n📞 هاتف / واتساب: 01095043989\n📘 صفحة فيسبوك: نقابة المحامين بالفيوم\nنسعد بخدمتك في أي وقت خلال ساعات العمل.`,
+            membership: (n) => `عزيزي الأستاذ ${n}، بخصوص الاشتراكات والكارنيهات:\n• تجديد الاشتراك السنوي يتم بمقر النقابة.\n• استخراج أو تجديد الكارنيه يتطلب صورة شخصية وإيصال السداد.\n• للاستفسار عن المعاشات يرجى التواصل بمقر النقابة مباشرةً.`,
+            council: (n) => `عزيزي الأستاذ ${n}، يمكنك الاطلاع على تشكيل مجلس نقابة المحامين بالفيوم وأسماء أعضائه من خلال صفحة (مجلس النقابة) في القائمة الرئيسية للموقع.`,
+            news: (n) => `عزيزي الأستاذ ${n}، يمكنك متابعة أحدث القرارات النقابية والأخبار من:\n• صفحة (المركز الإعلامي) في القائمة الرئيسية.\n• صفحة النقابة على فيسبوك لآخر المستجدات.`
+        };
+
+        function handleOption(key) {
+            const labels = {
+                services: '⚖️ الخدمات النقابية', hours: '🕐 مواعيد العمل',
+                location: '📍 موقع النقابة', contact: '📞 التواصل معنا',
+                membership: '🪪 الاشتراكات والكارنيهات', council: '👨‍⚖️ مجلس النقابة', news: '📰 القرارات والأخبار'
+            };
+            appendMessage(labels[key], 'user');
+            const options = document.getElementById('chatOptions');
+            if(options) options.style.display = 'none';
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                appendMessage(REPLIES[key](userName), 'bot');
+                if(options) options.style.display = 'flex';
+            }, 900);
         }
 
         function appendMessage(text, sender) {
@@ -461,27 +496,28 @@
                     return;
                 }
                 
-                let reply = `عذراً يا أستاذ ${userName}، أنا مجرد مساعد آلي ولا يمكنني فهم كل شيء. يمكنك الاختيار من الخيارات المتاحة أو التواصل مع الدعم لمساعدتك بشكل أفضل.`;
-                const lowerText = text.toLowerCase();
-                
-                if (lowerText.includes('سلام') || lowerText.includes('مرحبا') || lowerText.includes('اهلا')) {
-                    reply = `وعليكم السلام! أهلاً بك يا أستاذ ${userName} في نقابة المحامين بالفيوم. كيف يمكنني مساعدتك؟`;
-                } else if (lowerText.includes('رقم') || lowerText.includes('تواصل') || lowerText.includes('واتساب') || lowerText.includes('تليفون') || lowerText.includes('اتصال')) {
-                    reply = `يمكنك التواصل معنا عبر الواتساب أو الهاتف يا أستاذ ${userName} على الرقم: 01095043989`;
-                } else if (lowerText.includes('عنوان') || lowerText.includes('مكان') || lowerText.includes('موقع') || lowerText.includes('مقر')) {
-                    reply = `مقر النقابة يا أستاذ ${userName} يقع في: الفيوم - بجوار كلية طب الأسنان.`;
-                } else if (lowerText.includes('مواعيد') || lowerText.includes('عمل') || lowerText.includes('ساعة') || lowerText.includes('متى')) {
-                    reply = `نعمل من السبت إلى الخميس، من الساعة 9 صباحاً حتى 3 عصراً يا أستاذ ${userName}.`;
-                } else if (lowerText.includes('شكرا') || lowerText.includes('يعطيك') || lowerText.includes('تسلم')) {
-                    reply = `العفو يا أستاذ ${userName}! نحن دائماً في خدمتك، لا تتردد في طلب المساعدة.`;
-                } else if (lowerText.includes('معهد') || lowerText.includes('محاماة')) {
-                    reply = `بالنسبة لمعهد المحاماة يا أستاذ ${userName}، يمكنك زيارة قسم "الخدمات > معهد المحاماة" من القائمة العلوية لمعرفة الشروط والمستندات المطلوبة.`;
-                } else if (lowerText.includes('طب') || lowerText.includes('شرعي') || lowerText.includes('كشف')) {
-                    reply = `لخدمات الطب الشرعي يا أستاذ ${userName}، يمكنك الدخول إلى "الخدمات > الطب الشرعي" لتقديم الطلبات ومتابعة الحالة.`;
-                } else if (lowerText.includes('كارنيه') || lowerText.includes('بطاقة') || lowerText.includes('تجديد') || lowerText.includes('اشتراك') || lowerText.includes('معاش')) {
-                    reply = `تجديد الكارنيهات والاشتراكات والمعاشات يتم من خلال مقر النقابة، ويرجى إحضار المستندات المطلوبة الخاصة بالعام الحالي يا أستاذ ${userName}.`;
-                } else if (lowerText.includes('نقيب') || lowerText.includes('مجلس')) {
-                    reply = `يمكنك التعرف على أعضاء مجلس النقابة والسيد النقيب من خلال صفحة "مجلس النقابة" في القائمة الرئيسية يا أستاذ ${userName}.`;
+                let reply = `عزيزي الأستاذ ${userName}، لم أتمكن من فهم استفسارك بشكل كامل. يُرجى الاختيار من الخيارات المتاحة أدناه أو التواصل مباشرةً على رقم: 01095043989`;
+                const t = text;
+                if (t.includes('سلام') || t.includes('مرحب') || t.includes('اهلا') || t.includes('أهلا')) {
+                    reply = `وعليكم السلام ورحمة الله وبركاته يا أستاذ ${userName}! يسعدنا خدمتك في نقابة المحامين بالفيوم. كيف يمكنني مساعدتك اليوم؟`;
+                } else if (t.includes('رقم') || t.includes('تواصل') || t.includes('واتساب') || t.includes('تليفون') || t.includes('اتصال') || t.includes('هاتف')) {
+                    reply = REPLIES.contact(userName);
+                } else if (t.includes('عنوان') || t.includes('مكان') || t.includes('مقر') || t.includes('فين')) {
+                    reply = REPLIES.location(userName);
+                } else if (t.includes('مواعيد') || t.includes('وقت') || t.includes('ساعة') || t.includes('متى') || t.includes('دوام')) {
+                    reply = REPLIES.hours(userName);
+                } else if (t.includes('شكرا') || t.includes('شكراً') || t.includes('يعطيك') || t.includes('تسلم') || t.includes('ميرسي')) {
+                    reply = `العفو يا أستاذ ${userName}! نحن دائماً في خدمتكم، لا تتردد في طرح أي استفسار.`;
+                } else if (t.includes('معهد') || t.includes('محاماة') || t.includes('تدريب')) {
+                    reply = REPLIES.services(userName);
+                } else if (t.includes('طب') || t.includes('شرعي') || t.includes('تقرير') || t.includes('كشف')) {
+                    reply = REPLIES.services(userName);
+                } else if (t.includes('كارنيه') || t.includes('بطاقة') || t.includes('تجديد') || t.includes('اشتراك') || t.includes('معاش')) {
+                    reply = REPLIES.membership(userName);
+                } else if (t.includes('نقيب') || t.includes('مجلس') || t.includes('رئيس')) {
+                    reply = REPLIES.council(userName);
+                } else if (t.includes('خبر') || t.includes('قرار') || t.includes('اعلان') || t.includes('إعلان')) {
+                    reply = REPLIES.news(userName);
                 }
                 
                 appendMessage(reply, 'bot');
