@@ -986,18 +986,21 @@ img { max-width: 100%; display: block; }
 .chatbot-float-btn::before {
     content: '';
     position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
     border-radius: 50%;
-    border: 2px dashed var(--gold);
-    animation: spin-circle 10s linear infinite;
+    border: 3px solid transparent;
+    border-top-color: var(--gold);
+    border-bottom-color: var(--gold);
+    animation: spin-circle 2s linear infinite;
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 @keyframes spin-circle {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
 }
