@@ -77,30 +77,12 @@ img { max-width: 100%; display: block; }
     flex-shrink: 0;
 }
 .brand-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     margin: 0;
     color: var(--primary-dark);
     font-family: 'Tajawal', sans-serif;
     font-weight: 800;
-    line-height: 1.1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-.brand-line-top {
-    font-size: 1rem;
-    color: var(--primary-dark);
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-.brand-line-fayoum {
-    font-size: 1.6rem;
-    color: var(--gold);
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-align: center;
-    width: 100%;
-    line-height: 1;
+    line-height: 1.2;
 }
 
 /* Desktop Nav */
