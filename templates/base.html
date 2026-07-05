@@ -356,9 +356,20 @@
     </button>
 
     <script>
-        let userName = '';
-        let chatStep = 'ask_name';
+        let userName = sessionStorage.getItem('chat_userName') || '';
+        let chatStep = sessionStorage.getItem('chat_chatStep') || 'ask_name';
         let badgeHidden = false;
+
+        function saveChatState() {
+            sessionStorage.setItem('chat_userName', userName);
+            sessionStorage.setItem('chat_chatStep', chatStep);
+            sessionStorage.setItem('chat_isLiveChat', isLiveChat);
+            if (liveChatSessionKey) {
+                sessionStorage.setItem('chat_liveChatSessionKey', liveChatSessionKey);
+            } else {
+                sessionStorage.removeItem('chat_liveChatSessionKey');
+            }
+        }
 
         function toggleChatbot() {
             const container = document.getElementById('chatbotContainer');
@@ -384,8 +395,8 @@
             hours: () => `🕐 <b>مواعيد العمل الرسمية:</b><br>السبت حتى الخميس: من 9:00 صباحاً حتى 2:00 مساءً.<br>الجمعة: عطلة رسمية.`
         };
 
-        let isLiveChat = false;
-        let liveChatSessionKey = null;
+        let isLiveChat = sessionStorage.getItem('chat_isLiveChat') === 'true';
+        let liveChatSessionKey = sessionStorage.getItem('chat_liveChatSessionKey') || null;
         let liveChatPollInterval = null;
         let lastLiveChatMsgId = 0;
 
@@ -456,6 +467,7 @@
                 if(data.ok) {
                     isLiveChat = true;
                     liveChatSessionKey = data.session_key;
+                    saveChatState();
                     liveChatPollInterval = setInterval(pollLiveChat, 3000);
                 } else {
                     appendMessage("حدث خطأ أثناء الاتصال، يرجى المحاولة لاحقاً.", 'system');
@@ -493,6 +505,7 @@
             clearInterval(liveChatPollInterval);
             liveChatSessionKey = null;
             lastLiveChatMsgId = 0;
+            saveChatState();
             const options = document.getElementById('chatOptions');
             if(options) options.style.display = 'flex';
         }
@@ -616,6 +629,7 @@
                     }
                     userName = extractedName || 'أستاذي';
                     chatStep = 'normal_chat';
+                    saveChatState();
                     
                     let reply = `أهلاً بك يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟ يمكنك الاختيار من الخدمات التالية أو كتابة استفسارك.`;
                     appendMessage(reply, 'bot');
@@ -657,6 +671,37 @@
                 sendChatMessage();
             }
         }
+
+        function initChat() {
+            const body = document.getElementById('chatbotBody');
+            const options = document.getElementById('chatOptions');
+            
+            if (isLiveChat && liveChatSessionKey) {
+                // Clear default greeting
+                Array.from(body.children).forEach(child => {
+                    if (child.id !== 'chatOptions' && child.id !== 'typingIndicator') {
+                        child.style.display = 'none';
+                    }
+                });
+                if (options) options.style.display = 'none';
+                appendMessage("جاري استعادة المحادثة المباشرة...", 'system');
+                liveChatPollInterval = setInterval(pollLiveChat, 3000);
+                pollLiveChat(); // Fetch immediately
+            } 
+            else if (chatStep === 'normal_chat' && userName) {
+                // Clear default greeting
+                Array.from(body.children).forEach(child => {
+                    if (child.id !== 'chatOptions' && child.id !== 'typingIndicator') {
+                        child.style.display = 'none';
+                    }
+                });
+                let reply = `أهلاً بك مجدداً يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟`;
+                appendMessage(reply, 'bot');
+                if (options) options.style.display = 'flex';
+            }
+        }
+
+        initChat();
     </script>
 
 
