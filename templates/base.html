@@ -344,6 +344,7 @@
             </div>
         </div>
         <div class="chatbot-input">
+            {% csrf_token %}
             <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleChatInput(event)">
             <button onclick="sendChatMessage()" title="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
@@ -383,6 +384,11 @@
             news: (n) => `عزيزي الأستاذ ${n}، يمكنك متابعة أحدث القرارات النقابية والأخبار من:\n• صفحة (المركز الإعلامي) في القائمة الرئيسية.\n• صفحة النقابة على فيسبوك لآخر المستجدات.`
         };
 
+        let isLiveChat = false;
+        let liveChatSessionKey = null;
+        let liveChatPollInterval = null;
+        let lastLiveChatMsgId = 0;
+
         function handleOption(key) {
             const labels = {
                 services: '⚖️ الخدمات النقابية', hours: '🕐 مواعيد العمل',
@@ -400,8 +406,7 @@
                     hideTyping();
                     appendMessage(`عزيزي الأستاذ ${userName}، جارٍ تحويلك إلى أحد مسؤولي النقابة للتواصل المباشر... يُرجى الانتظار لحظة ❤️`, 'bot');
                     setTimeout(() => {
-                        openTawkToChat();
-                        if(options) options.style.display = 'flex';
+                        startLiveChatSession();
                     }, 1000);
                 }, 900);
                 return;
@@ -415,19 +420,64 @@
             }, 900);
         }
 
-        function openTawkToChat() {
-            if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
-                if (userName) {
-                    Tawk_API.setAttributes({
-                        'name': userName,
-                        'email': ''
-                    }, function(error){});
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+        }
+
+        function startLiveChatSession() {
+            appendMessage("جارٍ الاتصال بخدمة العملاء...", 'system');
+            fetch('/api/chat/start/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({user_name: userName})
+            }).then(res => res.json())
+            .then(data => {
+                if(data.ok) {
+                    isLiveChat = true;
+                    liveChatSessionKey = data.session_key;
+                    appendMessage("تم إرسال طلبك. يرجى الانتظار لحين انضمام المسئول...", 'system');
+                    liveChatPollInterval = setInterval(pollLiveChat, 3000);
+                } else {
+                    appendMessage("حدث خطأ أثناء الاتصال، يرجى المحاولة لاحقاً.", 'system');
+                    const options = document.getElementById('chatOptions');
+                    if(options) options.style.display = 'flex';
                 }
-                Tawk_API.maximize();
-            } else {
-                // Tawk.to not loaded yet, wait and retry
-                setTimeout(openTawkToChat, 1000);
-            }
+            }).catch(e => {
+                appendMessage("حدث خطأ أثناء الاتصال.", 'system');
+                const options = document.getElementById('chatOptions');
+                if(options) options.style.display = 'flex';
+            });
+        }
+
+        function pollLiveChat() {
+            if(!isLiveChat || !liveChatSessionKey) return;
+            fetch(`/api/chat/poll/?session_key=${liveChatSessionKey}&after_id=${lastLiveChatMsgId}`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.messages && data.messages.length > 0) {
+                    data.messages.forEach(msg => {
+                        if(msg.sender === 'admin' || msg.sender === 'system') {
+                            appendMessage(msg.message, msg.sender === 'system' ? 'system' : 'bot');
+                        }
+                        lastLiveChatMsgId = Math.max(lastLiveChatMsgId, msg.id);
+                    });
+                }
+                if(data.status === 'ended') {
+                    endLiveChatSession();
+                }
+            });
+        }
+
+        function endLiveChatSession() {
+            isLiveChat = false;
+            clearInterval(liveChatPollInterval);
+            liveChatSessionKey = null;
+            lastLiveChatMsgId = 0;
+            const options = document.getElementById('chatOptions');
+            if(options) options.style.display = 'flex';
         }
 
         function appendMessage(text, sender) {
@@ -436,7 +486,21 @@
             const typingIndicator = document.getElementById('typingIndicator');
             
             const msgDiv = document.createElement('div');
-            msgDiv.className = `chat-message ${sender}-message`;
+            // Support 'system' messages as a third type for status updates
+            if (sender === 'system') {
+                msgDiv.className = `chat-message system-message`;
+                msgDiv.style.backgroundColor = '#ffc107';
+                msgDiv.style.color = '#000';
+                msgDiv.style.textAlign = 'center';
+                msgDiv.style.alignSelf = 'center';
+                msgDiv.style.width = 'fit-content';
+                msgDiv.style.margin = '10px auto';
+                msgDiv.style.borderRadius = '20px';
+                msgDiv.style.fontSize = '0.85rem';
+                msgDiv.style.padding = '5px 15px';
+            } else {
+                msgDiv.className = `chat-message ${sender}-message`;
+            }
             msgDiv.textContent = text;
             
             if (typingIndicator) {
@@ -500,6 +564,21 @@
             
             appendMessage(text, 'user');
             input.value = '';
+
+            if (isLiveChat && liveChatSessionKey) {
+                fetch('/api/chat/send/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        session_key: liveChatSessionKey,
+                        message: text
+                    })
+                });
+                return;
+            }
             
             const options = document.getElementById('chatOptions');
             if(options) options.style.display = 'none';
@@ -559,24 +638,6 @@
         }
     </script>
 
-    <!-- Tawk.to Live Chat Integration -->
-    <!-- ❗ استبدل YOUR_PROPERTY_ID و YOUR_WIDGET_ID بالقيم الحقيقية من حسابك على tawk.to -->
-    <script type="text/javascript">
-        var Tawk_API = Tawk_API || {};
-        var Tawk_LoadStart = new Date();
-        Tawk_API.onLoad = function() {
-            // Hide default widget - we use our own chatbot button
-            Tawk_API.hideWidget();
-        };
-        (function(){
-            var s1 = document.createElement("script");
-            var s0 = document.getElementsByTagName("script")[0];
-            s1.async = true;
-            s1.src = 'https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
-            s1.charset = 'UTF-8';
-            s1.setAttribute('crossorigin', '*');
-            s0.parentNode.insertBefore(s1, s0);
-        })();
-    </script>
+
 </body>
 </html>

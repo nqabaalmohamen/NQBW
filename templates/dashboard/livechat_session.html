@@ -1,0 +1,206 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}محادثة: {{ session.user_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-box {
+        height: 60vh;
+        overflow-y: auto;
+        background: #f8f9fa;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+    }
+    .msg {
+        max-width: 75%;
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        position: relative;
+        clear: both;
+    }
+    .msg-user {
+        background-color: #e9ecef;
+        color: #333;
+        float: right;
+        border-bottom-right-radius: 0;
+    }
+    .msg-admin {
+        background-color: #0d6efd;
+        color: white;
+        float: left;
+        border-bottom-left-radius: 0;
+    }
+    .msg-system {
+        background-color: #ffc107;
+        color: #000;
+        float: none;
+        margin: 10px auto;
+        text-align: center;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        max-width: 80%;
+    }
+    .msg-time {
+        display: block;
+        font-size: 0.7rem;
+        opacity: 0.7;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        محادثة مع: {{ session.user_name }}
+        {% if session.status == 'waiting' %}
+            <span class="badge bg-danger fs-6">في الانتظار</span>
+        {% elif session.status == 'active' %}
+            <span class="badge bg-success fs-6">نشطة</span>
+        {% else %}
+            <span class="badge bg-secondary fs-6">منتهية</span>
+        {% endif %}
+    </h2>
+    <div>
+        <a href="{% url 'core:dashboard_livechat' %}" class="btn btn-outline-secondary">العودة للقائمة</a>
+        
+        {% if session.status == 'waiting' %}
+        <button id="btnJoin" class="btn btn-success ms-2">قبول وبدء المحادثة</button>
+        {% endif %}
+        
+        {% if session.status == 'active' %}
+        <button id="btnEnd" class="btn btn-danger ms-2">إنهاء المحادثة</button>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div id="chatBox" class="chat-box">
+            <!-- Messages will be loaded here via JS -->
+        </div>
+        
+        {% if session.status == 'active' %}
+        <div class="p-3 border-top bg-light">
+            <form id="chatForm" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="text" id="chatInput" class="form-control" placeholder="اكتب ردك هنا..." autocomplete="off" required>
+                <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-paper-plane"></i> إرسال</button>
+            </form>
+        </div>
+        {% elif session.status == 'waiting' %}
+        <div class="p-3 border-top bg-light text-center text-muted">
+            يجب قبول المحادثة أولاً لتتمكن من الرد.
+        </div>
+        {% else %}
+        <div class="p-3 border-top bg-light text-center text-muted">
+            هذه المحادثة منتهية ولا يمكن الرد عليها.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const sessionKey = '{{ session.session_key }}';
+    let lastMsgId = 0;
+    const chatBox = document.getElementById('chatBox');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+    function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function appendMessage(msg) {
+        const div = document.createElement('div');
+        div.className = 'msg msg-' + msg.sender;
+        
+        const txt = document.createElement('span');
+        txt.textContent = msg.message;
+        div.appendChild(txt);
+        
+        const time = document.createElement('span');
+        time.className = 'msg-time';
+        time.textContent = msg.time;
+        div.appendChild(time);
+        
+        chatBox.appendChild(div);
+        
+        // Clear floats
+        const clear = document.createElement('div');
+        clear.style.clear = 'both';
+        chatBox.appendChild(clear);
+        
+        scrollToBottom();
+    }
+
+    function fetchMessages() {
+        fetch(`/dashboard/livechat/${sessionKey}/poll/?after_id=${lastMsgId}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.messages && data.messages.length > 0) {
+                data.messages.forEach(m => {
+                    appendMessage(m);
+                    lastMsgId = Math.max(lastMsgId, m.id);
+                });
+            }
+            if(data.status === 'ended' && '{{ session.status }}' !== 'ended') {
+                location.reload(); // Reload if ended remotely
+            }
+        });
+    }
+
+    // Initial fetch and polling
+    fetchMessages();
+    const pollInterval = setInterval(fetchMessages, 3000);
+
+    // Join action
+    const btnJoin = document.getElementById('btnJoin');
+    if(btnJoin) {
+        btnJoin.addEventListener('click', function() {
+            fetch(`/dashboard/livechat/${sessionKey}/join/`, {
+                method: 'POST',
+                headers: {'X-CSRFToken': '{{ csrf_token }}'}
+            }).then(() => location.reload());
+        });
+    }
+
+    // End action
+    const btnEnd = document.getElementById('btnEnd');
+    if(btnEnd) {
+        btnEnd.addEventListener('click', function() {
+            if(confirm('هل أنت متأكد من إنهاء هذه المحادثة؟')) {
+                fetch(`/dashboard/livechat/${sessionKey}/end/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrfToken}
+                }).then(() => location.reload());
+            }
+        });
+    }
+
+    // Send action
+    const chatForm = document.getElementById('chatForm');
+    if(chatForm) {
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const txt = input.value.trim();
+            if(!txt) return;
+            
+            input.value = '';
+            
+            fetch(`/dashboard/livechat/${sessionKey}/send/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({message: txt})
+            }).then(() => fetchMessages()); // fetch immediately after send
+        });
+    }
+</script>
+{% endblock %}

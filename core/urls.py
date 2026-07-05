@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import livechat_views as lc
 
 app_name = 'core'
 
@@ -66,4 +67,18 @@ urlpatterns = [
     path('dashboard/institute/<int:pk>/delete/', views.dashboard_institute_delete, name='dashboard_institute_delete'),
     path('run-migrations-secret/', views.run_migrations_view, name='run_migrations_secret'),
     path('media/db/<str:name>', views.serve_db_media, name='serve_db_media'),
+
+    # ── Live Chat – User API ──
+    path('api/chat/start/',         lc.chat_start,  name='chat_start'),
+    path('api/chat/send/',          lc.chat_send,   name='chat_send'),
+    path('api/chat/poll/',          lc.chat_poll,   name='chat_poll'),
+
+    # ── Live Chat – Admin ──
+    path('dashboard/livechat/',                              lc.dashboard_livechat,         name='dashboard_livechat'),
+    path('dashboard/livechat/<str:session_key>/',            lc.dashboard_livechat_session, name='dashboard_livechat_session'),
+    path('dashboard/livechat/<str:session_key>/join/',       lc.chat_admin_join,            name='chat_admin_join'),
+    path('dashboard/livechat/<str:session_key>/send/',       lc.chat_admin_send,            name='chat_admin_send'),
+    path('dashboard/livechat/<str:session_key>/end/',        lc.chat_admin_end,             name='chat_admin_end'),
+    path('dashboard/livechat/<str:session_key>/poll/',       lc.chat_admin_poll,            name='chat_admin_poll'),
+    path('dashboard/livechat/waiting-count/',                lc.chat_admin_waiting_count,   name='chat_admin_waiting_count'),
 ]

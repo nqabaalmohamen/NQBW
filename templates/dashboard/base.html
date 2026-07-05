@@ -429,6 +429,10 @@
             </a>
 
             <div class="nav-section-title">الطلبات والتواصل</div>
+            <a href="{% url 'core:dashboard_livechat' %}" class="nav-item {% if 'livechat' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fa-solid fa-headset"></i> المحادثات المباشرة 
+                <span class="badge-pill" id="sidebarLiveChatBadge" style="display:none;">0</span>
+            </a>
             <a href="{% url 'core:dashboard_complaints' %}" class="nav-item {% if 'complaint' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="fa-solid fa-inbox"></i> الاستفسارات والمقترحات
             </a>
@@ -506,6 +510,27 @@
                 if (window.innerWidth <= 768) closeSidebar();
             });
         });
+
+        // Poll for waiting live chats badge
+        function updateLiveChatBadge() {
+            fetch("{% url 'core:chat_admin_waiting_count' %}")
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('sidebarLiveChatBadge');
+                if (badge) {
+                    if (data.waiting > 0) {
+                        badge.style.display = 'inline-block';
+                        badge.textContent = data.waiting;
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            })
+            .catch(e => console.log('Error fetching chat count'));
+        }
+        updateLiveChatBadge();
+        setInterval(updateLiveChatBadge, 10000); // Check every 10 seconds
     </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

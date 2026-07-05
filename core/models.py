@@ -218,3 +218,47 @@ class DatabaseFile(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# ─────────────────────────────────────────────
+#  Live Chat System
+# ─────────────────────────────────────────────
+class ChatSession(models.Model):
+    STATUS_CHOICES = [
+        ('waiting', 'في الانتظار'),
+        ('active',  'نشطة'),
+        ('ended',   'منتهية'),
+    ]
+    session_key  = models.CharField(max_length=64, unique=True, verbose_name="مفتاح الجلسة")
+    user_name    = models.CharField(max_length=100, verbose_name="اسم المستخدم")
+    status       = models.CharField(max_length=10, choices=STATUS_CHOICES, default='waiting', verbose_name="الحالة")
+    created_at   = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "جلسة محادثة"
+        verbose_name_plural = "جلسات المحادثة"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user_name} — {self.get_status_display()}"
+
+
+class ChatMessage(models.Model):
+    SENDER_CHOICES = [
+        ('user',  'مستخدم'),
+        ('admin', 'مسئول'),
+        ('system','نظام'),
+    ]
+    session    = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='messages')
+    sender     = models.CharField(max_length=10, choices=SENDER_CHOICES)
+    message    = models.TextField(verbose_name="الرسالة")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "رسالة محادثة"
+        verbose_name_plural = "رسائل المحادثة"
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"[{self.sender}] {self.message[:50]}"
