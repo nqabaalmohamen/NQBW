@@ -399,6 +399,7 @@
         let liveChatSessionKey = sessionStorage.getItem('chat_liveChatSessionKey') || null;
         let liveChatPollInterval = null;
         let lastLiveChatMsgId = 0;
+        let waitingTicks = 0;
 
         function handleOption(key) {
             const labels = {
@@ -494,6 +495,16 @@
                         lastLiveChatMsgId = Math.max(lastLiveChatMsgId, msg.id);
                     });
                 }
+                
+                if(data.status === 'waiting') {
+                    waitingTicks++;
+                    if(waitingTicks === 20) { // 20 ticks * 3 seconds = 60 seconds
+                        appendMessage("عذراً على التأخير الطفيف، جميع ممثلي خدمة العملاء مشغولون حالياً بخدمة زملاء آخرين. يرجى البقاء معنا، سنقوم بالرد عليك في أقرب فرصة ممكنة 🙏", 'system');
+                    }
+                } else {
+                    waitingTicks = 0;
+                }
+
                 if(data.status === 'ended') {
                     endLiveChatSession();
                 }
@@ -505,6 +516,7 @@
             clearInterval(liveChatPollInterval);
             liveChatSessionKey = null;
             lastLiveChatMsgId = 0;
+            waitingTicks = 0;
             saveChatState();
             const options = document.getElementById('chatOptions');
             if(options) options.style.display = 'flex';

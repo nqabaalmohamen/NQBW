@@ -84,6 +84,13 @@
         
         {% if session.status == 'active' %}
         <div class="p-3 border-top bg-light">
+            <div class="mb-2 d-flex flex-wrap gap-2" id="quickReplies">
+                <span class="text-muted small align-self-center">ردود سريعة:</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill">أهلاً بك، كيف يمكنني مساعدتك؟</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill">يرجى الانتظار لحظات لمراجعة طلبك.</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill">تم استلام طلبك وجاري العمل عليه.</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill">هل هناك أي استفسار آخر يمكنني مساعدتك به؟</button>
+            </div>
             <form id="chatForm" class="d-flex gap-2">
                 {% csrf_token %}
                 <input type="text" id="chatInput" class="form-control" placeholder="اكتب ردك هنا..." autocomplete="off" required>
@@ -216,5 +223,14 @@
             }).then(() => fetchMessages()); // fetch immediately after send
         });
     }
+
+    // Quick Replies
+    document.querySelectorAll('#quickReplies button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = document.getElementById('chatInput');
+            input.value = this.textContent;
+            input.focus();
+        });
+    });
 </script>
 {% endblock %}
