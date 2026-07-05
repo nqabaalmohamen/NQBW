@@ -27,11 +27,6 @@ def chat_start(request):
             user_name=user_name,
             status='waiting',
         )
-        ChatMessage.objects.create(
-            session=session,
-            sender='system',
-            message=f'🔔 طلب تواصل جديد من: {user_name}'
-        )
         return JsonResponse({'ok': True, 'session_key': session_key})
     except Exception as e:
         return JsonResponse({'ok': False, 'error': str(e)}, status=400)

@@ -425,7 +425,7 @@
         }
 
         function startLiveChatSession() {
-            appendMessage("جارٍ الاتصال بخدمة العملاء...", 'system');
+            appendMessage("جاري تحويلك لأحد المسئولين برجاء الانتظار ...", 'system');
             fetch('/api/chat/start/', {
                 method: 'POST',
                 headers: {
@@ -438,7 +438,6 @@
                 if(data.ok) {
                     isLiveChat = true;
                     liveChatSessionKey = data.session_key;
-                    appendMessage("تم إرسال طلبك. يرجى الانتظار لحين انضمام المسئول...", 'system');
                     liveChatPollInterval = setInterval(pollLiveChat, 3000);
                 } else {
                     appendMessage("حدث خطأ أثناء الاتصال، يرجى المحاولة لاحقاً.", 'system');
