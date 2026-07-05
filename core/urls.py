@@ -77,6 +77,7 @@ urlpatterns = [
     path('dashboard/livechat/',                              lc.dashboard_livechat,         name='dashboard_livechat'),
     path('dashboard/livechat/<str:session_key>/',            lc.dashboard_livechat_session, name='dashboard_livechat_session'),
     path('dashboard/livechat/<str:session_key>/join/',       lc.chat_admin_join,            name='chat_admin_join'),
+    path('dashboard/livechat/<str:session_key>/reject/',     lc.chat_admin_reject,          name='chat_admin_reject'),
     path('dashboard/livechat/<str:session_key>/send/',       lc.chat_admin_send,            name='chat_admin_send'),
     path('dashboard/livechat/<str:session_key>/end/',        lc.chat_admin_end,             name='chat_admin_end'),
     path('dashboard/livechat/<str:session_key>/poll/',       lc.chat_admin_poll,            name='chat_admin_poll'),

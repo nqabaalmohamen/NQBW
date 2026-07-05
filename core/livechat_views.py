@@ -138,6 +138,21 @@ def chat_admin_end(request, session_key):
     return JsonResponse({'ok': True})
 
 
+@require_POST
+@user_passes_test(is_admin, login_url='/dashboard/login/')
+def chat_admin_reject(request, session_key):
+    session = get_object_or_404(ChatSession, session_key=session_key)
+    if session.status == 'waiting':
+        session.status = 'ended'
+        session.save()
+        ChatMessage.objects.create(
+            session=session,
+            sender='system',
+            message='نعتذر، جميع ممثلي خدمة العملاء مشغولون حالياً. يرجى ترك استفسارك أو المحاولة لاحقاً.'
+        )
+    return JsonResponse({'ok': True})
+
+
 @require_GET
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def chat_admin_poll(request, session_key):

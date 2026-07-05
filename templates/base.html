@@ -375,13 +375,13 @@
         }
 
         const REPLIES = {
-            services: (n) => `عزيزي الأستاذ ${n}، تقدم نقابة المحامين بالفيوم الخدمات التالية:\n• معهد المحاماة: تدريب وتأهيل المحامين الجدد.\n• الطب الشرعي: إعداد التقارير الطبية الشرعية المعتمدة.\n• تقديم الشكاوى والمقترحات إلكترونياً.\nيمكنك الوصول إليها من قائمة (الخدمات) في أعلى الصفحة.`,
-            hours: (n) => `عزيزي الأستاذ ${n}، مواعيد العمل الرسمية:\n• الأيام: السبت حتى الخميس معادا الجمعة و الاجازات الرسمية\n• التوقيت: من 9:00 صباحاً حتى 2:00 مساءً`,
-            location: (n) => `عزيزي الأستاذ ${n}، مقر نقابة المحامين بالفيوم:\n📍 الفيوم - بجوار كلية طب الأسنان\nيمكنك التواصل معنا للاستفسار عن الاتجاهات.`,
-            contact: (n) => `عزيزي الأستاذ ${n}، طرق التواصل معنا:\n📞 هاتف / واتساب: 01095043989\n📘 صفحة فيسبوك: نقابة المحامين بالفيوم\nنسعد بخدمتك في أي وقت خلال ساعات العمل.`,
-            membership: (n) => `عزيزي الأستاذ ${n}، بخصوص الاشتراكات والكارنيهات:\n• تجديد الاشتراك السنوي يتم بمقر النقابة.\n• استخراج أو تجديد الكارنيه يتطلب وإيصال السداد بيتم من خلال الدفع بالفيزا كارد.`,
-            council: (n) => `عزيزي الأستاذ ${n}، يمكنك الاطلاع على تشكيل مجلس نقابة المحامين بالفيوم وأسماء أعضائه من خلال صفحة (مجلس النقابة) في القائمة الرئيسية للموقع.`,
-            news: (n) => `عزيزي الأستاذ ${n}، يمكنك متابعة أحدث القرارات النقابية والأخبار من:\n• صفحة (المركز الإعلامي) في القائمة الرئيسية.\n• صفحة النقابة على فيسبوك لآخر المستجدات.`
+            services: () => `الخدمات النقابية المتاحة:<br>• معهد المحاماة: تسجيل ومتابعة.<br>• الطب الشرعي: طلب تقارير وحجز كشوف.<br><div class="mt-2 d-flex gap-2"><a href="/institute/" class="btn btn-outline-primary btn-sm" style="border-radius:20px; font-weight:bold; padding: 4px 12px; font-size: 0.8rem; text-decoration:none;"><i class="fa-solid fa-building-columns"></i> معهد المحاماة</a> <a href="/forensic/" class="btn btn-outline-danger btn-sm" style="border-radius:20px; font-weight:bold; padding: 4px 12px; font-size: 0.8rem; text-decoration:none;"><i class="fa-solid fa-notes-medical"></i> الطب الشرعي</a></div>`,
+            location: () => `📍 <b>مقر نقابة المحامين بالفيوم:</b><br>يقع المقر الرئيسي بجوار كلية طب الأسنان - جامعة الفيوم.<br>يسعدنا استقبالكم خلال مواعيد العمل الرسمية.`,
+            contact: () => `يسعدنا تواصلك معنا عبر القنوات التالية:<br>📞 <b>هاتف / واتساب:</b> 01095043989<br>📘 <b>فيسبوك:</b> <a href="https://www.facebook.com/profile.php?id=61583287921147" target="_blank" style="text-decoration:none; font-weight:bold;">نقابة المحامين بالفيوم</a>`,
+            membership: () => `🪪 <b>الاشتراكات والكارنيهات:</b><br>• تجديد الاشتراك السنوي يتم حضورياً بمقر النقابة.<br>• يُشترط إحضار إيصال السداد، والدفع متاح عبر <b>الفيزا كارد</b> داخل النقابة.`,
+            council: () => `👨‍⚖️ <b>مجلس النقابة:</b><br>يمكنك الاطلاع على التشكيل الكامل لمجلس نقابة المحامين بالفيوم وأسماء الأعضاء من خلال الرابط التالي:<br><a href="/council/" class="btn btn-gold btn-sm mt-2" style="border-radius:20px; font-weight:bold; padding: 4px 12px; font-size: 0.8rem; text-decoration:none; color: #1a2238;">🏛️ عرض مجلس النقابة</a>`,
+            news: () => `📰 <b>القرارات والأخبار:</b><br>لمتابعة أحدث القرارات النقابية والإعلانات الهامة، تفضل بزيارة المركز الإعلامي:<br><a href="/news/" class="btn btn-primary btn-sm mt-2" style="border-radius:20px; font-weight:bold; padding: 4px 12px; font-size: 0.8rem; text-decoration:none;">📰 المركز الإعلامي</a>`,
+            hours: () => `🕐 <b>مواعيد العمل الرسمية:</b><br>السبت حتى الخميس: من 9:00 صباحاً حتى 2:00 مساءً.<br>الجمعة: عطلة رسمية.`
         };
 
         let isLiveChat = false;
@@ -401,10 +401,28 @@
 
             // Special handling: open live chat for contact
             if (key === 'contact') {
+                const egTime = new Date().toLocaleString("en-US", {timeZone: "Africa/Cairo"});
+                const dateObj = new Date(egTime);
+                const day = dateObj.getDay(); // 0: Sun, 1: Mon, ..., 5: Fri, 6: Sat
+                const hour = dateObj.getHours(); // 0-23
+                
+                const isWorkingDay = (day !== 5); // 5 is Friday
+                const isWorkingHour = (hour >= 9 && hour < 15);
+                
+                if (!isWorkingDay || !isWorkingHour) {
+                    showTyping();
+                    setTimeout(() => {
+                        hideTyping();
+                        appendMessage(`عفواً، خدمة التواصل المباشر مع خدمة العملاء متاحة فقط خلال أوقات العمل الرسمية:<br><b>من السبت إلى الخميس (9:00 صباحاً حتى 3:00 مساءً)</b>.<br>يمكنك ترك رسالتك هنا أو تصفح خدماتنا.`, 'bot');
+                        if(options) options.style.display = 'flex';
+                    }, 900);
+                    return;
+                }
+
                 showTyping();
                 setTimeout(() => {
                     hideTyping();
-                    appendMessage(`عزيزي الأستاذ ${userName}، جارٍ تحويلك إلى أحد مسؤولي النقابة للتواصل المباشر... يُرجى الانتظار لحظة ❤️`, 'bot');
+                    appendMessage(`جاري تحويلك إلى أحد مسؤولي النقابة للتواصل المباشر... يُرجى الانتظار لحظة ❤️`, 'bot');
                     setTimeout(() => {
                         startLiveChatSession();
                     }, 1000);
@@ -415,7 +433,7 @@
             showTyping();
             setTimeout(() => {
                 hideTyping();
-                appendMessage(REPLIES[key](userName), 'bot');
+                appendMessage(REPLIES[key](), 'bot');
                 if(options) options.style.display = 'flex';
             }, 900);
         }
@@ -500,7 +518,11 @@
             } else {
                 msgDiv.className = `chat-message ${sender}-message`;
             }
-            msgDiv.textContent = text;
+            if (sender === 'user') {
+                msgDiv.textContent = text;
+            } else {
+                msgDiv.innerHTML = text;
+            }
             
             if (typingIndicator) {
                 body.insertBefore(msgDiv, typingIndicator);
@@ -601,28 +623,28 @@
                     return;
                 }
                 
-                let reply = `عزيزي الأستاذ ${userName}، لم أتمكن من فهم استفسارك بشكل كامل. يُرجى الاختيار من الخيارات المتاحة أدناه أو التواصل مباشرةً على رقم: 01095043989`;
+                let reply = `عذراً، لم أتمكن من فهم استفسارك بشكل كامل. يُرجى الاختيار من الخيارات المتاحة أدناه أو التواصل مباشرةً على رقمنا: 01095043989`;
                 const t = text;
                 if (t.includes('سلام') || t.includes('مرحب') || t.includes('اهلا') || t.includes('أهلا')) {
-                    reply = `وعليكم السلام ورحمة الله وبركاته يا أستاذ ${userName}! يسعدنا خدمتك في نقابة المحامين بالفيوم. كيف يمكنني مساعدتك اليوم؟`;
+                    reply = `وعليكم السلام ورحمة الله وبركاته! يسعدنا خدمتك في نقابة المحامين بالفيوم. كيف يمكنني مساعدتك اليوم؟`;
                 } else if (t.includes('رقم') || t.includes('تواصل') || t.includes('واتساب') || t.includes('تليفون') || t.includes('اتصال') || t.includes('هاتف')) {
-                    reply = REPLIES.contact(userName);
+                    reply = REPLIES.contact();
                 } else if (t.includes('عنوان') || t.includes('مكان') || t.includes('مقر') || t.includes('فين')) {
-                    reply = REPLIES.location(userName);
+                    reply = REPLIES.location();
                 } else if (t.includes('مواعيد') || t.includes('وقت') || t.includes('ساعة') || t.includes('متى') || t.includes('دوام')) {
-                    reply = REPLIES.hours(userName);
+                    reply = REPLIES.hours();
                 } else if (t.includes('شكرا') || t.includes('شكراً') || t.includes('يعطيك') || t.includes('تسلم') || t.includes('ميرسي')) {
-                    reply = `العفو يا أستاذ ${userName}! نحن دائماً في خدمتكم، لا تتردد في طرح أي استفسار.`;
+                    reply = `العفو! نحن دائماً في خدمتكم، لا تتردد في طرح أي استفسار آخر.`;
                 } else if (t.includes('معهد') || t.includes('محاماة') || t.includes('تدريب')) {
-                    reply = REPLIES.services(userName);
+                    reply = REPLIES.services();
                 } else if (t.includes('طب') || t.includes('شرعي') || t.includes('تقرير') || t.includes('كشف')) {
-                    reply = REPLIES.services(userName);
+                    reply = REPLIES.services();
                 } else if (t.includes('كارنيه') || t.includes('بطاقة') || t.includes('تجديد') || t.includes('اشتراك') || t.includes('معاش')) {
-                    reply = REPLIES.membership(userName);
+                    reply = REPLIES.membership();
                 } else if (t.includes('نقيب') || t.includes('مجلس') || t.includes('رئيس')) {
-                    reply = REPLIES.council(userName);
+                    reply = REPLIES.council();
                 } else if (t.includes('خبر') || t.includes('قرار') || t.includes('اعلان') || t.includes('إعلان')) {
-                    reply = REPLIES.news(userName);
+                    reply = REPLIES.news();
                 }
                 
                 appendMessage(reply, 'bot');

@@ -67,6 +67,7 @@
         
         {% if session.status == 'waiting' %}
         <button id="btnJoin" class="btn btn-success ms-2">قبول وبدء المحادثة</button>
+        <button id="btnReject" class="btn btn-outline-danger ms-2">رفض الطلب</button>
         {% endif %}
         
         {% if session.status == 'active' %}
@@ -165,6 +166,19 @@
                 method: 'POST',
                 headers: {'X-CSRFToken': '{{ csrf_token }}'}
             }).then(() => location.reload());
+        });
+    }
+
+    // Reject action
+    const btnReject = document.getElementById('btnReject');
+    if(btnReject) {
+        btnReject.addEventListener('click', function() {
+            if(confirm('هل أنت متأكد من رفض هذا الطلب؟')) {
+                fetch(`/dashboard/livechat/${sessionKey}/reject/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'}
+                }).then(() => location.reload());
+            }
         });
     }
 
