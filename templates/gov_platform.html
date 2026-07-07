@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ platform_name }} — نقابة المحامين بالفيوم{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gov-viewer-page {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        flex-direction: column;
+        background: #f0f4f8;
+        padding: 0;
+    }
+
+    .gov-viewer-toolbar {
+        background: linear-gradient(135deg, var(--primary-dark, #1a2238) 0%, #0d1526 100%);
+        color: #fff;
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+        position: sticky;
+        top: 0;
+        z-index: 200;
+    }
+
+    .gov-viewer-toolbar .platform-icon {
+        width: 46px;
+        height: 46px;
+        background: var(--gold, #c9a84c);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        box-shadow: 0 2px 10px rgba(201,168,76,0.4);
+    }
+
+    .gov-viewer-toolbar .platform-info h2 {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin: 0;
+        color: #fff;
+        letter-spacing: 0.3px;
+    }
+
+    .gov-viewer-toolbar .platform-info small {
+        color: rgba(255,255,255,0.65);
+        font-size: 0.78rem;
+        word-break: break-all;
+    }
+
+    .gov-viewer-toolbar .toolbar-actions {
+        margin-right: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .gov-viewer-toolbar .btn-toolbar {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-toolbar.btn-gold {
+        background: var(--gold, #c9a84c);
+        color: #1a2238;
+    }
+    .btn-toolbar.btn-gold:hover { background: #b8953d; color: #1a2238; }
+
+    .btn-toolbar.btn-back {
+        background: rgba(255,255,255,0.12);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn-toolbar.btn-back:hover { background: rgba(255,255,255,0.22); }
+
+    .iframe-wrapper {
+        flex: 1;
+        position: relative;
+        width: 100%;
+    }
+
+    .gov-iframe {
+        width: 100%;
+        height: calc(100vh - 155px);
+        border: none;
+        display: block;
+        background: #fff;
+    }
+
+    /* Blocked notice overlay */
+    .blocked-notice {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 155px);
+        background: #f8f9fa;
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .blocked-notice .blocked-icon {
+        font-size: 5rem;
+        color: var(--gold, #c9a84c);
+        margin-bottom: 20px;
+    }
+
+    .blocked-notice h3 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #1a2238;
+        margin-bottom: 12px;
+    }
+
+    .blocked-notice p {
+        color: #666;
+        margin-bottom: 28px;
+        max-width: 500px;
+        line-height: 1.7;
+    }
+
+    .blocked-notice .btn-open-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 34px;
+        border-radius: 30px;
+        background: linear-gradient(135deg, var(--primary-dark, #1a2238), #2d3d6b);
+        color: #fff;
+        font-weight: 800;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 6px 20px rgba(26,34,56,0.3);
+    }
+
+    .blocked-notice .btn-open-new:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(26,34,56,0.4);
+        color: #fff;
+    }
+
+    @media (max-width: 600px) {
+        .gov-viewer-toolbar { padding: 12px 16px; gap: 12px; }
+        .gov-iframe { height: calc(100vh - 175px); }
+        .blocked-notice { height: calc(100vh - 175px); }
+        .toolbar-actions { width: 100%; justify-content: flex-start; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gov-viewer-page">
+    <!-- Toolbar -->
+    <div class="gov-viewer-toolbar">
+        <div class="platform-icon">
+            <i class="fa-solid fa-landmark"></i>
+        </div>
+        <div class="platform-info">
+            <h2>{{ platform_name }}</h2>
+            <small>{{ platform_url }}</small>
+        </div>
+        <div class="toolbar-actions">
+            <a href="{{ platform_url }}" target="_blank" class="btn-toolbar btn-gold">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح في تبويب جديد
+            </a>
+            <a href="javascript:history.back()" class="btn-toolbar btn-back">
+                <i class="fa-solid fa-arrow-right"></i> رجوع
+            </a>
+        </div>
+    </div>
+
+    <!-- iframe viewer -->
+    <div class="iframe-wrapper">
+        <iframe
+            id="govFrame"
+            class="gov-iframe"
+            src="{{ platform_url }}"
+            title="{{ platform_name }}"
+            allowfullscreen
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
+            loading="lazy"
+        ></iframe>
+
+        <!-- Shown if website blocks iframe embedding -->
+        <div class="blocked-notice" id="blockedNotice">
+            <div class="blocked-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>لا يمكن عرض هذه المنصة مدمجةً</h3>
+            <p>
+                يمنع هذا الموقع عرضه داخل مواقع أخرى لأسباب أمنية، وهو أمر معتاد في المنصات الحكومية.<br>
+                يمكنك فتحه في نافذة مستقلة بالضغط على الزر أدناه.
+            </p>
+            <a href="{{ platform_url }}" target="_blank" class="btn-open-new">
+                <i class="fa-solid fa-globe"></i> فتح {{ platform_name }} الآن
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const frame = document.getElementById('govFrame');
+    const blocked = document.getElementById('blockedNotice');
+
+    // Detect X-Frame-Options / CSP blocking
+    frame.addEventListener('load', function() {
+        try {
+            // If cross-origin restriction blocks, contentDocument will throw
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            if (!doc || doc.URL === 'about:blank') {
+                frame.style.display = 'none';
+                blocked.style.display = 'flex';
+            }
+        } catch(e) {
+            // CORS error = blocked by X-Frame-Options
+            frame.style.display = 'none';
+            blocked.style.display = 'flex';
+        }
+    });
+
+    // Safety: if iframe doesn't load in 10s, show fallback
+    setTimeout(() => {
+        try {
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            if (!doc || doc.readyState !== 'complete' || doc.URL === 'about:blank') {
+                frame.style.display = 'none';
+                blocked.style.display = 'flex';
+            }
+        } catch(e) {
+            frame.style.display = 'none';
+            blocked.style.display = 'flex';
+        }
+    }, 10000);
+</script>
+{% endblock %}
