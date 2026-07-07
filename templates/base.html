@@ -38,9 +38,9 @@
                 <li class="dropdown">
                     <a href="javascript:void(0);" onclick="toggleDropdown(event, 'servicesDropdown')" class="{% if request.resolver_match.url_name == 'institute' or request.resolver_match.url_name == 'forensic' or request.resolver_match.url_name == 'gov_platform' %}active{% endif %}">الخدمات <i class="fa-solid fa-chevron-down fa-xs"></i></a>
                     <ul id="servicesDropdown" class="dropdown-menu">
-                        <li><a href="{% url 'core:institute' %}">معهد المحاماة</a></li>
-                        <li><a href="{% url 'core:forensic' %}">الطب الشرعي</a></li>
-                        <li><a href="{% url 'core:gov_platform' %}"><i class="fa-solid fa-landmark fa-sm ms-1"></i> المنصات الحكومية</a></li>
+                        <li><a href="{% url 'core:institute' %}"><i class="fa-solid fa-building-columns fa-sm ms-1" style="color:#4f6af5;"></i> معهد المحاماة</a></li>
+                        <li><a href="{% url 'core:forensic' %}"><i class="fa-solid fa-notes-medical fa-sm ms-1" style="color:#e74c3c;"></i> الطب الشرعي</a></li>
+                        <li><a href="{% url 'core:gov_platform' %}"><i class="fa-solid fa-landmark fa-sm ms-1" style="color:#c9a84c;"></i> المنصات الحكومية</a></li>
                     </ul>
                 </li>
 
@@ -50,8 +50,8 @@
                 <li class="dropdown">
                     <a href="javascript:void(0);" onclick="toggleDropdown(event, 'contactDropdown')" class="{% if request.resolver_match.url_name == 'contact' or request.resolver_match.url_name == 'faq' %}active{% endif %}">التواصل <i class="fa-solid fa-chevron-down fa-xs"></i></a>
                     <ul id="contactDropdown" class="dropdown-menu">
-                        <li><a href="{% url 'core:contact' %}">تواصل معنا</a></li>
-                        <li><a href="{% url 'core:faq' %}">الأسئلة الشائعة</a></li>
+                        <li><a href="{% url 'core:contact' %}"><i class="fa-solid fa-envelope fa-sm ms-1" style="color:#27ae60;"></i> تواصل معنا</a></li>
+                        <li><a href="{% url 'core:faq' %}"><i class="fa-solid fa-circle-question fa-sm ms-1" style="color:#9b59b6;"></i> الأسئلة الشائعة</a></li>
                     </ul>
                 </li>
 
