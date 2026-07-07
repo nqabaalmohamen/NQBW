@@ -392,7 +392,7 @@
             membership: () => `🪪 <b>الاشتراكات والكارنيهات:</b><br>• تجديد الاشتراك السنوي يتم حضورياً بمقر النقابة.<br>• يُشترط إحضار إيصال السداد، والدفع متاح عبر <b>الفيزا كارد</b> داخل النقابة.`,
             council: () => `👨‍⚖️ <b>مجلس النقابة:</b><br>يمكنك الاطلاع على التشكيل الكامل لمجلس نقابة المحامين بالفيوم وأسماء الأعضاء من خلال الرابط التالي:<br><a href="/council/" class="btn btn-gold btn-sm mt-2" style="border-radius:20px; font-weight:bold; padding: 4px 12px; font-size: 0.8rem; text-decoration:none; color: #1a2238;">🏛️ عرض مجلس النقابة</a>`,
             news: () => `📰 <b>القرارات والأخبار:</b><br>لمتابعة أحدث القرارات النقابية والإعلانات الهامة، تفضل بزيارة المركز الإعلامي:<br><a href="/news/" class="btn btn-primary btn-sm mt-2" style="border-radius:20px; font-weight:bold; padding: 4px 12px; font-size: 0.8rem; text-decoration:none;">📰 المركز الإعلامي</a>`,
-            hours: () => `🕐 <b>مواعيد العمل الرسمية:</b><br>السبت حتى الخميس: من 9:00 صباحاً حتى 2:00 مساءً.<br>الجمعة: عطلة رسمية.`
+            hours: () => `🕐 <b>مواعيد العمل الرسمية:</b><br>السبت حتى الخميس: من 9:00 صباحاً حتى 2:00 مساءً.<br>معادا الجمعة و الأجازات الرسمية.`
         };
 
         let isLiveChat = sessionStorage.getItem('chat_isLiveChat') === 'true';
@@ -419,13 +419,13 @@
                 const hour = dateObj.getHours(); // 0-23
                 
                 const isWorkingDay = (day !== 5); // 5 is Friday
-                const isWorkingHour = (hour >= 9 && hour < 15);
+                const isWorkingHour = (hour >= 9 && hour < 14); // 9 AM to 2 PM (14:00)
                 
                 if (!isWorkingDay || !isWorkingHour) {
                     showTyping();
                     setTimeout(() => {
                         hideTyping();
-                        appendMessage(`عفواً، خدمة التواصل المباشر مع خدمة العملاء متاحة فقط خلال أوقات العمل الرسمية:<br><b>من السبت إلى الخميس (9:00 صباحاً حتى 3:00 مساءً)</b>.<br>يمكنك ترك رسالتك هنا أو تصفح خدماتنا.`, 'bot');
+                        appendMessage(`عفواً، خدمة التواصل المباشر مع خدمة العملاء متاحة فقط خلال أوقات العمل الرسمية:<br><b>من السبت إلى الخميس (9:00 صباحاً حتى 2:00 مساءً)</b>.<br>يمكنك ترك رسالتك هنا أو تصفح خدماتنا.`, 'bot');
                         if(options) options.style.display = 'flex';
                     }, 900);
                     return;
