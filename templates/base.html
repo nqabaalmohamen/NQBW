@@ -363,8 +363,14 @@
     </button>
 
     <script>
-        let userName = sessionStorage.getItem('chat_userName') || '';
-        let chatStep = sessionStorage.getItem('chat_chatStep') || 'ask_name';
+        {% if request.user.is_authenticated %}
+            const authUserName = "{{ request.user.first_name|default:request.user.username }}";
+        {% else %}
+            const authUserName = "";
+        {% endif %}
+
+        let userName = sessionStorage.getItem('chat_userName') || authUserName || '';
+        let chatStep = sessionStorage.getItem('chat_chatStep') || (authUserName ? 'normal_chat' : 'ask_name');
         let badgeHidden = false;
 
         function saveChatState() {
@@ -749,9 +755,17 @@
                         child.style.display = 'none';
                     }
                 });
-                let reply = `أهلاً بك مجدداً يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟`;
+                // If it's a fresh session but authenticated, welcome them properly
+                const isFreshSession = !sessionStorage.getItem('chat_chatStep');
+                let reply = isFreshSession 
+                    ? `أهلاً بك يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟` 
+                    : `أهلاً بك مجدداً يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟`;
+                
                 appendMessage(reply, 'bot');
                 if (options) options.style.display = 'flex';
+                
+                // Save it so it persists on reload
+                if (isFreshSession) saveChatState();
             }
         }
 
