@@ -92,33 +92,8 @@ def faq_page(request):
     return render(request, 'faq.html', {'faqs': faqs})
 
 def gov_platform(request):
-    """Renders external government platforms inside an internal iframe viewer."""
-    platform_url  = request.GET.get('url', '').strip()
-    platform_name = request.GET.get('name', 'منصة حكومية').strip()
-
-    # Whitelist: only allow known government domains for security
-    ALLOWED_DOMAINS = [
-        'digital.gov.eg',
-        'courts.gov.eg',
-        'nrla.gov.eg',
-        'eta.gov.eg',
-        'pp.gov.eg',
-        'egyptianbar.org.eg',
-        'investinegypt.gov.eg',
-        'economic-court.eg',
-    ]
-
-    from urllib.parse import urlparse
-    parsed = urlparse(platform_url)
-    domain = parsed.netloc.replace('www.', '')
-
-    if not platform_url or not any(domain.endswith(d) for d in ALLOWED_DOMAINS):
-        return redirect('core:home')
-
-    return render(request, 'gov_platform.html', {
-        'platform_url': platform_url,
-        'platform_name': platform_name,
-    })
+    """Shows the government platforms directory page."""
+    return render(request, 'gov_platform.html')
 
 
 def search(request):

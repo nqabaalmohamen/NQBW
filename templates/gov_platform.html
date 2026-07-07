@@ -1,252 +1,250 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ platform_name }} — نقابة المحامين بالفيوم{% endblock %}
+{% block title %}المنصات الحكومية — نقابة المحامين بالفيوم{% endblock %}
 
 {% block extra_css %}
 <style>
-    .gov-viewer-page {
-        min-height: calc(100vh - 80px);
-        display: flex;
-        flex-direction: column;
-        background: #f0f4f8;
-        padding: 0;
-    }
-
-    .gov-viewer-toolbar {
-        background: linear-gradient(135deg, var(--primary-dark, #1a2238) 0%, #0d1526 100%);
-        color: #fff;
-        padding: 14px 28px;
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        flex-wrap: wrap;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.25);
-        position: sticky;
-        top: 0;
-        z-index: 200;
-    }
-
-    .gov-viewer-toolbar .platform-icon {
-        width: 46px;
-        height: 46px;
-        background: var(--gold, #c9a84c);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        flex-shrink: 0;
-        box-shadow: 0 2px 10px rgba(201,168,76,0.4);
-    }
-
-    .gov-viewer-toolbar .platform-info h2 {
-        font-size: 1.05rem;
-        font-weight: 800;
-        margin: 0;
-        color: #fff;
-        letter-spacing: 0.3px;
-    }
-
-    .gov-viewer-toolbar .platform-info small {
-        color: rgba(255,255,255,0.65);
-        font-size: 0.78rem;
-        word-break: break-all;
-    }
-
-    .gov-viewer-toolbar .toolbar-actions {
-        margin-right: auto;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .gov-viewer-toolbar .btn-toolbar {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 8px 18px;
-        border-radius: 30px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .btn-toolbar.btn-gold {
-        background: var(--gold, #c9a84c);
-        color: #1a2238;
-    }
-    .btn-toolbar.btn-gold:hover { background: #b8953d; color: #1a2238; }
-
-    .btn-toolbar.btn-back {
-        background: rgba(255,255,255,0.12);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-    .btn-toolbar.btn-back:hover { background: rgba(255,255,255,0.22); }
-
-    .iframe-wrapper {
-        flex: 1;
-        position: relative;
-        width: 100%;
-    }
-
-    .gov-iframe {
-        width: 100%;
-        height: calc(100vh - 155px);
-        border: none;
-        display: block;
-        background: #fff;
-    }
-
-    /* Blocked notice overlay */
-    .blocked-notice {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: calc(100vh - 155px);
-        background: #f8f9fa;
+    /* ── Page Hero ─────────────────────────── */
+    .gov-hero {
+        background: linear-gradient(135deg, #1a2238 0%, #0d1526 60%, #162040 100%);
+        padding: 64px 20px 52px;
         text-align: center;
-        padding: 40px 20px;
+        position: relative;
+        overflow: hidden;
     }
-
-    .blocked-notice .blocked-icon {
-        font-size: 5rem;
-        color: var(--gold, #c9a84c);
+    .gov-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.15) 0%, transparent 70%);
+    }
+    .gov-hero .hero-icon {
+        width: 80px; height: 80px;
+        background: linear-gradient(135deg, #c9a84c, #e8c96a);
+        border-radius: 22px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 2.2rem; color: #1a2238;
         margin-bottom: 20px;
+        box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+        position: relative;
+    }
+    .gov-hero h1 {
+        font-size: 2rem; font-weight: 900; color: #fff;
+        margin: 0 0 12px; position: relative;
+    }
+    .gov-hero p {
+        color: rgba(255,255,255,0.7); font-size: 1rem;
+        max-width: 560px; margin: 0 auto; line-height: 1.8;
+        position: relative;
     }
 
-    .blocked-notice h3 {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #1a2238;
-        margin-bottom: 12px;
+    /* ── Grid ───────────────────────────────── */
+    .gov-grid-section {
+        padding: 52px 20px 80px;
+        background: #f4f6fb;
+    }
+    .gov-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 26px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    .blocked-notice p {
-        color: #666;
-        margin-bottom: 28px;
-        max-width: 500px;
-        line-height: 1.7;
-    }
-
-    .blocked-notice .btn-open-new {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 34px;
-        border-radius: 30px;
-        background: linear-gradient(135deg, var(--primary-dark, #1a2238), #2d3d6b);
-        color: #fff;
-        font-weight: 800;
-        font-size: 1rem;
+    /* ── Cards ──────────────────────────────── */
+    .gov-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 32px 24px 28px;
+        text-align: center;
+        border: 1px solid #e8edf5;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         text-decoration: none;
+        display: block;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .gov-card::before {
+        content: '';
+        position: absolute; top: 0; right: 0; left: 0; height: 4px;
+        background: linear-gradient(90deg, #c9a84c, #e8c96a);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s;
+    }
+    .gov-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(26,34,56,0.15);
+        border-color: #c9a84c;
+        text-decoration: none;
+    }
+    .gov-card:hover::before { transform: scaleX(1); }
+
+    .gov-card-icon {
+        width: 72px; height: 72px;
+        border-radius: 18px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 18px;
+        transition: transform 0.3s;
+    }
+    .gov-card:hover .gov-card-icon { transform: scale(1.1) rotate(-3deg); }
+
+    .gov-card h3 {
+        font-size: 1.05rem; font-weight: 800;
+        color: #1a2238; margin: 0 0 8px;
+    }
+    .gov-card p {
+        font-size: 0.82rem; color: #7a8496;
+        margin: 0 0 20px; line-height: 1.6;
+    }
+    .gov-card .card-btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 9px 22px;
+        border-radius: 30px;
+        font-size: 0.83rem; font-weight: 700;
+        background: linear-gradient(135deg, #1a2238, #2d3d6b);
+        color: #fff;
         transition: all 0.3s;
-        box-shadow: 0 6px 20px rgba(26,34,56,0.3);
+        border: none;
+    }
+    .gov-card:hover .card-btn {
+        background: linear-gradient(135deg, #c9a84c, #b8953d);
+        color: #1a2238;
+    }
+    .gov-card .ext-badge {
+        position: absolute; top: 16px; left: 16px;
+        background: #eef2ff; color: #4f6af5;
+        font-size: 0.68rem; font-weight: 700;
+        padding: 3px 9px; border-radius: 20px;
+        letter-spacing: 0.5px;
     }
 
-    .blocked-notice .btn-open-new:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(26,34,56,0.4);
-        color: #fff;
+    /* ── Icon Colors ─────────────────────────── */
+    .icon-blue   { background: #eef2ff; color: #4f6af5; }
+    .icon-red    { background: #fff1f0; color: #e74c3c; }
+    .icon-green  { background: #f0fdf4; color: #27ae60; }
+    .icon-gold   { background: #fffbea; color: #c9a84c; }
+    .icon-purple { background: #f9f0ff; color: #9b59b6; }
+    .icon-teal   { background: #f0fdfa; color: #0d9488; }
+    .icon-orange { background: #fff7ed; color: #e67e22; }
+    .icon-dark   { background: #f1f5f9; color: #1a2238; }
+
+    /* ── Notice banner ───────────────────────── */
+    .notice-bar {
+        background: linear-gradient(90deg, #fffbea, #fff8e1);
+        border: 1px solid #f0d070;
+        border-radius: 12px;
+        padding: 14px 20px;
+        max-width: 1200px;
+        margin: 0 auto 32px;
+        display: flex; align-items: center; gap: 12px;
+        font-size: 0.88rem; color: #7a5c00;
     }
+    .notice-bar i { font-size: 1.1rem; color: #c9a84c; flex-shrink: 0; }
 
     @media (max-width: 600px) {
-        .gov-viewer-toolbar { padding: 12px 16px; gap: 12px; }
-        .gov-iframe { height: calc(100vh - 175px); }
-        .blocked-notice { height: calc(100vh - 175px); }
-        .toolbar-actions { width: 100%; justify-content: flex-start; }
+        .gov-hero h1 { font-size: 1.5rem; }
+        .gov-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+        .gov-card { padding: 22px 14px 20px; }
+        .gov-card-icon { width: 54px; height: 54px; font-size: 1.4rem; }
+        .gov-card h3 { font-size: 0.88rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="gov-viewer-page">
-    <!-- Toolbar -->
-    <div class="gov-viewer-toolbar">
-        <div class="platform-icon">
-            <i class="fa-solid fa-landmark"></i>
-        </div>
-        <div class="platform-info">
-            <h2>{{ platform_name }}</h2>
-            <small>{{ platform_url }}</small>
-        </div>
-        <div class="toolbar-actions">
-            <a href="{{ platform_url }}" target="_blank" class="btn-toolbar btn-gold">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح في تبويب جديد
-            </a>
-            <a href="javascript:history.back()" class="btn-toolbar btn-back">
-                <i class="fa-solid fa-arrow-right"></i> رجوع
-            </a>
-        </div>
+
+<!-- Hero -->
+<div class="gov-hero">
+    <div class="hero-icon"><i class="fa-solid fa-landmark"></i></div>
+    <h1>المنصات الحكومية الإلكترونية</h1>
+    <p>بوابة موحدة للوصول السريع إلى أبرز المنصات والخدمات الحكومية المصرية الرقمية ذات الصلة بالعمل القانوني والقضائي.</p>
+</div>
+
+<!-- Grid -->
+<div class="gov-grid-section">
+    <div class="notice-bar">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>سيتم فتح كل منصة في نافذة أو تبويب جديد. هذه الروابط توجّه مباشرة إلى المواقع الرسمية للجهات الحكومية.</span>
     </div>
 
-    <!-- iframe viewer -->
-    <div class="iframe-wrapper">
-        <iframe
-            id="govFrame"
-            class="gov-iframe"
-            src="{{ platform_url }}"
-            title="{{ platform_name }}"
-            allowfullscreen
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
-            loading="lazy"
-        ></iframe>
+    <div class="gov-grid">
 
-        <!-- Shown if website blocks iframe embedding -->
-        <div class="blocked-notice" id="blockedNotice">
-            <div class="blocked-icon"><i class="fa-solid fa-shield-halved"></i></div>
-            <h3>لا يمكن عرض هذه المنصة مدمجةً</h3>
-            <p>
-                يمنع هذا الموقع عرضه داخل مواقع أخرى لأسباب أمنية، وهو أمر معتاد في المنصات الحكومية.<br>
-                يمكنك فتحه في نافذة مستقلة بالضغط على الزر أدناه.
-            </p>
-            <a href="{{ platform_url }}" target="_blank" class="btn-open-new">
-                <i class="fa-solid fa-globe"></i> فتح {{ platform_name }} الآن
-            </a>
-        </div>
+        <!-- مصر الرقمية -->
+        <a href="https://www.digital.gov.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-blue"><i class="fa-solid fa-globe"></i></div>
+            <h3>مصر الرقمية</h3>
+            <p>بوابة الخدمات الحكومية الرقمية الموحدة لجمهورية مصر العربية</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- المحاكم الإلكترونية -->
+        <a href="https://courts.gov.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-red"><i class="fa-solid fa-scale-balanced"></i></div>
+            <h3>بوابة المحاكم الإلكترونية</h3>
+            <p>خدمات المحاكم المصرية الإلكترونية وجداول الجلسات والأحكام</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- الشهر العقاري -->
+        <a href="https://www.nrla.gov.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-green"><i class="fa-solid fa-file-contract"></i></div>
+            <h3>الشهر العقاري والتوثيق</h3>
+            <p>خدمات الجهاز القومي لتسجيل العقارات وتوثيق المحررات الرسمية</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- مصلحة الضرائب -->
+        <a href="https://www.eta.gov.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-gold"><i class="fa-solid fa-receipt"></i></div>
+            <h3>مصلحة الضرائب المصرية</h3>
+            <p>خدمات الفاتورة الإلكترونية وتقديم الإقرارات الضريبية والاستعلامات</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- النيابة العامة -->
+        <a href="https://www.pp.gov.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-purple"><i class="fa-solid fa-landmark"></i></div>
+            <h3>النيابة العامة الرقمية</h3>
+            <p>منصة النيابة العامة المصرية وخدماتها القضائية الإلكترونية</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- نقابة المحامين المصرية -->
+        <a href="https://www.egyptianbar.org.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-teal"><i class="fa-solid fa-user-tie"></i></div>
+            <h3>نقابة المحامين المصرية</h3>
+            <p>الموقع الرسمي لنقابة المحامين المصريين والخدمات النقابية الوطنية</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- هيئة الاستثمار -->
+        <a href="https://www.investinegypt.gov.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-orange"><i class="fa-solid fa-chart-line"></i></div>
+            <h3>هيئة الاستثمار</h3>
+            <p>الهيئة العامة للاستثمار والمناطق الحرة — خدمات تأسيس الشركات والتراخيص</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
+        <!-- المحاكم الاقتصادية -->
+        <a href="https://economic-court.eg/" target="_blank" rel="noopener" class="gov-card">
+            <span class="ext-badge"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> موقع رسمي</span>
+            <div class="gov-card-icon icon-dark"><i class="fa-solid fa-building-columns"></i></div>
+            <h3>المحاكم الاقتصادية</h3>
+            <p>بوابة المحاكم الاقتصادية المصرية والقضايا التجارية والاقتصادية</p>
+            <span class="card-btn"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i> فتح المنصة</span>
+        </a>
+
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
-<script>
-    const frame = document.getElementById('govFrame');
-    const blocked = document.getElementById('blockedNotice');
-
-    // Detect X-Frame-Options / CSP blocking
-    frame.addEventListener('load', function() {
-        try {
-            // If cross-origin restriction blocks, contentDocument will throw
-            const doc = frame.contentDocument || frame.contentWindow.document;
-            if (!doc || doc.URL === 'about:blank') {
-                frame.style.display = 'none';
-                blocked.style.display = 'flex';
-            }
-        } catch(e) {
-            // CORS error = blocked by X-Frame-Options
-            frame.style.display = 'none';
-            blocked.style.display = 'flex';
-        }
-    });
-
-    // Safety: if iframe doesn't load in 10s, show fallback
-    setTimeout(() => {
-        try {
-            const doc = frame.contentDocument || frame.contentWindow.document;
-            if (!doc || doc.readyState !== 'complete' || doc.URL === 'about:blank') {
-                frame.style.display = 'none';
-                blocked.style.display = 'flex';
-            }
-        } catch(e) {
-            frame.style.display = 'none';
-            blocked.style.display = 'flex';
-        }
-    }, 10000);
-</script>
 {% endblock %}
