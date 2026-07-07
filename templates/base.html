@@ -656,32 +656,67 @@
                     return;
                 }
                 
-                let reply = `عذراً، لم أتمكن من فهم استفسارك بشكل كامل. يُرجى الاختيار من الخيارات المتاحة أدناه أو التواصل مباشرةً على رقمنا: 01095043989`;
+                let matched = false;
+                let reply = '';
                 const t = text;
+                
                 if (t.includes('سلام') || t.includes('مرحب') || t.includes('اهلا') || t.includes('أهلا')) {
                     reply = `وعليكم السلام ورحمة الله وبركاته! يسعدنا خدمتك في نقابة المحامين بالفيوم. كيف يمكنني مساعدتك اليوم؟`;
+                    matched = true;
                 } else if (t.includes('رقم') || t.includes('تواصل') || t.includes('واتساب') || t.includes('تليفون') || t.includes('اتصال') || t.includes('هاتف')) {
                     reply = REPLIES.contact();
+                    matched = true;
                 } else if (t.includes('عنوان') || t.includes('مكان') || t.includes('مقر') || t.includes('فين')) {
                     reply = REPLIES.location();
+                    matched = true;
                 } else if (t.includes('مواعيد') || t.includes('وقت') || t.includes('ساعة') || t.includes('متى') || t.includes('دوام')) {
                     reply = REPLIES.hours();
+                    matched = true;
                 } else if (t.includes('شكرا') || t.includes('شكراً') || t.includes('يعطيك') || t.includes('تسلم') || t.includes('ميرسي')) {
                     reply = `العفو! نحن دائماً في خدمتكم، لا تتردد في طرح أي استفسار آخر.`;
+                    matched = true;
                 } else if (t.includes('معهد') || t.includes('محاماة') || t.includes('تدريب')) {
                     reply = REPLIES.services();
+                    matched = true;
                 } else if (t.includes('طب') || t.includes('شرعي') || t.includes('تقرير') || t.includes('كشف')) {
                     reply = REPLIES.services();
+                    matched = true;
                 } else if (t.includes('كارنيه') || t.includes('بطاقة') || t.includes('تجديد') || t.includes('اشتراك') || t.includes('معاش')) {
                     reply = REPLIES.membership();
+                    matched = true;
                 } else if (t.includes('نقيب') || t.includes('مجلس') || t.includes('رئيس')) {
                     reply = REPLIES.council();
+                    matched = true;
                 } else if (t.includes('خبر') || t.includes('قرار') || t.includes('اعلان') || t.includes('إعلان')) {
                     reply = REPLIES.news();
+                    matched = true;
                 }
                 
-                appendMessage(reply, 'bot');
-                if(options) options.style.display = 'flex';
+                if (matched) {
+                    appendMessage(reply, 'bot');
+                    if(options) options.style.display = 'flex';
+                } else {
+                    // Smart Search - Read site content automatically via API
+                    fetch(`/search/api/?q=${encodeURIComponent(text)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.results && data.results.length > 0) {
+                            let linksHTML = data.results.slice(0, 3).map(r => 
+                                `<a href="${r.url}" class="btn btn-outline-primary btn-sm mt-1 mb-1" style="display:block; text-align:right; border-radius:15px; text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square ms-1"></i> ${r.title} <small class="text-muted">(${r.type})</small></a>`
+                            ).join('');
+                            reply = `لقد بحثت في الموقع ووجدت هذه النتائج التي قد تفيدك:<br><div class="mt-2">${linksHTML}</div>`;
+                        } else {
+                            reply = `عذراً، لم أتمكن من العثور على إجابة في الموقع أو فهم استفسارك بشكل كامل.<br>يُرجى الاختيار من الخيارات المتاحة أدناه للوصول السريع، أو التواصل على: 01095043989`;
+                        }
+                        appendMessage(reply, 'bot');
+                        if(options) options.style.display = 'flex';
+                    })
+                    .catch(err => {
+                        reply = `عذراً، لم أتمكن من فهم استفسارك بشكل كامل. يُرجى الاختيار من الخيارات المتاحة أدناه أو التواصل مباشرةً على رقمنا: 01095043989`;
+                        appendMessage(reply, 'bot');
+                        if(options) options.style.display = 'flex';
+                    });
+                }
             }, 1000);
         }
 
