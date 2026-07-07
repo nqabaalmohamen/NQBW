@@ -235,9 +235,9 @@
                     </svg>
 
                     <!-- Image Section (Left side) -->
-                    <div class="nosi-image-side" style="width: 40%; position: relative; z-index: 1; background: #f8f9fa; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <div class="nosi-image-side parallax-container-desktop" style="width: 40%; position: relative; z-index: 1; background: #f8f9fa; display: flex; align-items: center; justify-content: center; padding: 20px; perspective: 1000px;">
                         {% if item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.title }}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="parallax-img-desktop" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform;">
                         {% else %}
                         <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fa-solid fa-scale-balanced" style="font-size: 8rem; color: rgba(255,255,255,0.2);"></i>
@@ -281,9 +281,9 @@
         <div class="swiper-wrapper">
             {% for item in latest_news %}
             <div class="swiper-slide">
-                <div class="mobile-slide-inner">
+                <div class="mobile-slide-inner parallax-container-mobile" style="perspective: 1000px;">
                     {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="mobile-slide-bg" loading="lazy">
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="mobile-slide-bg parallax-img-mobile" loading="lazy" style="transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform;">
                     <div class="swiper-lazy-preloader swiper-lazy-preloader-white" style="z-index: 10;"></div>
                     {% else %}
                     <div class="mobile-slide-bg mobile-slide-placeholder">
@@ -411,6 +411,60 @@
                 }
             }
         });
+
+        // --- Mouse Parallax Effect (Desktop) ---
+        document.querySelectorAll('.parallax-container-desktop').forEach(container => {
+            container.addEventListener('mousemove', function(e) {
+                const img = this.querySelector('.parallax-img-desktop');
+                if (!img) return;
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position within the element
+                const y = e.clientY - rect.top;  // y position within the element
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate movement (limit to max 20px)
+                const moveX = ((x - centerX) / centerX) * 15;
+                const moveY = ((y - centerY) / centerY) * 15;
+                
+                img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.03)`;
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                const img = this.querySelector('.parallax-img-desktop');
+                if (img) {
+                    img.style.transform = `translate(0px, 0px) scale(1)`;
+                }
+            });
+        });
+
+        // --- Device Orientation Parallax (Mobile) ---
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', function(e) {
+                // gamma is the left-to-right tilt in degrees, where right is positive
+                // beta is the front-to-back tilt in degrees, where front is positive
+                const gamma = e.gamma; 
+                const beta = e.beta;
+                
+                if (gamma !== null && beta !== null) {
+                    // Limit angles
+                    const maxTilt = 20;
+                    let moveX = (gamma / 90) * 20; // max 20px
+                    let moveY = ((beta - 45) / 90) * 20; // offset by 45deg typical holding angle
+
+                    // constrain movement
+                    moveX = Math.max(-20, Math.min(20, moveX));
+                    moveY = Math.max(-20, Math.min(20, moveY));
+
+                    document.querySelectorAll('.parallax-img-mobile').forEach(img => {
+                        // Apply movement to all mobile images
+                        img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+                    });
+                }
+            });
+        }
     });
 </script>
 {% endblock %}
