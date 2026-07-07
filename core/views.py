@@ -129,6 +129,8 @@ def search(request):
             results['services'].append({'title': 'الكشف الطبي', 'url': 'core:medical_exams', 'desc': 'نتائج الكشف الطبي للمحامين الجدد', 'icon': 'fa-notes-medical'})
         if "شك" in query_lower or "مقترح" in query_lower:
             results['services'].append({'title': 'الشكاوى والمقترحات', 'url': 'core:contact', 'desc': 'تقديم ومتابعة الشكاوى', 'icon': 'fa-comment-dots'})
+        if "منص" in query_lower or "حكوم" in query_lower or "رقمي" in query_lower or "عدل" in query_lower or "ضرائب" in query_lower or "عقاري" in query_lower or "نيابة" in query_lower:
+            results['services'].append({'title': 'المنصات الحكومية', 'url': 'core:gov_platform', 'desc': 'بوابة المنصات الحكومية الإلكترونية', 'icon': 'fa-landmark'})
 
     return render(request, 'search_results.html', results)
 
@@ -156,6 +158,8 @@ def search_api(request):
         results.append({'title': 'الكشف الطبي', 'url': reverse('core:dashboard_medical_exams'), 'type': 'خدمة'})
     if "شك" in query_lower or "مقترح" in query_lower:
         results.append({'title': 'الشكاوى والمقترحات', 'url': reverse('core:contact'), 'type': 'خدمة'})
+    if "منص" in query_lower or "حكوم" in query_lower or "رقمي" in query_lower or "عدل" in query_lower or "ضرائب" in query_lower or "عقاري" in query_lower or "نيابة" in query_lower:
+        results.append({'title': 'المنصات الحكومية', 'url': reverse('core:gov_platform'), 'type': 'بوابة'})
         
     # Council
     council = CouncilMember.objects.filter(council_q).distinct()[:3]
