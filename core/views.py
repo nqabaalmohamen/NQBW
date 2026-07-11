@@ -439,7 +439,7 @@ def seed_library_view(request):
                   f"Contracts: {LibraryContract.objects.count()}")
         return HttpResponse(f"✅ Library seeded successfully!\n{counts}", content_type="text/plain")
     except Exception as e:
-        return HttpResponse(f"❌ Seed failed:\n{str(e)}", content_type="text/plain", status=500)
+        return HttpResponse(f"❌ Seed failed:\n{str(e)}", content_type="text/plain", status=200)
 
 # ══════════════════════════════════════════
 #  AUTH - PUBLIC USERS

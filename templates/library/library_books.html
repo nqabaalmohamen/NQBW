@@ -53,8 +53,7 @@
     {% if books %}
     <div class="lib-grid lib-grid-3">
         {% for b in books %}
-        {% with link=b.file.url|default:b.external_url %}
-        <div class="lib-card" {% if link %}style="cursor:pointer;" onclick="window.open('{{ link }}','_blank')"{% endif %}>
+        <div class="lib-card" {% if b.file %}style="cursor:pointer;" onclick="window.open('{{ b.file.url }}','_blank')"{% elif b.external_url %}style="cursor:pointer;" onclick="window.open('{{ b.external_url }}','_blank')"{% endif %}>
             <div class="lib-card-cover">
                 {% if b.cover_image %}<img src="{{ b.cover_image.url }}" alt="{{ b.title }}">{% else %}<i class="fa-solid fa-book"></i>{% endif %}
             </div>
@@ -71,7 +70,6 @@
                 </div>
             </div>
         </div>
-        {% endwith %}
         {% endfor %}
     </div>
     {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد كتب{% if q %} تطابق "{{ q }}"{% endif %}.</p>{% endif %}

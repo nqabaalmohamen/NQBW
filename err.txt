@@ -1,0 +1,2 @@
+✅ Library seeded successfully!
+Journals: 2, Legislations: 6, Books: 4, Contracts: 6

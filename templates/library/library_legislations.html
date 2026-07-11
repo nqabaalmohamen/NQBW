@@ -55,8 +55,8 @@
     {% if legislations %}
     <div class="lib-grid" style="grid-template-columns: repeat(2, 1fr); gap:16px;">
         {% for leg in legislations %}
-        {% with cat=leg.category link=leg.file.url|default:leg.external_url %}
-        <div class="leg-card" {% if link %}style="cursor:pointer;" onclick="window.open('{{ link }}','_blank')"{% endif %}>
+        {% with cat=leg.category %}
+        <div class="leg-card" {% if leg.file %}style="cursor:pointer;" onclick="window.open('{{ leg.file.url }}','_blank')"{% elif leg.external_url %}style="cursor:pointer;" onclick="window.open('{{ leg.external_url }}','_blank')"{% endif %}>
             <div class="leg-icon" style="background:{% if cat == 'law' %}#eff6ff{% elif cat == 'ruling' %}#fef3c7{% elif cat == 'decree' %}#f0fdf4{% else %}#f5f3ff{% endif %}; color:{% if cat == 'law' %}#2563eb{% elif cat == 'ruling' %}#d97706{% elif cat == 'decree' %}#16a34a{% else %}#7c3aed{% endif %};">
                 <i class="fa-solid {% if cat == 'law' %}fa-gavel{% elif cat == 'ruling' %}fa-landmark{% elif cat == 'decree' %}fa-scroll{% else %}fa-file-lines{% endif %}"></i>
             </div>

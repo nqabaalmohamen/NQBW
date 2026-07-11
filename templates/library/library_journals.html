@@ -52,8 +52,7 @@
     {% if journals %}
     <div class="lib-grid lib-grid-4">
         {% for j in journals %}
-        {% with link=j.file.url|default:j.external_url %}
-        <div class="lib-card" {% if link %}style="cursor:pointer;" onclick="window.open('{{ link }}','_blank')"{% endif %}>
+        <div class="lib-card" {% if j.file %}style="cursor:pointer;" onclick="window.open('{{ j.file.url }}','_blank')"{% elif j.external_url %}style="cursor:pointer;" onclick="window.open('{{ j.external_url }}','_blank')"{% endif %}>
             <div class="lib-card-cover">
                 {% if j.cover_image %}<img src="{{ j.cover_image.url }}" alt="{{ j.title }}">{% else %}<i class="fa-regular fa-newspaper"></i>{% endif %}
                 {% if j.issue_number %}<span class="badge">العدد {{ j.issue_number }}</span>{% endif %}
@@ -73,7 +72,6 @@
                 </div>
             </div>
         </div>
-        {% endwith %}
         {% endfor %}
     </div>
     {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد أعداد{% if q %} تطابق "{{ q }}"{% endif %}.</p>{% endif %}
