@@ -45,7 +45,15 @@
                 </li>
 
                 <li><a href="{% url 'core:news' %}" class="{% if request.resolver_match.url_name == 'news' %}active{% endif %}"><i class="fa-regular fa-newspaper fa-sm ms-1"></i> المركز الإعلامي</a></li>
-                <li><a href="{% url 'core:library_home' %}" class="{% if 'library' in request.resolver_match.url_name %}active{% endif %}"><i class="fa-solid fa-book-open fa-sm ms-1"></i> المكتبة الرقمية</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" onclick="toggleDropdown(event, 'libraryDropdown')" class="{% if 'library' in request.resolver_match.url_name %}active{% endif %}"><i class="fa-solid fa-book-open fa-sm ms-1"></i> المكتبة الرقمية <i class="fa-solid fa-chevron-down fa-xs"></i></a>
+                    <ul id="libraryDropdown" class="dropdown-menu">
+                        <li><a href="{% url 'core:library_journals' %}"><i class="fa-regular fa-newspaper fa-sm ms-1" style="color:var(--gold);"></i> المجلة الإلكترونية</a></li>
+                        <li><a href="{% url 'core:library_legislations' %}"><i class="fa-solid fa-scale-balanced fa-sm ms-1" style="color:#2563eb;"></i> التشريعات والأحكام</a></li>
+                        <li><a href="{% url 'core:library_books' %}"><i class="fa-solid fa-book fa-sm ms-1" style="color:#16a34a;"></i> الكتب القانونية</a></li>
+                        <li><a href="{% url 'core:library_contracts' %}"><i class="fa-solid fa-file-contract fa-sm ms-1" style="color:#7c3aed;"></i> نماذج العقود</a></li>
+                    </ul>
+                </li>
                 <li><a href="{% url 'core:council' %}" class="{% if request.resolver_match.url_name == 'council' %}active{% endif %}"><i class="fa-solid fa-users fa-sm ms-1"></i> مجلس النقابة</a></li>
                 
                 <li class="dropdown">
