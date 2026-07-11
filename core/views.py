@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.db.models import Q
-from .models import News, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage
 
 # ══════════════════════════════════════════
 #  HELPERS
@@ -414,7 +414,7 @@ def dashboard_news(request):
 def dashboard_news_add(request):
     if request.method == 'POST':
         try:
-            News.objects.create(
+            news = News.objects.create(
                 title=request.POST.get('title'),
                 category=request.POST.get('category', 'news'),
                 content=request.POST.get('content'),
@@ -422,7 +422,17 @@ def dashboard_news_add(request):
                 in_slider=request.POST.get('in_slider') == 'on',
                 image=request.FILES.get('image'),
             )
-            messages.success(request, 'تم إضافة الخبر.')
+            
+            # Handle multiple gallery images
+            gallery_images = request.FILES.getlist('gallery_images')
+            for index, image in enumerate(gallery_images):
+                NewsImage.objects.create(
+                    news=news,
+                    image=image,
+                    order=index
+                )
+                
+            messages.success(request, 'تم إضافة الخبر بنجاح.')
             return redirect('core:dashboard_news')
         except Exception as e:
             if 'Read-only file system' in str(e) or 'Read-only' in str(e):
@@ -444,7 +454,17 @@ def dashboard_news_edit(request, pk):
             if request.FILES.get('image'):
                 news.image = request.FILES.get('image')
             news.save()
-            messages.success(request, 'تم تحديث الخبر.')
+            
+            # Handle multiple gallery images
+            gallery_images = request.FILES.getlist('gallery_images')
+            for index, image in enumerate(gallery_images):
+                NewsImage.objects.create(
+                    news=news,
+                    image=image,
+                    order=index
+                )
+                
+            messages.success(request, 'تم تحديث الخبر بنجاح.')
             return redirect('core:dashboard_news')
         except Exception as e:
             if 'Read-only' in str(e):
