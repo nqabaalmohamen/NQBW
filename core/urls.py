@@ -70,7 +70,6 @@ urlpatterns = [
     path('media/db/<str:name>', views.serve_db_media, name='serve_db_media'),
 
     # ── Digital Library – Public ──
-    path('library/', views.library_home, name='library_home'),
     path('library/journals/', views.library_journals, name='library_journals'),
     path('library/legislations/', views.library_legislations, name='library_legislations'),
     path('library/books/', views.library_books, name='library_books'),
