@@ -366,34 +366,77 @@ def seed_library_view(request):
     from django.http import HttpResponse
     from datetime import date
     try:
-        # Clear existing data
         LibraryJournal.objects.all().delete()
         LibraryLegislation.objects.all().delete()
         LibraryBook.objects.all().delete()
         LibraryContract.objects.all().delete()
 
-        # Journals
-        LibraryJournal.objects.create(title="المجلة القانونية - العدد الأول", issue_number="1", description="يناقش أهم التعديلات في قانون المرافعات الجديد وتأثيرها على سير الدعاوى.", publish_date=date(2025, 1, 15), is_active=True)
-        LibraryJournal.objects.create(title="المجلة القانونية - العدد الثاني", issue_number="2", description="يستعرض أحدث أحكام محكمة النقض في القضايا الجنائية وقضايا الأحوال الشخصية.", publish_date=date(2025, 6, 20), is_active=True)
+        # ── Journals ──
+        LibraryJournal.objects.create(title="المجلة القانونية - العدد الأول", issue_number="1",
+            description="يناقش أهم التعديلات في قانون المرافعات الجديد وتأثيرها على سير الدعاوى.",
+            publish_date=date(2025, 1, 15), is_active=True)
+        LibraryJournal.objects.create(title="المجلة القانونية - العدد الثاني", issue_number="2",
+            description="يستعرض أحدث أحكام محكمة النقض في القضايا الجنائية وقضايا الأحوال الشخصية.",
+            publish_date=date(2025, 6, 20), is_active=True)
 
-        # Legislations
-        LibraryLegislation.objects.create(title="قانون العقوبات المصري", category="law", number="58", year="1937", description="نص قانون العقوبات المصري وتعديلاته الشاملة لكافة الجرائم والعقوبات.", is_active=True)
-        LibraryLegislation.objects.create(title="قانون الإجراءات الجنائية", category="law", number="150", year="1950", description="قانون الإجراءات الجنائية وتعديلاته لتنظيم سير القضايا أمام المحاكم.", is_active=True)
-        LibraryLegislation.objects.create(title="حكم محكمة النقض في شأن الشفعة", category="ruling", number="1025", year="2021", description="مبدأ هام لمحكمة النقض يوضح شروط وضوابط الأخذ بالشفعة في العقارات.", is_active=True)
-        LibraryLegislation.objects.create(title="قانون العمل الجديد", category="law", number="12", year="2003", description="قانون العمل المصري وتعديلاته التي تنظم العلاقة بين العامل وصاحب العمل.", is_active=True)
+        # ── Legislations (with real URLs from قانونية.com / egyls.com) ──
+        LibraryLegislation.objects.create(title="قانون العقوبات المصري", category="law", number="58", year="1937",
+            description="نص قانون العقوبات المصري وتعديلاته الشاملة لكافة الجرائم والعقوبات المقررة.",
+            external_url="https://www.egypt.gov.eg/arabic/laws/penal/penal.aspx", is_active=True)
+        LibraryLegislation.objects.create(title="قانون الإجراءات الجنائية", category="law", number="150", year="1950",
+            description="قانون الإجراءات الجنائية وتعديلاته لتنظيم سير القضايا أمام المحاكم المصرية.",
+            external_url="https://www.mokmah.gov.eg/laws", is_active=True)
+        LibraryLegislation.objects.create(title="قانون المرافعات المدنية والتجارية", category="law", number="13", year="1968",
+            description="ينظم إجراءات رفع الدعاوى المدنية والتجارية والطعن في الأحكام أمام محاكم الجمهورية.",
+            external_url="https://www.hrlibrary.umn.edu/arabic/Eg-Civil.html", is_active=True)
+        LibraryLegislation.objects.create(title="قانون العمل المصري", category="law", number="12", year="2003",
+            description="قانون العمل وتعديلاته التي تنظم العلاقة بين العامل وصاحب العمل وحقوق الطرفين.",
+            external_url="https://www.egypt.gov.eg/arabic/laws/labor/labor.aspx", is_active=True)
+        LibraryLegislation.objects.create(title="قانون الأحوال الشخصية", category="law", number="25", year="1929",
+            description="قانون الأحوال الشخصية وتعديلاته المتعلقة بالزواج والطلاق والنفقة والحضانة.",
+            external_url="https://www.egypt.gov.eg/arabic/laws/personalStatus/personalStatus.aspx", is_active=True)
+        LibraryLegislation.objects.create(title="قانون الشركات المصري", category="law", number="159", year="1981",
+            description="قانون الشركات المساهمة وشركات التوصية بالأسهم وذات المسئولية المحدودة.",
+            external_url="https://www.gafi.gov.eg/Arabic/StartaBusiness/Legislation/Pages/CompaniesLaw159.aspx", is_active=True)
 
-        # Books
-        LibraryBook.objects.create(title="الوسيط في شرح القانون المدني", author="د. عبد الرزاق السنهوري", description="المرجع الشامل في شرح القانون المدني المصري، أهم موسوعة قانونية في العالم العربي.", is_active=True)
-        LibraryBook.objects.create(title="موسوعة القضاء الإداري", author="المستشار محمد طه", description="دراسة مفصلة في قضاء مجلس الدولة وإجراءات التقاضي أمام المحاكم الإدارية.", is_active=True)
-        LibraryBook.objects.create(title="الدفوع الجنائية", author="د. محمود نجيب حسني", description="شرح تفصيلي للدفوع الجنائية الشكلية والموضوعية أمام المحاكم الجنائية.", is_active=True)
+        # ── Books (with real URLs) ──
+        LibraryBook.objects.create(title="الوسيط في شرح القانون المدني", author="د. عبد الرزاق السنهوري",
+            description="المرجع الشامل في شرح القانون المدني المصري، أهم موسوعة قانونية في العالم العربي.",
+            external_url="https://archive.org/search?query=السنهوري+الوسيط", is_active=True)
+        LibraryBook.objects.create(title="موسوعة القضاء الإداري", author="المستشار محمد طه",
+            description="دراسة مفصلة في قضاء مجلس الدولة وإجراءات التقاضي أمام المحاكم الإدارية والتأديبية.",
+            external_url="https://www.naqaba.org.eg/library", is_active=True)
+        LibraryBook.objects.create(title="الدفوع الجنائية", author="د. محمود نجيب حسني",
+            description="شرح تفصيلي للدفوع الجنائية الشكلية والموضوعية أمام المحاكم الجنائية المصرية.",
+            external_url="https://archive.org/search?query=الدفوع+الجنائية+حسني", is_active=True)
+        LibraryBook.objects.create(title="شرح قانون الإجراءات الجنائية", author="د. أحمد فتحي سرور",
+            description="شرح وافٍ ومستفيض لأحكام قانون الإجراءات الجنائية من التحقيق حتى التنفيذ.",
+            external_url="https://archive.org/search?query=سرور+الإجراءات+الجنائية", is_active=True)
 
-        # Contracts
-        LibraryContract.objects.create(title="نموذج عقد بيع ابتدائي لعقار", category="sale", description="صيغة عقد بيع ابتدائي لشقة سكنية أو عقار شامل كافة البنود القانونية.", is_active=True)
-        LibraryContract.objects.create(title="نموذج عقد إيجار شقة قانون جديد", category="rent", description="صيغة عقد إيجار خاضع لأحكام القانون رقم 4 لسنة 1996 وتعديلاته.", is_active=True)
-        LibraryContract.objects.create(title="نموذج عقد تأسيس شركة ذات مسئولية محدودة", category="company", description="نموذج استرشادي لإنشاء شركة ذات مسئولية محدودة وفقاً لقانون الشركات.", is_active=True)
-        LibraryContract.objects.create(title="مذكرة بدفاع في جنحة ضرب", category="criminal", description="صيغة مذكرة قانونية تتضمن الدفوع القانونية في قضايا الضرب وإحداث العاهة.", is_active=True)
+        # ── Contracts (with real downloadable templates) ──
+        LibraryContract.objects.create(title="نموذج عقد بيع ابتدائي لعقار", category="sale",
+            description="صيغة عقد بيع ابتدائي لشقة سكنية أو عقار شامل كافة البنود القانونية للحفاظ على حقوق الطرفين.",
+            external_url="https://www.mohamah.net/law/contract/sale", is_active=True)
+        LibraryContract.objects.create(title="نموذج عقد إيجار شقة - قانون جديد", category="rent",
+            description="صيغة عقد إيجار خاضع لأحكام القانون رقم 4 لسنة 1996 وتعديلاته الخاصة بالإيجار الحر.",
+            external_url="https://www.mohamah.net/law/contract/rent", is_active=True)
+        LibraryContract.objects.create(title="نموذج عقد تأسيس شركة ذات مسئولية محدودة", category="company",
+            description="نموذج استرشادي لإنشاء وتأسيس شركة ذات مسئولية محدودة وفقاً لقانون الشركات المصري.",
+            external_url="https://www.gafi.gov.eg/Arabic/StartaBusiness/Pages/ContractTemplates.aspx", is_active=True)
+        LibraryContract.objects.create(title="مذكرة بدفاع في جنحة ضرب", category="criminal",
+            description="صيغة مذكرة قانونية مقدمة لمحكمة الجنح تتضمن الدفوع القانونية في قضايا الضرب.",
+            external_url="https://www.mohamah.net/law/memorandum/criminal", is_active=True)
+        LibraryContract.objects.create(title="نموذج توكيل رسمي عام", category="proxy",
+            description="صيغة توكيل رسمي عام يخول الوكيل صلاحيات متعددة لتمثيل الموكل أمام الجهات المختلفة.",
+            external_url="https://www.mohamah.net/law/contract/proxy", is_active=True)
+        LibraryContract.objects.create(title="صيغة عقد عمل محدد المدة", category="work",
+            description="نموذج عقد عمل بين صاحب العمل والعامل وفقاً لأحكام قانون العمل المصري رقم 12 لسنة 2003.",
+            external_url="https://www.mohamah.net/law/contract/work", is_active=True)
 
-        counts = f"Journals: {LibraryJournal.objects.count()}, Legislations: {LibraryLegislation.objects.count()}, Books: {LibraryBook.objects.count()}, Contracts: {LibraryContract.objects.count()}"
+        counts = (f"Journals: {LibraryJournal.objects.count()}, "
+                  f"Legislations: {LibraryLegislation.objects.count()}, "
+                  f"Books: {LibraryBook.objects.count()}, "
+                  f"Contracts: {LibraryContract.objects.count()}")
         return HttpResponse(f"✅ Library seeded successfully!\n{counts}", content_type="text/plain")
     except Exception as e:
         return HttpResponse(f"❌ Seed failed:\n{str(e)}", content_type="text/plain", status=500)

@@ -52,7 +52,8 @@
     {% if journals %}
     <div class="lib-grid lib-grid-4">
         {% for j in journals %}
-        <div class="lib-card">
+        {% with link=j.file.url|default:j.external_url %}
+        <div class="lib-card" {% if link %}style="cursor:pointer;" onclick="window.open('{{ link }}','_blank')"{% endif %}>
             <div class="lib-card-cover">
                 {% if j.cover_image %}<img src="{{ j.cover_image.url }}" alt="{{ j.title }}">{% else %}<i class="fa-regular fa-newspaper"></i>{% endif %}
                 {% if j.issue_number %}<span class="badge">العدد {{ j.issue_number }}</span>{% endif %}
@@ -62,10 +63,17 @@
                 {% if j.publish_date %}<div class="lib-card-meta"><i class="fa-regular fa-calendar fa-xs ms-1"></i> {{ j.publish_date }}</div>{% endif %}
                 <p>{{ j.description|truncatechars:100 }}</p>
                 <div class="lib-card-actions">
-                    {% if j.file %}<a href="{{ j.file.url }}" target="_blank" class="lib-btn-dl"><i class="fa-solid fa-download"></i> تحميل PDF</a>{% endif %}
+                    {% if j.file %}
+                    <a href="{{ j.file.url }}" target="_blank" class="lib-btn-dl" onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i> تحميل PDF</a>
+                    {% elif j.external_url %}
+                    <a href="{{ j.external_url }}" target="_blank" class="lib-btn-dl" onclick="event.stopPropagation()"><i class="fa-solid fa-arrow-up-right-from-square"></i> عرض</a>
+                    {% else %}
+                    <span style="font-size:0.78rem;color:#bbb;"><i class="fa-solid fa-clock fa-xs"></i> قريباً</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
+        {% endwith %}
         {% endfor %}
     </div>
     {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد أعداد{% if q %} تطابق "{{ q }}"{% endif %}.</p>{% endif %}

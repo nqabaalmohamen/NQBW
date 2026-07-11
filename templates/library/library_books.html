@@ -53,7 +53,8 @@
     {% if books %}
     <div class="lib-grid lib-grid-3">
         {% for b in books %}
-        <div class="lib-card">
+        {% with link=b.file.url|default:b.external_url %}
+        <div class="lib-card" {% if link %}style="cursor:pointer;" onclick="window.open('{{ link }}','_blank')"{% endif %}>
             <div class="lib-card-cover">
                 {% if b.cover_image %}<img src="{{ b.cover_image.url }}" alt="{{ b.title }}">{% else %}<i class="fa-solid fa-book"></i>{% endif %}
             </div>
@@ -62,11 +63,15 @@
                 {% if b.author %}<div class="lib-card-meta"><i class="fa-solid fa-user-pen fa-xs ms-1"></i> {{ b.author }}</div>{% endif %}
                 <p>{{ b.description|truncatechars:100 }}</p>
                 <div class="lib-card-actions">
-                    {% if b.file %}<a href="{{ b.file.url }}" target="_blank" class="lib-btn-dl"><i class="fa-solid fa-download"></i> تحميل</a>{% endif %}
-                    {% if b.external_url %}<a href="{{ b.external_url }}" target="_blank" class="lib-btn-link"><i class="fa-solid fa-link"></i> رابط</a>{% endif %}
+                    {% if b.file %}
+                    <a href="{{ b.file.url }}" target="_blank" class="lib-btn-dl" onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i> تحميل</a>
+                    {% elif b.external_url %}
+                    <a href="{{ b.external_url }}" target="_blank" class="lib-btn-link" onclick="event.stopPropagation()"><i class="fa-solid fa-arrow-up-right-from-square"></i> عرض</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
+        {% endwith %}
         {% endfor %}
     </div>
     {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد كتب{% if q %} تطابق "{{ q }}"{% endif %}.</p>{% endif %}
