@@ -289,6 +289,7 @@ class LibraryJournal(models.Model):
     description  = models.TextField(blank=True, verbose_name="وصف العدد")
     cover_image  = models.ImageField(upload_to='library/journals/', blank=True, null=True, verbose_name="صورة الغلاف")
     file         = models.FileField(upload_to='library/journals/files/', blank=True, null=True, verbose_name="ملف PDF")
+    external_url = models.URLField(blank=True, verbose_name="رابط خارجي")
     publish_date = models.DateField(blank=True, null=True, verbose_name="تاريخ الإصدار")
     is_active    = models.BooleanField(default=True, verbose_name="منشور")
     created_at   = models.DateTimeField(auto_now_add=True)
@@ -367,6 +368,7 @@ class LibraryContract(models.Model):
     category    = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other', verbose_name="التصنيف")
     description = models.TextField(blank=True, verbose_name="وصف النموذج")
     file        = models.FileField(upload_to='library/contracts/', blank=True, null=True, verbose_name="ملف النموذج (PDF / Word)")
+    external_url= models.URLField(blank=True, verbose_name="رابط خارجي")
     is_active   = models.BooleanField(default=True, verbose_name="منشور")
     created_at  = models.DateTimeField(auto_now_add=True)
 
