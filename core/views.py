@@ -956,12 +956,20 @@ def dashboard_institute_edit(request, pk):
     return render(request, 'dashboard/institute_edit_form.html', {'lecture': lecture})
 
 
+import mimetypes
 from django.http import HttpResponse, Http404
+
 def serve_db_media(request, name):
     from core.models import DatabaseFile
     try:
         db_file = DatabaseFile.objects.get(name=name)
-        return HttpResponse(db_file.data, content_type='application/octet-stream')
+        content_type, _ = mimetypes.guess_type(name)
+        if not content_type:
+            content_type = 'application/octet-stream'
+            
+        response = HttpResponse(db_file.data, content_type=content_type)
+        response['Content-Disposition'] = f'inline; filename="{name}"'
+        return response
     except DatabaseFile.DoesNotExist:
         raise Http404('File not found')
 
