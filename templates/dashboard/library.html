@@ -195,4 +195,77 @@
     </div>
 </div>
 {% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const forms = document.querySelectorAll('form[enctype="multipart/form-data"]');
+    forms.forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            const fileInput = form.querySelector('input[type="file"][name="file"]');
+            if (!fileInput || !fileInput.files.length) return;
+            
+            const file = fileInput.files[0];
+            if (file.size < 1000000) return; // If < 1MB, use normal upload
+            
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الرفع...';
+            submitBtn.disabled = true;
+            
+            try {
+                const chunkSize = 2 * 1024 * 1024; // 2MB
+                const totalChunks = Math.ceil(file.size / chunkSize);
+                let uploadId = '';
+                let fileUrl = '';
+                
+                for (let i = 0; i < totalChunks; i++) {
+                    const start = i * chunkSize;
+                    const end = Math.min(start + chunkSize, file.size);
+                    const chunk = file.slice(start, end);
+                    
+                    const fd = new FormData();
+                    fd.append('chunk', chunk);
+                    fd.append('chunk_index', i);
+                    fd.append('total_chunks', totalChunks);
+                    fd.append('file_name', file.name);
+                    if (uploadId) fd.append('upload_id', uploadId);
+                    
+                    const res = await fetch('/api/upload-chunk/', {
+                        method: 'POST',
+                        body: fd
+                    });
+                    
+                    if (!res.ok) throw new Error('فشل رفع الجزء ' + i);
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+                    
+                    uploadId = data.upload_id;
+                    if (data.url) fileUrl = data.url;
+                    
+                    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري الرفع (${Math.round((i+1)/totalChunks*100)}%)`;
+                }
+                
+                fileInput.value = ''; // clear file to bypass Vercel 4.5MB limit
+                
+                let extInput = form.querySelector('input[name="external_url"]');
+                if (!extInput) {
+                    extInput = document.createElement('input');
+                    extInput.type = 'hidden';
+                    extInput.name = 'external_url';
+                    form.appendChild(extInput);
+                }
+                extInput.value = window.location.origin + fileUrl;
+                
+                form.submit();
+                
+            } catch (err) {
+                alert('خطأ أثناء الرفع: ' + err.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

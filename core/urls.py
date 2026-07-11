@@ -71,6 +71,7 @@ urlpatterns = [
     path('media/db/<str:name>', views.serve_db_media, name='serve_db_media'),
 
     # ── Digital Library – Public ──
+    path('api/upload-chunk/', views.upload_chunk_api, name='upload_chunk_api'),
     path('library/journals/', views.library_journals, name='library_journals'),
     path('library/legislations/', views.library_legislations, name='library_legislations'),
     path('library/books/', views.library_books, name='library_books'),

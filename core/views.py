@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.db.models import Q
 from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage, LibraryJournal, LibraryLegislation, LibraryBook, LibraryContract
+from .chunk_upload import upload_chunk_api
 
 # ══════════════════════════════════════════
 #  HELPERS
@@ -282,6 +283,7 @@ def dashboard_library_add(request, section):
                     publish_date=request.POST.get('publish_date') or None,
                     cover_image=request.FILES.get('cover_image'),
                     file=request.FILES.get('file'),
+                    external_url=request.POST.get('external_url', ''),
                     is_active=request.POST.get('is_active') == 'on',
                 )
             elif section == 'legislation':
@@ -311,6 +313,7 @@ def dashboard_library_add(request, section):
                     category=request.POST.get('category', 'other'),
                     description=request.POST.get('description', ''),
                     file=request.FILES.get('file'),
+                    external_url=request.POST.get('external_url', ''),
                     is_active=request.POST.get('is_active') == 'on',
                 )
             messages.success(request, 'تمت الإضافة بنجاح.')
