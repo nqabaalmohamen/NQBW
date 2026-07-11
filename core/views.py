@@ -371,67 +371,78 @@ def seed_library_view(request):
         LibraryBook.objects.all().delete()
         LibraryContract.objects.all().delete()
 
-        # ── Journals ──
-        LibraryJournal.objects.create(title="المجلة القانونية - العدد الأول", issue_number="1",
-            description="يناقش أهم التعديلات في قانون المرافعات الجديد وتأثيرها على سير الدعاوى.",
-            publish_date=date(2025, 1, 15), is_active=True)
-        LibraryJournal.objects.create(title="المجلة القانونية - العدد الثاني", issue_number="2",
-            description="يستعرض أحدث أحكام محكمة النقض في القضايا الجنائية وقضايا الأحوال الشخصية.",
-            publish_date=date(2025, 6, 20), is_active=True)
+        # ── Journals - real from egyls.com ──
+        EL = 'https://egyls.com/'
+        LibraryJournal.objects.create(title="مجلة المحاماة الإلكترونية - الإصدار الرابع عشر", issue_number="14",
+            description="أصدر المركز الإعلامي لنقابة المحامين العدد الرابع عشر من مجلة المحاماة الإلكترونية - مارس 2024.",
+            publish_date=date(2024, 4, 6), is_active=True,
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%b1%d8%a7%d8%a8%d8%b9-%d8%b9%d8%b4%d8%b1-%d9%85%d9%86-%d9%85%d8%ac%d9%84%d8%a9-%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d9%85/')
+        LibraryJournal.objects.create(title="مختارات من أحكام النقض - الإصدار الثالث عشر", issue_number="13",
+            description="مجموعة مختارة من أحكام محكمة النقض المتاحة بصيغة PDF لتيسير الاطلاع الإلكتروني.",
+            publish_date=date(2024, 3, 17), is_active=True,
+            external_url=EL+'%d9%85%d8%ae%d8%aa%d8%a7%d8%b1%d8%a7%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d9%83%d8%a7%d9%85-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d9%80-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%ab%d8%a7%d9%84/')
+        LibraryJournal.objects.create(title="مختارات من أحكام النقض - الإصدار الثاني عشر", issue_number="12",
+            description="مجموعة مختارة من أحكام محكمة النقض المتاحة بصيغة PDF - الإصدار الثاني عشر.",
+            publish_date=date(2024, 2, 3), is_active=True,
+            external_url=EL+'%d9%85%d8%ae%d8%aa%d8%a7%d8%b1%d8%a7%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d9%83%d8%a7%d9%85-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d9%80-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%ab%d8%a7%d9%86/')
 
-        # ── Legislations (with real URLs from قانونية.com / egyls.com) ──
-        LibraryLegislation.objects.create(title="قانون العقوبات المصري", category="law", number="58", year="1937",
-            description="نص قانون العقوبات المصري وتعديلاته الشاملة لكافة الجرائم والعقوبات المقررة.",
-            external_url="https://www.egypt.gov.eg/arabic/laws/penal/penal.aspx", is_active=True)
-        LibraryLegislation.objects.create(title="قانون الإجراءات الجنائية", category="law", number="150", year="1950",
-            description="قانون الإجراءات الجنائية وتعديلاته لتنظيم سير القضايا أمام المحاكم المصرية.",
-            external_url="https://www.mokmah.gov.eg/laws", is_active=True)
-        LibraryLegislation.objects.create(title="قانون المرافعات المدنية والتجارية", category="law", number="13", year="1968",
-            description="ينظم إجراءات رفع الدعاوى المدنية والتجارية والطعن في الأحكام أمام محاكم الجمهورية.",
-            external_url="https://www.hrlibrary.umn.edu/arabic/Eg-Civil.html", is_active=True)
-        LibraryLegislation.objects.create(title="قانون العمل المصري", category="law", number="12", year="2003",
-            description="قانون العمل وتعديلاته التي تنظم العلاقة بين العامل وصاحب العمل وحقوق الطرفين.",
-            external_url="https://www.egypt.gov.eg/arabic/laws/labor/labor.aspx", is_active=True)
-        LibraryLegislation.objects.create(title="قانون الأحوال الشخصية", category="law", number="25", year="1929",
-            description="قانون الأحوال الشخصية وتعديلاته المتعلقة بالزواج والطلاق والنفقة والحضانة.",
-            external_url="https://www.egypt.gov.eg/arabic/laws/personalStatus/personalStatus.aspx", is_active=True)
-        LibraryLegislation.objects.create(title="قانون الشركات المصري", category="law", number="159", year="1981",
-            description="قانون الشركات المساهمة وشركات التوصية بالأسهم وذات المسئولية المحدودة.",
-            external_url="https://www.gafi.gov.eg/Arabic/StartaBusiness/Legislation/Pages/CompaniesLaw159.aspx", is_active=True)
+        # ── Legislations - real from egyls.com ──
+        LibraryLegislation.objects.create(title="بوابة التشريعات والأحكام المصرية", category="law", number="", year="2021",
+            description="بوابة شاملة تتيح الاطلاع على القوانين والأحكام الصادرة عن المحاكم المصرية والمحكمة الدستورية العليا.",
+            external_url=EL+'%d8%a8%d9%88%d8%a7%d8%a8%d8%a9-%d8%a7%d9%84%d8%aa%d8%b4%d8%b1%d9%8a%d8%b9%d8%a7%d8%aa-%d9%88%d8%a7%d9%84%d8%a3%d8%ad%d9%83%d8%a7%d9%85-%d8%a7%d9%84%d9%85%d8%b5%d8%b1%d9%8a%d8%a9/', is_active=True)
+        LibraryLegislation.objects.create(title="التشريعات القانونية المصرية", category="law", number="", year="",
+            description="قسم التشريعات في موقع نقابة المحامين المصرية يحتوي على أهم القوانين والمراسيم الجمهورية.",
+            external_url=EL+'category/%d8%a7%d9%84%d8%aa%d8%b4%d8%b1%d9%8a%d8%b9%d8%a7%d8%aa/', is_active=True)
+        LibraryLegislation.objects.create(title="أحكام المحاكم المصرية", category="ruling", number="", year="",
+            description="أحكام المحاكم المصرية بما فيها محكمة النقض والمحكمة الدستورية العليا ومجلس الدولة.",
+            external_url=EL+'category/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d9%83%d9%85/', is_active=True)
+        LibraryLegislation.objects.create(title="المبادئ القانونية في الجرائم الاقتصادية - النقض", category="ruling", number="", year="2026",
+            description="كتاب المبادئ القانونية الصادرة عن محكمة النقض الدوائر الجنائية في الجرائم الاقتصادية.",
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d9%83%d8%aa%d8%a7%d8%a8-%d8%a7%d9%84%d9%85%d8%a8%d8%a7%d8%af%d8%a6-%d8%a7%d9%84%d9%82%d8%a7%d9%86%d9%88%d9%86%d9%8a%d8%a9-%d8%a7%d9%84%d8%b5%d8%a7%d8%af%d8%b1%d8%a9-%d8%b9/', is_active=True)
+        LibraryLegislation.objects.create(title="قضاء غرفة المشورة في مواد الجنح", category="ruling", number="", year="2026",
+            description="إصدار المكتب الفني لمحكمة النقض المصرية حول قضاء غرفة المشورة في مواد الجنح.",
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d9%85%d9%83%d8%aa%d8%a8-%d8%a7%d9%84%d9%81%d9%86%d9%8a-%d9%84%d9%85%d8%ad%d9%83%d9%85%d8%a9-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d8%ad/', is_active=True)
+        LibraryLegislation.objects.create(title="مبادئ النقض في الجرائم المضرة بأمن الدولة", category="ruling", number="", year="2026",
+            description="مجموعة القواعد القانونية التي قررتها محكمة النقض في الجرائم الضارة بأمن الدولة.",
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d9%85%d8%a8%d8%a7%d8%af%d8%a6-%d9%85%d8%ad%d9%83%d9%85%d8%a9-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d9%81%d9%8a-%d8%a7%d9%84%d8%ac%d8%b1%d8%a7%d8%a6%d9%85-%d8%a7%d9%84%d9%85%d8%b6/', is_active=True)
 
-        # ── Books (with real URLs) ──
-        LibraryBook.objects.create(title="الوسيط في شرح القانون المدني", author="د. عبد الرزاق السنهوري",
-            description="المرجع الشامل في شرح القانون المدني المصري، أهم موسوعة قانونية في العالم العربي.",
-            external_url="https://archive.org/search?query=السنهوري+الوسيط", is_active=True)
-        LibraryBook.objects.create(title="موسوعة القضاء الإداري", author="المستشار محمد طه",
-            description="دراسة مفصلة في قضاء مجلس الدولة وإجراءات التقاضي أمام المحاكم الإدارية والتأديبية.",
-            external_url="https://www.naqaba.org.eg/library", is_active=True)
-        LibraryBook.objects.create(title="الدفوع الجنائية", author="د. محمود نجيب حسني",
-            description="شرح تفصيلي للدفوع الجنائية الشكلية والموضوعية أمام المحاكم الجنائية المصرية.",
-            external_url="https://archive.org/search?query=الدفوع+الجنائية+حسني", is_active=True)
-        LibraryBook.objects.create(title="شرح قانون الإجراءات الجنائية", author="د. أحمد فتحي سرور",
-            description="شرح وافٍ ومستفيض لأحكام قانون الإجراءات الجنائية من التحقيق حتى التنفيذ.",
-            external_url="https://archive.org/search?query=سرور+الإجراءات+الجنائية", is_active=True)
+        # ── Books - real from egyls.com ──
+        LibraryBook.objects.create(title="المبادئ القانونية في الجرائم الاقتصادية - محكمة النقض",
+            author="المكتب الفني لمحكمة النقض",
+            description="كتاب يتضمن أهم المبادئ القانونية الصادرة عن محكمة النقض الدوائر الجنائية في الجرائم الاقتصادية.",
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d9%83%d8%aa%d8%a8-%d8%a7%d9%84%d9%85%d8%a8%d8%a7%d8%af%d8%a6-%d8%a7%d9%84%d9%82%d8%a7%d9%86%d9%88%d9%86%d9%8a%d8%a9-%d8%a7%d9%84%d8%b5%d8%a7%d8%af%d8%b1%d8%a9-%d8%b9/', is_active=True)
+        LibraryBook.objects.create(title="إصدار المكتب الفني - غرفة المشورة في مواد الجنح",
+            author="المكتب الفني لمحكمة النقض المصرية",
+            description="إصدار قانوني يوفر مرجعاً شاملاً للمحامين حول قضاء غرفة المشورة في مواد الجنح.",
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d9%85%d9%83%d8%aa%d8%a8-%d8%a7%d9%84%d9%81%d9%86%d9%8a-%d9%84%d9%85%d8%ad%d9%83%d9%85%d8%a9-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d8%ad/', is_active=True)
+        LibraryBook.objects.create(title="مختارات من أحكام النقض - الإصدار الحادي عشر",
+            author="المركز الإعلامي - نقابة المحامين المصرية",
+            description="مجموعة مختارة من أحكام محكمة النقض المتاحة بصيغة PDF لتيسير الاطلاع الإلكتروني.",
+            external_url=EL+'%d9%85%d8%ae%d8%aa%d8%a7%d8%b1%d8%a7%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d9%83%d8%a7%d9%85-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d9%80%d9%80-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%ad%d8%a7/', is_active=True)
+        LibraryBook.objects.create(title="مختارات من المعلومات القانونية - الإصدار السادس",
+            author="المركز الإعلامي - نقابة المحامين المصرية",
+            description="يضع الإصدار السادس بين يدي المحامين أهم وأبرز المعلومات القانونية المنتقاة من مصادر موثوقة.",
+            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%b3%d8%a7%d8%af%d8%b3-%d9%84%d9%80%d9%80-%d9%85%d8%ae%d8%aa%d8%a7%d8%b1%d8%a7%d8%aa-%d9%85%d9%86-%d8%a7%d9%84/', is_active=True)
 
-        # ── Contracts (with real downloadable templates) ──
-        LibraryContract.objects.create(title="نموذج عقد بيع ابتدائي لعقار", category="sale",
-            description="صيغة عقد بيع ابتدائي لشقة سكنية أو عقار شامل كافة البنود القانونية للحفاظ على حقوق الطرفين.",
-            external_url="https://www.mohamah.net/law/contract/sale", is_active=True)
-        LibraryContract.objects.create(title="نموذج عقد إيجار شقة - قانون جديد", category="rent",
-            description="صيغة عقد إيجار خاضع لأحكام القانون رقم 4 لسنة 1996 وتعديلاته الخاصة بالإيجار الحر.",
-            external_url="https://www.mohamah.net/law/contract/rent", is_active=True)
-        LibraryContract.objects.create(title="نموذج عقد تأسيس شركة ذات مسئولية محدودة", category="company",
-            description="نموذج استرشادي لإنشاء وتأسيس شركة ذات مسئولية محدودة وفقاً لقانون الشركات المصري.",
-            external_url="https://www.gafi.gov.eg/Arabic/StartaBusiness/Pages/ContractTemplates.aspx", is_active=True)
-        LibraryContract.objects.create(title="مذكرة بدفاع في جنحة ضرب", category="criminal",
-            description="صيغة مذكرة قانونية مقدمة لمحكمة الجنح تتضمن الدفوع القانونية في قضايا الضرب.",
-            external_url="https://www.mohamah.net/law/memorandum/criminal", is_active=True)
-        LibraryContract.objects.create(title="نموذج توكيل رسمي عام", category="proxy",
-            description="صيغة توكيل رسمي عام يخول الوكيل صلاحيات متعددة لتمثيل الموكل أمام الجهات المختلفة.",
-            external_url="https://www.mohamah.net/law/contract/proxy", is_active=True)
-        LibraryContract.objects.create(title="صيغة عقد عمل محدد المدة", category="work",
-            description="نموذج عقد عمل بين صاحب العمل والعامل وفقاً لأحكام قانون العمل المصري رقم 12 لسنة 2003.",
-            external_url="https://www.mohamah.net/law/contract/work", is_active=True)
+        # ── Contracts - real from egyls.com ──
+        LibraryContract.objects.create(title="نماذج العقود القانونية المعتمدة", category="sale",
+            description="نماذج العقود القانونية المعتمدة من نقابة المحامين المصرية: بيع، إيجار، عمل، شركات، توكيلات.",
+            external_url=EL+'category/%d9%86%d9%85%d8%a7%d8%b0%d8%ac-%d8%a7%d9%84%d8%b9%d9%82%d9%88%d8%af/', is_active=True)
+        LibraryContract.objects.create(title="قانون المحاماة المصري", category="other",
+            description="نص قانون المحاماة المصري الكامل مع تعديلاته، ينظم ممارسة مهنة المحاماة وحقوق المحامين.",
+            external_url=EL+'%d9%82%d8%a7%d9%86%d9%88%d9%86-%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d9%85%d8%a7%d8%a9/', is_active=True)
+        LibraryContract.objects.create(title="إدارة التصديق على العقود - نقابة المحامين", category="other",
+            description="خدمة التصديق على العقود المقدمة من نقابة المحامين لإضفاء الشرعية القانونية على العقود.",
+            external_url=EL+'service/%d8%a7%d9%84%d8%a5%d8%af%d8%a7%d8%b1%d8%a9-%d8%a7%d9%84%d8%b9%d8%a7%d9%85%d8%a9-%d9%84%d9%84%d8%aa%d8%b5%d8%af%d9%8a%d9%82-%d8%b9%d9%84%d9%89-%d8%a7%d9%84%d8%b9%d9%82%d9%88%d8%af-2/', is_active=True)
+        LibraryContract.objects.create(title="معلومات قانونية منوعة", category="civil",
+            description="قسم المعلومات القانونية في موقع نقابة المحامين يحتوي على إجابات قانونية متخصصة للمحامين.",
+            external_url=EL+'category/%d9%85%d8%b9%d9%84%d9%88%d9%85%d8%a7%d8%aa-%d9%82%d8%a7%d9%86%d9%88%d9%86%d9%8a%d8%a9/', is_active=True)
+        LibraryContract.objects.create(title="توثيق شركات المحاماة", category="company",
+            description="إدارة توثيق شركات المحاماة في نقابة المحامين، تسجيل وتوثيق الشركات وفق التشريعات المعمول بها.",
+            external_url=EL+'service/%d8%a5%d8%af%d8%a7%d8%b1%d8%a9-%d8%aa%d9%88%d8%ab%d9%8a%d9%82-%d8%b4%d8%b1%d9%83%d8%a7%d8%aa-%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d9%85%d8%a7%d8%a9-2/', is_active=True)
+        LibraryContract.objects.create(title="دورات قانونية تدريبية للمحامين", category="other",
+            description="الدورات القانونية التدريبية التي تنظمها نقابة المحامين المصرية لرفع الكفاءة المهنية.",
+            external_url=EL+'category/%d8%af%d9%88%d8%b1%d8%a7%d8%aa-%d9%82%d8%a7%d9%86%d9%88%d9%86%d9%8a%d8%a9/', is_active=True)
 
         counts = (f"Journals: {LibraryJournal.objects.count()}, "
                   f"Legislations: {LibraryLegislation.objects.count()}, "
