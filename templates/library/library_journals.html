@@ -1,0 +1,42 @@
+{% extends 'library/library_home.html' %}
+{% block title %}المجلة الإلكترونية - المكتبة الرقمية{% endblock %}
+
+{% block content %}
+<div class="lib-hero">
+    <h1><i class="fa-regular fa-newspaper ms-3" style="color:var(--lib-gold);"></i> المجلة <span>الإلكترونية</span></h1>
+    <p>أحدث أعداد المجلة القانونية لنقابة المحامين بالفيوم</p>
+</div>
+<nav class="lib-tabs">
+    <a href="{% url 'core:library_home' %}" class="lib-tab"><i class="fa-solid fa-house"></i> <span>الرئيسية</span></a>
+    <a href="{% url 'core:library_journals' %}" class="lib-tab active"><i class="fa-regular fa-newspaper"></i> <span>المجلة الإلكترونية</span></a>
+    <a href="{% url 'core:library_legislations' %}" class="lib-tab"><i class="fa-solid fa-scale-balanced"></i> <span>التشريعات والأحكام</span></a>
+    <a href="{% url 'core:library_books' %}" class="lib-tab"><i class="fa-solid fa-book"></i> <span>الكتب</span></a>
+    <a href="{% url 'core:library_contracts' %}" class="lib-tab"><i class="fa-solid fa-file-contract"></i> <span>نماذج العقود</span></a>
+</nav>
+<section class="lib-section">
+    <form method="GET" style="margin-bottom:30px;display:flex;gap:10px;">
+        <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="ابحث في المجلة..." style="max-width:400px;border-radius:25px;padding:10px 20px;">
+        <button type="submit" class="lib-btn-dl" style="border:none;cursor:pointer;"><i class="fa-solid fa-search"></i> بحث</button>
+    </form>
+    {% if journals %}
+    <div class="lib-grid lib-grid-4">
+        {% for j in journals %}
+        <div class="lib-card">
+            <div class="lib-card-cover">
+                {% if j.cover_image %}<img src="{{ j.cover_image.url }}" alt="{{ j.title }}">{% else %}<i class="fa-regular fa-newspaper"></i>{% endif %}
+                {% if j.issue_number %}<span class="badge">العدد {{ j.issue_number }}</span>{% endif %}
+            </div>
+            <div class="lib-card-body">
+                <h4>{{ j.title }}</h4>
+                {% if j.publish_date %}<div class="lib-card-meta"><i class="fa-regular fa-calendar fa-xs ms-1"></i> {{ j.publish_date }}</div>{% endif %}
+                <p>{{ j.description|truncatechars:100 }}</p>
+                <div class="lib-card-actions">
+                    {% if j.file %}<a href="{{ j.file.url }}" target="_blank" class="lib-btn-dl"><i class="fa-solid fa-download"></i> تحميل PDF</a>{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد أعداد{% if q %} تطابق "{{ q }}"{% endif %}.</p>{% endif %}
+</section>
+{% endblock %}

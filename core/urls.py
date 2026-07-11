@@ -69,6 +69,18 @@ urlpatterns = [
     path('run-migrations-secret/', views.run_migrations_view, name='run_migrations_secret'),
     path('media/db/<str:name>', views.serve_db_media, name='serve_db_media'),
 
+    # ── Digital Library – Public ──
+    path('library/', views.library_home, name='library_home'),
+    path('library/journals/', views.library_journals, name='library_journals'),
+    path('library/legislations/', views.library_legislations, name='library_legislations'),
+    path('library/books/', views.library_books, name='library_books'),
+    path('library/contracts/', views.library_contracts, name='library_contracts'),
+
+    # ── Digital Library – Dashboard ──
+    path('dashboard/library/', views.dashboard_library, name='dashboard_library'),
+    path('dashboard/library/add/<str:section>/', views.dashboard_library_add, name='dashboard_library_add'),
+    path('dashboard/library/delete/<str:section>/<int:pk>/', views.dashboard_library_delete, name='dashboard_library_delete'),
+
     # ── Live Chat – User API ──
     path('api/chat/start/',         lc.chat_start,  name='chat_start'),
     path('api/chat/send/',          lc.chat_send,   name='chat_send'),

@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.db.models import Q
-from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage, LibraryJournal, LibraryLegislation, LibraryBook, LibraryContract
 
 # ══════════════════════════════════════════
 #  HELPERS
@@ -185,6 +185,153 @@ def forensic_page(request):
 def medical_exam_detail(request, pk):
     exam = get_object_or_404(MedicalExam, pk=pk)
     return render(request, 'medical_exam_detail.html', {'exam': exam})
+
+
+# ══════════════════════════════════════════
+#  DIGITAL LIBRARY – PUBLIC
+# ══════════════════════════════════════════
+
+def library_home(request):
+    """الصفحة الرئيسية للمكتبة الرقمية"""
+    journals      = LibraryJournal.objects.filter(is_active=True)[:6]
+    legislations  = LibraryLegislation.objects.filter(is_active=True)[:6]
+    books         = LibraryBook.objects.filter(is_active=True)[:6]
+    contracts     = LibraryContract.objects.filter(is_active=True)[:6]
+    return render(request, 'library/library_home.html', {
+        'journals': journals,
+        'legislations': legislations,
+        'books': books,
+        'contracts': contracts,
+    })
+
+def library_journals(request):
+    q = request.GET.get('q', '').strip()
+    qs = LibraryJournal.objects.filter(is_active=True)
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(issue_number__icontains=q))
+    return render(request, 'library/library_journals.html', {'journals': qs, 'q': q})
+
+def library_legislations(request):
+    q        = request.GET.get('q', '').strip()
+    category = request.GET.get('cat', '').strip()
+    qs = LibraryLegislation.objects.filter(is_active=True)
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(number__icontains=q))
+    if category:
+        qs = qs.filter(category=category)
+    return render(request, 'library/library_legislations.html', {
+        'legislations': qs, 'q': q, 'cat': category,
+        'categories': LibraryLegislation.CATEGORY_CHOICES,
+    })
+
+def library_books(request):
+    q = request.GET.get('q', '').strip()
+    qs = LibraryBook.objects.filter(is_active=True)
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(author__icontains=q))
+    return render(request, 'library/library_books.html', {'books': qs, 'q': q})
+
+def library_contracts(request):
+    q        = request.GET.get('q', '').strip()
+    category = request.GET.get('cat', '').strip()
+    qs = LibraryContract.objects.filter(is_active=True)
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(description__icontains=q))
+    if category:
+        qs = qs.filter(category=category)
+    return render(request, 'library/library_contracts.html', {
+        'contracts': qs, 'q': q, 'cat': category,
+        'categories': LibraryContract.CATEGORY_CHOICES,
+    })
+
+
+# ══════════════════════════════════════════
+#  DIGITAL LIBRARY – DASHBOARD
+# ══════════════════════════════════════════
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_library(request):
+    section = request.GET.get('section', 'journals')
+    
+    sections = [
+        ('journals', 'المجلة الإلكترونية', 'fa-regular fa-newspaper'),
+        ('legislations', 'التشريعات والأحكام', 'fa-solid fa-scale-balanced'),
+        ('books', 'الكتب القانونية', 'fa-solid fa-book'),
+        ('contracts', 'نماذج العقود', 'fa-solid fa-file-contract'),
+    ]
+    
+    ctx = {
+        'section': section,
+        'sections': sections,
+        'journals':     LibraryJournal.objects.all(),
+        'legislations': LibraryLegislation.objects.all(),
+        'books':        LibraryBook.objects.all(),
+        'contracts':    LibraryContract.objects.all(),
+    }
+    return render(request, 'dashboard/library.html', ctx)
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_library_add(request, section):
+    if request.method == 'POST':
+        try:
+            if section == 'journal':
+                LibraryJournal.objects.create(
+                    title=request.POST.get('title'),
+                    issue_number=request.POST.get('issue_number', ''),
+                    description=request.POST.get('description', ''),
+                    publish_date=request.POST.get('publish_date') or None,
+                    cover_image=request.FILES.get('cover_image'),
+                    file=request.FILES.get('file'),
+                    is_active=request.POST.get('is_active') == 'on',
+                )
+            elif section == 'legislation':
+                LibraryLegislation.objects.create(
+                    title=request.POST.get('title'),
+                    category=request.POST.get('category', 'law'),
+                    number=request.POST.get('number', ''),
+                    year=request.POST.get('year', ''),
+                    description=request.POST.get('description', ''),
+                    file=request.FILES.get('file'),
+                    external_url=request.POST.get('external_url', ''),
+                    is_active=request.POST.get('is_active') == 'on',
+                )
+            elif section == 'book':
+                LibraryBook.objects.create(
+                    title=request.POST.get('title'),
+                    author=request.POST.get('author', ''),
+                    description=request.POST.get('description', ''),
+                    cover_image=request.FILES.get('cover_image'),
+                    file=request.FILES.get('file'),
+                    external_url=request.POST.get('external_url', ''),
+                    is_active=request.POST.get('is_active') == 'on',
+                )
+            elif section == 'contract':
+                LibraryContract.objects.create(
+                    title=request.POST.get('title'),
+                    category=request.POST.get('category', 'other'),
+                    description=request.POST.get('description', ''),
+                    file=request.FILES.get('file'),
+                    is_active=request.POST.get('is_active') == 'on',
+                )
+            messages.success(request, 'تمت الإضافة بنجاح.')
+        except Exception as e:
+            messages.error(request, f'حدث خطأ: {str(e)}')
+    return redirect(f'/dashboard/library/?section={section}s')
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_library_delete(request, section, pk):
+    if request.method == 'POST':
+        model_map = {
+            'journal': LibraryJournal,
+            'legislation': LibraryLegislation,
+            'book': LibraryBook,
+            'contract': LibraryContract,
+        }
+        Model = model_map.get(section)
+        if Model:
+            get_object_or_404(Model, pk=pk).delete()
+            messages.success(request, 'تم الحذف بنجاح.')
+    return redirect(f'/dashboard/library/?section={section}s')
 
 def run_migrations_view(request):
     from django.core.management import call_command

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import News, NewsImage, CouncilMember, Complaint, FAQ, Service, UserProfile, SiteSettings
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, Service, UserProfile, SiteSettings, LibraryJournal, LibraryLegislation, LibraryBook, LibraryContract
 
 class NewsImageInline(admin.TabularInline):
     model = NewsImage
@@ -44,3 +44,29 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'slider_speed')
+
+@admin.register(LibraryJournal)
+class LibraryJournalAdmin(admin.ModelAdmin):
+    list_display = ('title', 'issue_number', 'publish_date', 'is_active')
+    list_editable = ('is_active',)
+    search_fields = ('title', 'issue_number')
+
+@admin.register(LibraryLegislation)
+class LibraryLegislationAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'number', 'year', 'is_active')
+    list_filter = ('category', 'is_active')
+    list_editable = ('is_active',)
+    search_fields = ('title', 'number')
+
+@admin.register(LibraryBook)
+class LibraryBookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'is_active')
+    list_editable = ('is_active',)
+    search_fields = ('title', 'author')
+
+@admin.register(LibraryContract)
+class LibraryContractAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'is_active')
+    list_filter = ('category', 'is_active')
+    list_editable = ('is_active',)
+    search_fields = ('title',)

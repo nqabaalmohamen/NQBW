@@ -427,6 +427,9 @@
             <a href="{% url 'core:dashboard_institute' %}" class="nav-item {% if 'institute' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="fa-solid fa-building-columns"></i> معهد المحاماة
             </a>
+            <a href="{% url 'core:dashboard_library' %}" class="nav-item {% if 'library' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fa-solid fa-book-open"></i> المكتبة الرقمية
+            </a>
 
             <div class="nav-section-title">الطلبات والتواصل</div>
             <a href="{% url 'core:dashboard_livechat' %}" class="nav-item {% if 'livechat' in request.resolver_match.url_name %}active{% endif %}">

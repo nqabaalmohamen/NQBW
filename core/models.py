@@ -276,3 +276,105 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"[{self.sender}] {self.message[:50]}"
+
+
+# ══════════════════════════════════════════
+#  DIGITAL LIBRARY
+# ══════════════════════════════════════════
+
+class LibraryJournal(models.Model):
+    """المجلة الإلكترونية"""
+    title        = models.CharField(max_length=300, verbose_name="عنوان العدد")
+    issue_number = models.CharField(max_length=50, blank=True, verbose_name="رقم العدد")
+    description  = models.TextField(blank=True, verbose_name="وصف العدد")
+    cover_image  = models.ImageField(upload_to='library/journals/', blank=True, null=True, verbose_name="صورة الغلاف")
+    file         = models.FileField(upload_to='library/journals/files/', blank=True, null=True, verbose_name="ملف PDF")
+    publish_date = models.DateField(blank=True, null=True, verbose_name="تاريخ الإصدار")
+    is_active    = models.BooleanField(default=True, verbose_name="منشور")
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "عدد المجلة"
+        verbose_name_plural = "المجلة الإلكترونية"
+        ordering = ['-publish_date', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class LibraryLegislation(models.Model):
+    """بوابة التشريعات والأحكام"""
+    CATEGORY_CHOICES = [
+        ('law',     'قانون'),
+        ('decree',  'مرسوم / لائحة'),
+        ('ruling',  'حكم قضائي'),
+        ('circular','منشور / تعميم'),
+        ('treaty',  'اتفاقية دولية'),
+    ]
+    title       = models.CharField(max_length=300, verbose_name="العنوان")
+    category    = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='law', verbose_name="التصنيف")
+    number      = models.CharField(max_length=100, blank=True, verbose_name="رقم القانون / الحكم")
+    year        = models.CharField(max_length=10, blank=True, verbose_name="سنة الإصدار")
+    description = models.TextField(blank=True, verbose_name="نبذة")
+    file        = models.FileField(upload_to='library/legislation/', blank=True, null=True, verbose_name="ملف PDF")
+    external_url= models.URLField(blank=True, verbose_name="رابط خارجي")
+    is_active   = models.BooleanField(default=True, verbose_name="منشور")
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "تشريع / حكم"
+        verbose_name_plural = "بوابة التشريعات والأحكام"
+        ordering = ['-year', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class LibraryBook(models.Model):
+    """الكتب القانونية"""
+    title       = models.CharField(max_length=300, verbose_name="عنوان الكتاب")
+    author      = models.CharField(max_length=200, blank=True, verbose_name="اسم المؤلف")
+    description = models.TextField(blank=True, verbose_name="نبذة عن الكتاب")
+    cover_image = models.ImageField(upload_to='library/books/', blank=True, null=True, verbose_name="صورة الغلاف")
+    file        = models.FileField(upload_to='library/books/files/', blank=True, null=True, verbose_name="ملف PDF")
+    external_url= models.URLField(blank=True, verbose_name="رابط خارجي")
+    is_active   = models.BooleanField(default=True, verbose_name="منشور")
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "كتاب قانوني"
+        verbose_name_plural = "الكتب القانونية"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class LibraryContract(models.Model):
+    """نماذج العقود"""
+    CATEGORY_CHOICES = [
+        ('sale',      'عقود البيع والشراء'),
+        ('rent',      'عقود الإيجار'),
+        ('work',      'عقود العمل'),
+        ('company',   'عقود الشركات'),
+        ('proxy',     'توكيلات'),
+        ('divorce',   'أحوال شخصية'),
+        ('criminal',  'مذكرات جنائية'),
+        ('civil',     'مذكرات مدنية'),
+        ('other',     'أخرى'),
+    ]
+    title       = models.CharField(max_length=300, verbose_name="اسم النموذج")
+    category    = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other', verbose_name="التصنيف")
+    description = models.TextField(blank=True, verbose_name="وصف النموذج")
+    file        = models.FileField(upload_to='library/contracts/', blank=True, null=True, verbose_name="ملف النموذج (PDF / Word)")
+    is_active   = models.BooleanField(default=True, verbose_name="منشور")
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "نموذج عقد"
+        verbose_name_plural = "نماذج العقود"
+        ordering = ['category', '-created_at']
+
+    def __str__(self):
+        return self.title
+

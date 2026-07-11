@@ -45,6 +45,7 @@
                 </li>
 
                 <li><a href="{% url 'core:news' %}" class="{% if request.resolver_match.url_name == 'news' %}active{% endif %}"><i class="fa-regular fa-newspaper fa-sm ms-1"></i> المركز الإعلامي</a></li>
+                <li><a href="{% url 'core:library_home' %}" class="{% if 'library' in request.resolver_match.url_name %}active{% endif %}"><i class="fa-solid fa-book-open fa-sm ms-1"></i> المكتبة الرقمية</a></li>
                 <li><a href="{% url 'core:council' %}" class="{% if request.resolver_match.url_name == 'council' %}active{% endif %}"><i class="fa-solid fa-users fa-sm ms-1"></i> مجلس النقابة</a></li>
                 
                 <li class="dropdown">

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% block title %}المكتبة الرقمية - نقابة المحامين بالفيوم{% endblock %}
+
+{% block extra_css %}
+<style>
+:root { --lib-gold: #c9a84c; --lib-dark: #1a2238; --lib-blue: #2563eb; }
+
+.lib-hero {
+    background: linear-gradient(135deg, #1a2238 0%, #113f67 60%, #1a2238 100%);
+    padding: 70px 5% 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.lib-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.lib-hero h1 { font-size: 3rem; font-weight: 900; color: #fff; margin-bottom: 12px; position: relative; }
+.lib-hero h1 span { color: var(--lib-gold); }
+.lib-hero p { color: rgba(255,255,255,0.75); font-size: 1.15rem; max-width: 600px; margin: 0 auto; position: relative; }
+
+/* Section nav tabs */
+.lib-tabs {
+    display: flex; justify-content: center; gap: 0;
+    background: #fff; border-bottom: 2px solid #e5e7eb;
+    position: sticky; top: 68px; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.lib-tab {
+    display: flex; align-items: center; gap: 10px;
+    padding: 18px 30px;
+    color: #555; font-weight: 600; font-size: 1rem;
+    text-decoration: none; border-bottom: 3px solid transparent;
+    transition: all .25s; white-space: nowrap;
+}
+.lib-tab:hover { color: var(--lib-dark); background: #f8f9fa; }
+.lib-tab.active { color: var(--lib-gold); border-bottom-color: var(--lib-gold); background: #fffbf0; }
+.lib-tab i { font-size: 1.1rem; }
+
+/* Section */
+.lib-section { padding: 60px 5%; }
+.lib-section:nth-child(even) { background: #f8fafc; }
+.lib-section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
+}
+.lib-section-title {
+    font-size: 1.6rem; font-weight: 800; color: var(--lib-dark);
+    display: flex; align-items: center; gap: 12px;
+}
+.lib-section-title::before {
+    content: ''; display: inline-block;
+    width: 5px; height: 30px; background: var(--lib-gold); border-radius: 4px;
+}
+.lib-view-all {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--lib-dark); color: #fff;
+    padding: 9px 20px; border-radius: 25px;
+    font-weight: 600; font-size: 0.9rem; text-decoration: none;
+    transition: background .2s;
+}
+.lib-view-all:hover { background: var(--lib-gold); color: var(--lib-dark); }
+
+/* Cards */
+.lib-grid { display: grid; gap: 22px; }
+.lib-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.lib-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+.lib-card {
+    background: #fff; border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    transition: transform .25s, box-shadow .25s;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+}
+.lib-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.13); }
+
+.lib-card-cover {
+    height: 160px; background: linear-gradient(135deg, #1a2238, #113f67);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; color: rgba(255,255,255,0.3); position: relative; overflow: hidden;
+}
+.lib-card-cover img { width: 100%; height: 100%; object-fit: cover; }
+.lib-card-cover .badge {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--lib-gold); color: var(--lib-dark);
+    font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+}
+.lib-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+.lib-card-body h4 { font-size: 0.95rem; font-weight: 700; color: var(--lib-dark); margin-bottom: 6px; line-height: 1.5; }
+.lib-card-body p { font-size: 0.82rem; color: #777; flex: 1; margin-bottom: 12px; line-height: 1.6; }
+.lib-card-meta { font-size: 0.78rem; color: #999; margin-bottom: 10px; }
+.lib-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.lib-btn-dl {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--lib-gold); color: var(--lib-dark);
+    padding: 7px 14px; border-radius: 20px;
+    font-weight: 700; font-size: 0.8rem; text-decoration: none;
+    transition: background .2s;
+}
+.lib-btn-dl:hover { background: #b8941e; color: #fff; }
+.lib-btn-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #f0f4ff; color: var(--lib-blue);
+    padding: 7px 14px; border-radius: 20px;
+    font-weight: 700; font-size: 0.8rem; text-decoration: none;
+    transition: background .2s;
+}
+.lib-btn-link:hover { background: var(--lib-blue); color: #fff; }
+
+/* Legislation row card */
+.leg-card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 16px;
+    transition: transform .2s, box-shadow .2s;
+}
+.leg-card:hover { transform: translateX(-4px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.leg-icon {
+    width: 50px; height: 50px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+}
+.leg-body { flex: 1; }
+.leg-body h4 { font-size: 0.95rem; font-weight: 700; color: var(--lib-dark); margin-bottom: 4px; }
+.leg-body .meta { font-size: 0.8rem; color: #999; }
+.lib-empty { text-align: center; color: #aaa; padding: 40px 20px; font-size: 1rem; }
+
+@media (max-width: 900px) {
+    .lib-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .lib-grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .lib-hero h1 { font-size: 2rem; }
+    .lib-tab { padding: 14px 16px; font-size: 0.85rem; }
+    .lib-tab span { display: none; }
+}
+@media (max-width: 600px) {
+    .lib-grid-4, .lib-grid-3 { grid-template-columns: 1fr 1fr; }
+    .lib-tabs { overflow-x: auto; justify-content: flex-start; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="lib-hero">
+    <h1><i class="fa-solid fa-book-open ms-3" style="color:var(--lib-gold);"></i> المكتبة <span>الرقمية</span></h1>
+    <p>بوابة قانونية شاملة تضم التشريعات والأحكام والكتب ونماذج العقود لخدمة المحامين والمواطنين</p>
+</div>
+
+<!-- Tabs Nav -->
+<nav class="lib-tabs">
+    <a href="{% url 'core:library_home' %}" class="lib-tab active">
+        <i class="fa-solid fa-house"></i> <span>الرئيسية</span>
+    </a>
+    <a href="{% url 'core:library_journals' %}" class="lib-tab">
+        <i class="fa-regular fa-newspaper"></i> <span>المجلة الإلكترونية</span>
+    </a>
+    <a href="{% url 'core:library_legislations' %}" class="lib-tab">
+        <i class="fa-solid fa-scale-balanced"></i> <span>التشريعات والأحكام</span>
+    </a>
+    <a href="{% url 'core:library_books' %}" class="lib-tab">
+        <i class="fa-solid fa-book"></i> <span>الكتب</span>
+    </a>
+    <a href="{% url 'core:library_contracts' %}" class="lib-tab">
+        <i class="fa-solid fa-file-contract"></i> <span>نماذج العقود</span>
+    </a>
+</nav>
+
+<!-- ─── المجلة الإلكترونية ─── -->
+<section class="lib-section">
+    <div class="lib-section-header">
+        <div class="lib-section-title"><i class="fa-regular fa-newspaper" style="color:var(--lib-gold);"></i> المجلة الإلكترونية</div>
+        <a href="{% url 'core:library_journals' %}" class="lib-view-all"><i class="fa-solid fa-arrow-left fa-xs"></i> عرض الكل</a>
+    </div>
+    {% if journals %}
+    <div class="lib-grid lib-grid-4">
+        {% for j in journals %}
+        <div class="lib-card">
+            <div class="lib-card-cover">
+                {% if j.cover_image %}<img src="{{ j.cover_image.url }}" alt="{{ j.title }}">{% else %}<i class="fa-regular fa-newspaper"></i>{% endif %}
+                {% if j.issue_number %}<span class="badge">العدد {{ j.issue_number }}</span>{% endif %}
+            </div>
+            <div class="lib-card-body">
+                <h4>{{ j.title }}</h4>
+                {% if j.publish_date %}<div class="lib-card-meta"><i class="fa-regular fa-calendar fa-xs ms-1"></i> {{ j.publish_date }}</div>{% endif %}
+                <p>{{ j.description|truncatechars:80 }}</p>
+                <div class="lib-card-actions">
+                    {% if j.file %}<a href="{{ j.file.url }}" target="_blank" class="lib-btn-dl"><i class="fa-solid fa-download"></i> تحميل PDF</a>{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد أعداد منشورة حالياً.</p>{% endif %}
+</section>
+
+<!-- ─── التشريعات والأحكام ─── -->
+<section class="lib-section">
+    <div class="lib-section-header">
+        <div class="lib-section-title"><i class="fa-solid fa-scale-balanced" style="color:#2563eb;"></i> بوابة التشريعات والأحكام المصرية</div>
+        <a href="{% url 'core:library_legislations' %}" class="lib-view-all"><i class="fa-solid fa-arrow-left fa-xs"></i> عرض الكل</a>
+    </div>
+    {% if legislations %}
+    <div class="lib-grid" style="grid-template-columns: repeat(2, 1fr);">
+        {% for leg in legislations %}
+        {% with cat=leg.category %}
+        <div class="leg-card">
+            <div class="leg-icon" style="background:{% if cat == 'law' %}#eff6ff{% elif cat == 'ruling' %}#fef3c7{% elif cat == 'decree' %}#f0fdf4{% else %}#f5f3ff{% endif %}; color:{% if cat == 'law' %}#2563eb{% elif cat == 'ruling' %}#d97706{% elif cat == 'decree' %}#16a34a{% else %}#7c3aed{% endif %};">
+                <i class="fa-solid {% if cat == 'law' %}fa-gavel{% elif cat == 'ruling' %}fa-landmark{% elif cat == 'decree' %}fa-scroll{% else %}fa-file-lines{% endif %}"></i>
+            </div>
+            <div class="leg-body">
+                <h4>{{ leg.title }}</h4>
+                <div class="meta">
+                    {{ leg.get_category_display }}{% if leg.number %} · رقم {{ leg.number }}{% endif %}{% if leg.year %} · {{ leg.year }}{% endif %}
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-shrink:0;">
+                {% if leg.file %}<a href="{{ leg.file.url }}" target="_blank" class="lib-btn-dl" title="تحميل"><i class="fa-solid fa-download"></i></a>{% endif %}
+                {% if leg.external_url %}<a href="{{ leg.external_url }}" target="_blank" class="lib-btn-link" title="الرابط"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>{% endif %}
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+    {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد تشريعات منشورة حالياً.</p>{% endif %}
+</section>
+
+<!-- ─── الكتب ─── -->
+<section class="lib-section">
+    <div class="lib-section-header">
+        <div class="lib-section-title"><i class="fa-solid fa-book" style="color:#16a34a;"></i> الكتب القانونية</div>
+        <a href="{% url 'core:library_books' %}" class="lib-view-all"><i class="fa-solid fa-arrow-left fa-xs"></i> عرض الكل</a>
+    </div>
+    {% if books %}
+    <div class="lib-grid lib-grid-3">
+        {% for b in books %}
+        <div class="lib-card">
+            <div class="lib-card-cover" style="background: linear-gradient(135deg,#14532d,#166534);">
+                {% if b.cover_image %}<img src="{{ b.cover_image.url }}" alt="{{ b.title }}">{% else %}<i class="fa-solid fa-book"></i>{% endif %}
+            </div>
+            <div class="lib-card-body">
+                <h4>{{ b.title }}</h4>
+                {% if b.author %}<div class="lib-card-meta"><i class="fa-solid fa-user-pen fa-xs ms-1"></i> {{ b.author }}</div>{% endif %}
+                <p>{{ b.description|truncatechars:80 }}</p>
+                <div class="lib-card-actions">
+                    {% if b.file %}<a href="{{ b.file.url }}" target="_blank" class="lib-btn-dl"><i class="fa-solid fa-download"></i> تحميل</a>{% endif %}
+                    {% if b.external_url %}<a href="{{ b.external_url }}" target="_blank" class="lib-btn-link"><i class="fa-solid fa-link"></i> رابط</a>{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد كتب منشورة حالياً.</p>{% endif %}
+</section>
+
+<!-- ─── نماذج العقود ─── -->
+<section class="lib-section">
+    <div class="lib-section-header">
+        <div class="lib-section-title"><i class="fa-solid fa-file-contract" style="color:#7c3aed;"></i> نماذج العقود</div>
+        <a href="{% url 'core:library_contracts' %}" class="lib-view-all"><i class="fa-solid fa-arrow-left fa-xs"></i> عرض الكل</a>
+    </div>
+    {% if contracts %}
+    <div class="lib-grid lib-grid-4">
+        {% for c in contracts %}
+        <div class="lib-card" style="flex-direction:row; align-items:center; padding: 16px 20px; gap: 14px;">
+            <div style="width:44px;height:44px;background:#f5f3ff;color:#7c3aed;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">
+                <i class="fa-solid fa-file-signature"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <h4 style="font-size:0.9rem;margin-bottom:4px;">{{ c.title }}</h4>
+                <div style="font-size:0.78rem;color:#999;">{{ c.get_category_display }}</div>
+            </div>
+            {% if c.file %}
+            <a href="{{ c.file.url }}" target="_blank" class="lib-btn-dl" style="flex-shrink:0;"><i class="fa-solid fa-download"></i></a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}<p class="lib-empty"><i class="fa-regular fa-folder-open fa-2x" style="display:block;margin-bottom:10px;"></i>لا توجد نماذج منشورة حالياً.</p>{% endif %}
+</section>
+{% endblock %}

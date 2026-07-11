@@ -1,0 +1,198 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}إدارة المكتبة الرقمية{% endblock %}
+{% block page_title %}المكتبة الرقمية{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span> المكتبة الرقمية
+</div>
+
+<!-- Section Tabs -->
+<div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:28px;overflow-x:auto;">
+    {% for s,label,icon in sections %}
+    <a href="?section={{ s }}" style="display:flex;align-items:center;gap:8px;padding:12px 22px;font-weight:600;font-size:0.95rem;text-decoration:none;border-bottom:3px solid {% if section == s %}var(--gold){% else %}transparent{% endif %};color:{% if section == s %}var(--gold){% else %}var(--text-muted){% endif %};white-space:nowrap;transition:all .2s;">
+        <i class="{{ icon }}"></i> {{ label }}
+    </a>
+    {% endfor %}
+</div>
+
+{% with msgs=messages %}{% if msgs %}
+    {% for m in msgs %}<div class="alert alert-{% if m.tags == 'error' %}danger{% else %}success{% endif %}" style="padding:12px 18px;border-radius:10px;margin-bottom:16px;background:{% if m.tags == 'error' %}#fef2f2{% else %}#f0fdf4{% endif %};border:1px solid {% if m.tags == 'error' %}#fca5a5{% else %}#86efac{% endif %};color:{% if m.tags == 'error' %}#991b1b{% else %}#166534{% endif %};">{{ m }}</div>{% endfor %}
+{% endif %}{% endwith %}
+
+<!-- ─── Journals ─── -->
+{% if section == 'journals' %}
+<div class="card">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <h3><i class="fa-regular fa-newspaper" style="color:var(--gold);"></i> أعداد المجلة الإلكترونية</h3>
+        <button onclick="document.getElementById('addJournalModal').style.display='flex'" class="btn btn-gold"><i class="fa-solid fa-plus"></i> إضافة عدد</button>
+    </div>
+    <div class="card-body">
+        {% if journals %}
+        <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>العدد</th><th>التاريخ</th><th>ملف</th><th>الحالة</th><th>حذف</th></tr></thead>
+            <tbody>
+            {% for j in journals %}
+            <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px;font-weight:600;">{{ j.title }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ j.issue_number|default:"—" }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ j.publish_date|default:"—" }}</td>
+                <td style="padding:12px;">{% if j.file %}<a href="{{ j.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% else %}—{% endif %}</td>
+                <td style="padding:12px;"><span style="background:{% if j.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if j.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if j.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
+                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'journal' j.pk %}" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<p style="color:var(--text-muted);text-align:center;padding:30px;">لا توجد أعداد مضافة بعد.</p>{% endif %}
+    </div>
+</div>
+
+<!-- Add Journal Modal -->
+<div id="addJournalModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:#fff;border-radius:16px;padding:32px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;">
+        <h3 style="margin-bottom:24px;"><i class="fa-regular fa-newspaper" style="color:var(--gold);"></i> إضافة عدد جديد</h3>
+        <form method="POST" action="{% url 'core:dashboard_library_add' 'journal' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group"><label class="form-label">عنوان العدد *</label><input type="text" name="title" class="form-control" required></div>
+            <div class="form-group"><label class="form-label">رقم العدد</label><input type="text" name="issue_number" class="form-control" placeholder="مثل: 15"></div>
+            <div class="form-group"><label class="form-label">وصف العدد</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+            <div class="form-group"><label class="form-label">تاريخ الإصدار</label><input type="date" name="publish_date" class="form-control"></div>
+            <div class="form-group"><label class="form-label">صورة الغلاف</label><input type="file" name="cover_image" class="form-control" accept="image/*"></div>
+            <div class="form-group"><label class="form-label">ملف PDF</label><input type="file" name="file" class="form-control" accept=".pdf"></div>
+            <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;"><input type="checkbox" name="is_active" checked style="width:18px;height:18px;accent-color:var(--gold);"> <span>نشر فوراً</span></label>
+            <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ</button><button type="button" onclick="document.getElementById('addJournalModal').style.display='none'" class="btn btn-outline">إلغاء</button></div>
+        </form>
+    </div>
+</div>
+
+{% elif section == 'legislations' %}
+<div class="card">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <h3><i class="fa-solid fa-scale-balanced" style="color:var(--gold);"></i> التشريعات والأحكام</h3>
+        <button onclick="document.getElementById('addLegModal').style.display='flex'" class="btn btn-gold"><i class="fa-solid fa-plus"></i> إضافة</button>
+    </div>
+    <div class="card-body">
+        {% if legislations %}
+        <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>النوع</th><th>الرقم</th><th>السنة</th><th>ملف</th><th>حذف</th></tr></thead>
+            <tbody>
+            {% for leg in legislations %}
+            <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px;font-weight:600;">{{ leg.title }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ leg.get_category_display }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ leg.number|default:"—" }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ leg.year|default:"—" }}</td>
+                <td style="padding:12px;">{% if leg.file %}<a href="{{ leg.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% elif leg.external_url %}<a href="{{ leg.external_url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-link"></i></a>{% else %}—{% endif %}</td>
+                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'legislation' leg.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<p style="color:var(--text-muted);text-align:center;padding:30px;">لا توجد تشريعات مضافة بعد.</p>{% endif %}
+    </div>
+</div>
+<div id="addLegModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:#fff;border-radius:16px;padding:32px;width:90%;max-width:560px;max-height:90vh;overflow-y:auto;">
+        <h3 style="margin-bottom:24px;"><i class="fa-solid fa-scale-balanced" style="color:var(--gold);"></i> إضافة تشريع / حكم</h3>
+        <form method="POST" action="{% url 'core:dashboard_library_add' 'legislation' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group"><label class="form-label">العنوان *</label><input type="text" name="title" class="form-control" required></div>
+            <div class="form-group"><label class="form-label">النوع</label><select name="category" class="form-control"><option value="law">قانون</option><option value="decree">مرسوم / لائحة</option><option value="ruling">حكم قضائي</option><option value="circular">منشور / تعميم</option><option value="treaty">اتفاقية دولية</option></select></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group"><label class="form-label">الرقم</label><input type="text" name="number" class="form-control" placeholder="مثل: 12 لسنة 1996"></div>
+                <div class="form-group"><label class="form-label">السنة</label><input type="text" name="year" class="form-control" placeholder="مثل: 2020"></div>
+            </div>
+            <div class="form-group"><label class="form-label">نبذة</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+            <div class="form-group"><label class="form-label">ملف PDF</label><input type="file" name="file" class="form-control" accept=".pdf"></div>
+            <div class="form-group"><label class="form-label">أو رابط خارجي</label><input type="url" name="external_url" class="form-control" placeholder="https://..."></div>
+            <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;"><input type="checkbox" name="is_active" checked style="width:18px;height:18px;accent-color:var(--gold);"> <span>نشر فوراً</span></label>
+            <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ</button><button type="button" onclick="document.getElementById('addLegModal').style.display='none'" class="btn btn-outline">إلغاء</button></div>
+        </form>
+    </div>
+</div>
+
+{% elif section == 'books' %}
+<div class="card">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <h3><i class="fa-solid fa-book" style="color:var(--gold);"></i> الكتب القانونية</h3>
+        <button onclick="document.getElementById('addBookModal').style.display='flex'" class="btn btn-gold"><i class="fa-solid fa-plus"></i> إضافة كتاب</button>
+    </div>
+    <div class="card-body">
+        {% if books %}
+        <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>المؤلف</th><th>ملف</th><th>الحالة</th><th>حذف</th></tr></thead>
+            <tbody>
+            {% for b in books %}
+            <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px;font-weight:600;">{{ b.title }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ b.author|default:"—" }}</td>
+                <td style="padding:12px;">{% if b.file %}<a href="{{ b.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% elif b.external_url %}<a href="{{ b.external_url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-link"></i></a>{% else %}—{% endif %}</td>
+                <td style="padding:12px;"><span style="background:{% if b.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if b.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if b.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
+                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'book' b.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<p style="color:var(--text-muted);text-align:center;padding:30px;">لا توجد كتب مضافة بعد.</p>{% endif %}
+    </div>
+</div>
+<div id="addBookModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:#fff;border-radius:16px;padding:32px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;">
+        <h3 style="margin-bottom:24px;"><i class="fa-solid fa-book" style="color:var(--gold);"></i> إضافة كتاب</h3>
+        <form method="POST" action="{% url 'core:dashboard_library_add' 'book' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group"><label class="form-label">عنوان الكتاب *</label><input type="text" name="title" class="form-control" required></div>
+            <div class="form-group"><label class="form-label">اسم المؤلف</label><input type="text" name="author" class="form-control"></div>
+            <div class="form-group"><label class="form-label">نبذة عن الكتاب</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+            <div class="form-group"><label class="form-label">صورة الغلاف</label><input type="file" name="cover_image" class="form-control" accept="image/*"></div>
+            <div class="form-group"><label class="form-label">ملف PDF</label><input type="file" name="file" class="form-control" accept=".pdf"></div>
+            <div class="form-group"><label class="form-label">أو رابط خارجي للتحميل</label><input type="url" name="external_url" class="form-control" placeholder="https://..."></div>
+            <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;"><input type="checkbox" name="is_active" checked style="width:18px;height:18px;accent-color:var(--gold);"> <span>نشر فوراً</span></label>
+            <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ</button><button type="button" onclick="document.getElementById('addBookModal').style.display='none'" class="btn btn-outline">إلغاء</button></div>
+        </form>
+    </div>
+</div>
+
+{% elif section == 'contracts' %}
+<div class="card">
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <h3><i class="fa-solid fa-file-contract" style="color:var(--gold);"></i> نماذج العقود</h3>
+        <button onclick="document.getElementById('addContractModal').style.display='flex'" class="btn btn-gold"><i class="fa-solid fa-plus"></i> إضافة نموذج</button>
+    </div>
+    <div class="card-body">
+        {% if contracts %}
+        <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">اسم النموذج</th><th>النوع</th><th>ملف</th><th>الحالة</th><th>حذف</th></tr></thead>
+            <tbody>
+            {% for c in contracts %}
+            <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px;font-weight:600;">{{ c.title }}</td>
+                <td style="padding:12px;color:var(--text-muted);">{{ c.get_category_display }}</td>
+                <td style="padding:12px;">{% if c.file %}<a href="{{ c.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% else %}—{% endif %}</td>
+                <td style="padding:12px;"><span style="background:{% if c.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if c.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if c.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
+                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'contract' c.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<p style="color:var(--text-muted);text-align:center;padding:30px;">لا توجد نماذج مضافة بعد.</p>{% endif %}
+    </div>
+</div>
+<div id="addContractModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:#fff;border-radius:16px;padding:32px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;">
+        <h3 style="margin-bottom:24px;"><i class="fa-solid fa-file-contract" style="color:var(--gold);"></i> إضافة نموذج عقد</h3>
+        <form method="POST" action="{% url 'core:dashboard_library_add' 'contract' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group"><label class="form-label">اسم النموذج *</label><input type="text" name="title" class="form-control" required></div>
+            <div class="form-group"><label class="form-label">النوع</label><select name="category" class="form-control"><option value="sale">عقود البيع والشراء</option><option value="rent">عقود الإيجار</option><option value="work">عقود العمل</option><option value="company">عقود الشركات</option><option value="proxy">توكيلات</option><option value="divorce">أحوال شخصية</option><option value="criminal">مذكرات جنائية</option><option value="civil">مذكرات مدنية</option><option value="other">أخرى</option></select></div>
+            <div class="form-group"><label class="form-label">وصف النموذج</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+            <div class="form-group"><label class="form-label">ملف النموذج (PDF / Word)</label><input type="file" name="file" class="form-control" accept=".pdf,.doc,.docx"></div>
+            <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;"><input type="checkbox" name="is_active" checked style="width:18px;height:18px;accent-color:var(--gold);"> <span>نشر فوراً</span></label>
+            <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ</button><button type="button" onclick="document.getElementById('addContractModal').style.display='none'" class="btn btn-outline">إلغاء</button></div>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
