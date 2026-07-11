@@ -665,9 +665,19 @@ def dashboard_news_edit(request, pk):
             news.content = request.POST.get('content')
             news.is_published = request.POST.get('is_published') == 'on'
             news.in_slider = request.POST.get('in_slider') == 'on'
-            if request.FILES.get('image'):
+            if request.POST.get('delete_main_image') == 'on':
+                if news.image:
+                    news.image.delete(save=False)
+                    news.image = None
+            elif request.FILES.get('image'):
                 news.image = request.FILES.get('image')
+                
             news.save()
+            
+            # Handle gallery images deletion
+            delete_gallery_ids = request.POST.getlist('delete_gallery_image')
+            if delete_gallery_ids:
+                NewsImage.objects.filter(id__in=delete_gallery_ids, news=news).delete()
             
             # Handle multiple gallery images
             gallery_images = request.FILES.getlist('gallery_images')
