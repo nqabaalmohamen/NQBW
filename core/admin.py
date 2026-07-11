@@ -1,11 +1,16 @@
 from django.contrib import admin
-from .models import News, CouncilMember, Complaint, FAQ, Service, UserProfile, SiteSettings
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, Service, UserProfile, SiteSettings
+
+class NewsImageInline(admin.TabularInline):
+    model = NewsImage
+    extra = 1
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'is_published')
     list_filter = ('is_published', 'date')
     search_fields = ('title', 'content')
+    inlines = [NewsImageInline]
 
 @admin.register(CouncilMember)
 class CouncilMemberAdmin(admin.ModelAdmin):

@@ -92,6 +92,20 @@ class News(models.Model):
         return self.title
 
 
+class NewsImage(models.Model):
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='images', verbose_name="الخبر")
+    image = models.ImageField(upload_to='news_gallery/', verbose_name="صورة إضافية")
+    order = models.IntegerField(default=0, verbose_name="الترتيب")
+
+    class Meta:
+        verbose_name = "صورة إضافية للخبر"
+        verbose_name_plural = "صور الخبر الإضافية"
+        ordering = ['order']
+
+    def __str__(self):
+        return f"صورة - {self.news.title}"
+
+
 class CouncilMember(models.Model):
     ROLE_CHOICES = [
         ('president', 'نقيب المحامين'),
