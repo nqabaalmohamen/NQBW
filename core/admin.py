@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import News, NewsImage, CouncilMember, Complaint, FAQ, Service, UserProfile, SiteSettings, LibraryLegislation, LibraryBook, LibraryContract
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, Service, UserProfile, SiteSettings, LibraryBook, LibraryContract
 
 class NewsImageInline(admin.TabularInline):
     model = NewsImage
@@ -44,13 +44,6 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'slider_speed')
-
-@admin.register(LibraryLegislation)
-class LibraryLegislationAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'number', 'year', 'is_active')
-    list_filter = ('category', 'is_active')
-    list_editable = ('is_active',)
-    search_fields = ('title', 'number')
 
 @admin.register(LibraryBook)
 class LibraryBookAdmin(admin.ModelAdmin):

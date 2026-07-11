@@ -26,22 +26,7 @@
                 <input type="text" name="title" class="form-control" value="{{ item.title }}" required>
             </div>
             
-            {% if section == 'legislation' %}
-            <div class="form-group">
-                <label class="form-label">النوع</label>
-                <select name="category" class="form-control">
-                    <option value="law" {% if item.category == 'law' %}selected{% endif %}>قانون</option>
-                    <option value="decree" {% if item.category == 'decree' %}selected{% endif %}>مرسوم / لائحة</option>
-                    <option value="ruling" {% if item.category == 'ruling' %}selected{% endif %}>حكم قضائي</option>
-                    <option value="circular" {% if item.category == 'circular' %}selected{% endif %}>منشور / تعميم</option>
-                    <option value="treaty" {% if item.category == 'treaty' %}selected{% endif %}>اتفاقية دولية</option>
-                </select>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div class="form-group"><label class="form-label">الرقم</label><input type="text" name="number" class="form-control" value="{{ item.number }}"></div>
-                <div class="form-group"><label class="form-label">السنة</label><input type="text" name="year" class="form-control" value="{{ item.year }}"></div>
-            </div>
-            {% elif section == 'book' %}
+            {% if section == 'book' %}
             <div class="form-group"><label class="form-label">المؤلف</label><input type="text" name="author" class="form-control" value="{{ item.author }}"></div>
             {% elif section == 'contract' %}
             <div class="form-group">

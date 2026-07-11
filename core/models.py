@@ -283,33 +283,6 @@ class ChatMessage(models.Model):
 # ══════════════════════════════════════════
 
 
-class LibraryLegislation(models.Model):
-    """بوابة التشريعات والأحكام"""
-    CATEGORY_CHOICES = [
-        ('law',     'قانون'),
-        ('decree',  'مرسوم / لائحة'),
-        ('ruling',  'حكم قضائي'),
-        ('circular','منشور / تعميم'),
-        ('treaty',  'اتفاقية دولية'),
-    ]
-    title       = models.CharField(max_length=300, verbose_name="العنوان")
-    category    = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='law', verbose_name="التصنيف")
-    number      = models.CharField(max_length=100, blank=True, verbose_name="رقم القانون / الحكم")
-    year        = models.CharField(max_length=10, blank=True, verbose_name="سنة الإصدار")
-    description = models.TextField(blank=True, verbose_name="نبذة")
-    file        = models.FileField(upload_to='library/legislation/', blank=True, null=True, verbose_name="ملف PDF")
-    external_url= models.URLField(blank=True, max_length=800, verbose_name="رابط خارجي")
-    is_active   = models.BooleanField(default=True, verbose_name="منشور")
-    created_at  = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "تشريع / حكم"
-        verbose_name_plural = "بوابة التشريعات والأحكام"
-        ordering = ['-year', '-created_at']
-
-    def __str__(self):
-        return self.title
-
 
 class LibraryBook(models.Model):
     """الكتب القانونية"""

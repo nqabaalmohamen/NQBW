@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.db.models import Q
-from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage, LibraryLegislation, LibraryBook, LibraryContract
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage, LibraryBook, LibraryContract
 from .chunk_upload import upload_chunk_api
 
 # ══════════════════════════════════════════
@@ -194,29 +194,15 @@ def medical_exam_detail(request, pk):
 
 def library_home(request):
     """ الصفحة الرئيسية للمكتبة الرقمية"""
-    legislations  = LibraryLegislation.objects.filter(is_active=True)[:6]
     books         = LibraryBook.objects.filter(is_active=True)[:6]
     contracts     = LibraryContract.objects.filter(is_active=True)[:6]
     return render(request, 'library/library_home.html', {
-        'legislations': legislations,
         'books': books,
         'contracts': contracts,
     })
 
 
 
-def library_legislations(request):
-    q        = request.GET.get('q', '').strip()
-    category = request.GET.get('cat', '').strip()
-    qs = LibraryLegislation.objects.filter(is_active=True)
-    if q:
-        qs = qs.filter(Q(title__icontains=q) | Q(number__icontains=q))
-    if category:
-        qs = qs.filter(category=category)
-    return render(request, 'library/library_legislations.html', {
-        'legislations': qs, 'q': q, 'cat': category,
-        'categories': LibraryLegislation.CATEGORY_CHOICES,
-    })
 
 def library_books(request):
     q = request.GET.get('q', '').strip()
@@ -245,10 +231,8 @@ def library_contracts(request):
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_library(request):
-    section = request.GET.get('section', 'legislations')
-    
+    section = request.GET.get('section', 'books')
     sections = [
-        ('legislations', 'التشريعات والأحكام', 'fa-solid fa-scale-balanced'),
         ('books', 'الكتب القانونية', 'fa-solid fa-book'),
         ('contracts', 'نماذج العقود', 'fa-solid fa-file-contract'),
     ]
@@ -256,7 +240,6 @@ def dashboard_library(request):
     ctx = {
         'section': section,
         'sections': sections,
-        'legislations': LibraryLegislation.objects.all(),
         'books':        LibraryBook.objects.all(),
         'contracts':    LibraryContract.objects.all(),
     }
@@ -266,18 +249,7 @@ def dashboard_library(request):
 def dashboard_library_add(request, section):
     if request.method == 'POST':
         try:
-            if section == 'legislation':
-                LibraryLegislation.objects.create(
-                    title=request.POST.get('title'),
-                    category=request.POST.get('category', 'law'),
-                    number=request.POST.get('number', ''),
-                    year=request.POST.get('year', ''),
-                    description=request.POST.get('description', ''),
-                    file=request.FILES.get('file'),
-                    external_url=request.POST.get('external_url', ''),
-                    is_active=request.POST.get('is_active') == 'on',
-                )
-            elif section == 'book':
+            if section == 'book':
                 LibraryBook.objects.create(
                     title=request.POST.get('title'),
                     author=request.POST.get('author', ''),
@@ -304,7 +276,6 @@ def dashboard_library_add(request, section):
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_library_edit(request, section, pk):
     model_map = {
-        'legislation': LibraryLegislation,
         'book': LibraryBook,
         'contract': LibraryContract,
     }
@@ -316,17 +287,7 @@ def dashboard_library_edit(request, section, pk):
     
     if request.method == 'POST':
         try:
-            if section == 'legislation':
-                item.title = request.POST.get('title')
-                item.category = request.POST.get('category', 'law')
-                item.number = request.POST.get('number', '')
-                item.year = request.POST.get('year', '')
-                item.description = request.POST.get('description', '')
-                if request.FILES.get('file'): item.file = request.FILES.get('file')
-                item.external_url = request.POST.get('external_url', item.external_url)
-                item.is_active = request.POST.get('is_active') == 'on'
-                
-            elif section == 'book':
+            if section == 'book':
                 item.title = request.POST.get('title')
                 item.author = request.POST.get('author', '')
                 item.description = request.POST.get('description', '')
@@ -355,7 +316,6 @@ def dashboard_library_edit(request, section, pk):
 def dashboard_library_delete(request, section, pk):
     if request.method == 'POST':
         model_map = {
-            'legislation': LibraryLegislation,
             'book': LibraryBook,
             'contract': LibraryContract,
         }
