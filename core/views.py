@@ -322,6 +322,67 @@ def dashboard_library_add(request, section):
     return redirect(f'/dashboard/library/?section={section}s')
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_library_edit(request, section, pk):
+    model_map = {
+        'journal': LibraryJournal,
+        'legislation': LibraryLegislation,
+        'book': LibraryBook,
+        'contract': LibraryContract,
+    }
+    Model = model_map.get(section)
+    if not Model:
+        return redirect('core:dashboard_library')
+        
+    item = get_object_or_404(Model, pk=pk)
+    
+    if request.method == 'POST':
+        try:
+            if section == 'journal':
+                item.title = request.POST.get('title')
+                item.issue_number = request.POST.get('issue_number', '')
+                item.description = request.POST.get('description', '')
+                item.publish_date = request.POST.get('publish_date') or None
+                if request.FILES.get('cover_image'): item.cover_image = request.FILES.get('cover_image')
+                if request.FILES.get('file'): item.file = request.FILES.get('file')
+                item.external_url = request.POST.get('external_url', item.external_url)
+                item.is_active = request.POST.get('is_active') == 'on'
+                
+            elif section == 'legislation':
+                item.title = request.POST.get('title')
+                item.category = request.POST.get('category', 'law')
+                item.number = request.POST.get('number', '')
+                item.year = request.POST.get('year', '')
+                item.description = request.POST.get('description', '')
+                if request.FILES.get('file'): item.file = request.FILES.get('file')
+                item.external_url = request.POST.get('external_url', item.external_url)
+                item.is_active = request.POST.get('is_active') == 'on'
+                
+            elif section == 'book':
+                item.title = request.POST.get('title')
+                item.author = request.POST.get('author', '')
+                item.description = request.POST.get('description', '')
+                if request.FILES.get('cover_image'): item.cover_image = request.FILES.get('cover_image')
+                if request.FILES.get('file'): item.file = request.FILES.get('file')
+                item.external_url = request.POST.get('external_url', item.external_url)
+                item.is_active = request.POST.get('is_active') == 'on'
+                
+            elif section == 'contract':
+                item.title = request.POST.get('title')
+                item.category = request.POST.get('category', 'other')
+                item.description = request.POST.get('description', '')
+                if request.FILES.get('file'): item.file = request.FILES.get('file')
+                item.external_url = request.POST.get('external_url', item.external_url)
+                item.is_active = request.POST.get('is_active') == 'on'
+                
+            item.save()
+            messages.success(request, 'تم التعديل بنجاح.')
+            return redirect(f'/dashboard/library/?section={section}s')
+        except Exception as e:
+            messages.error(request, f'حدث خطأ: {str(e)}')
+            
+    return render(request, 'dashboard/library_edit_form.html', {'item': item, 'section': section})
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_library_delete(request, section, pk):
     if request.method == 'POST':
         model_map = {

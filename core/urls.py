@@ -80,6 +80,7 @@ urlpatterns = [
     # ── Digital Library – Dashboard ──
     path('dashboard/library/', views.dashboard_library, name='dashboard_library'),
     path('dashboard/library/add/<str:section>/', views.dashboard_library_add, name='dashboard_library_add'),
+    path('dashboard/library/edit/<str:section>/<int:pk>/', views.dashboard_library_edit, name='dashboard_library_edit'),
     path('dashboard/library/delete/<str:section>/<int:pk>/', views.dashboard_library_delete, name='dashboard_library_delete'),
 
     # ── Live Chat – User API ──

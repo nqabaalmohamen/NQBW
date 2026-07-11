@@ -31,7 +31,7 @@
     <div class="card-body">
         {% if journals %}
         <table style="width:100%;border-collapse:collapse;">
-            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>العدد</th><th>التاريخ</th><th>ملف</th><th>الحالة</th><th>حذف</th></tr></thead>
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>العدد</th><th>التاريخ</th><th>ملف</th><th>الحالة</th><th>إجراء</th></tr></thead>
             <tbody>
             {% for j in journals %}
             <tr style="border-bottom:1px solid var(--border);">
@@ -40,7 +40,10 @@
                 <td style="padding:12px;color:var(--text-muted);">{{ j.publish_date|default:"—" }}</td>
                 <td style="padding:12px;">{% if j.file %}<a href="{{ j.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% else %}—{% endif %}</td>
                 <td style="padding:12px;"><span style="background:{% if j.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if j.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if j.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
-                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'journal' j.pk %}" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+                <td style="padding:12px; display:flex; gap:6px;">
+                    <a href="{% url 'core:dashboard_library_edit' 'journal' j.pk %}" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#0ea5e9;border-color:#0ea5e9;"><i class="fa-solid fa-pen"></i></a>
+                    <form method="POST" action="{% url 'core:dashboard_library_delete' 'journal' j.pk %}" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
@@ -76,7 +79,7 @@
     <div class="card-body">
         {% if legislations %}
         <table style="width:100%;border-collapse:collapse;">
-            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>النوع</th><th>الرقم</th><th>السنة</th><th>ملف</th><th>حذف</th></tr></thead>
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>النوع</th><th>الرقم</th><th>السنة</th><th>ملف</th><th>إجراء</th></tr></thead>
             <tbody>
             {% for leg in legislations %}
             <tr style="border-bottom:1px solid var(--border);">
@@ -85,7 +88,10 @@
                 <td style="padding:12px;color:var(--text-muted);">{{ leg.number|default:"—" }}</td>
                 <td style="padding:12px;color:var(--text-muted);">{{ leg.year|default:"—" }}</td>
                 <td style="padding:12px;">{% if leg.file %}<a href="{{ leg.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% elif leg.external_url %}<a href="{{ leg.external_url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-link"></i></a>{% else %}—{% endif %}</td>
-                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'legislation' leg.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+                <td style="padding:12px; display:flex; gap:6px;">
+                    <a href="{% url 'core:dashboard_library_edit' 'legislation' leg.pk %}" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#0ea5e9;border-color:#0ea5e9;"><i class="fa-solid fa-pen"></i></a>
+                    <form method="POST" action="{% url 'core:dashboard_library_delete' 'legislation' leg.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
@@ -122,7 +128,7 @@
     <div class="card-body">
         {% if books %}
         <table style="width:100%;border-collapse:collapse;">
-            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>المؤلف</th><th>ملف</th><th>الحالة</th><th>حذف</th></tr></thead>
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>المؤلف</th><th>ملف</th><th>الحالة</th><th>إجراء</th></tr></thead>
             <tbody>
             {% for b in books %}
             <tr style="border-bottom:1px solid var(--border);">
@@ -130,7 +136,10 @@
                 <td style="padding:12px;color:var(--text-muted);">{{ b.author|default:"—" }}</td>
                 <td style="padding:12px;">{% if b.file %}<a href="{{ b.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% elif b.external_url %}<a href="{{ b.external_url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-link"></i></a>{% else %}—{% endif %}</td>
                 <td style="padding:12px;"><span style="background:{% if b.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if b.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if b.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
-                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'book' b.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+                <td style="padding:12px; display:flex; gap:6px;">
+                    <a href="{% url 'core:dashboard_library_edit' 'book' b.pk %}" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#0ea5e9;border-color:#0ea5e9;"><i class="fa-solid fa-pen"></i></a>
+                    <form method="POST" action="{% url 'core:dashboard_library_delete' 'book' b.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
@@ -164,7 +173,7 @@
     <div class="card-body">
         {% if contracts %}
         <table style="width:100%;border-collapse:collapse;">
-            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">اسم النموذج</th><th>النوع</th><th>ملف</th><th>الحالة</th><th>حذف</th></tr></thead>
+            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">اسم النموذج</th><th>النوع</th><th>ملف</th><th>الحالة</th><th>إجراء</th></tr></thead>
             <tbody>
             {% for c in contracts %}
             <tr style="border-bottom:1px solid var(--border);">
@@ -172,7 +181,10 @@
                 <td style="padding:12px;color:var(--text-muted);">{{ c.get_category_display }}</td>
                 <td style="padding:12px;">{% if c.file %}<a href="{{ c.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% else %}—{% endif %}</td>
                 <td style="padding:12px;"><span style="background:{% if c.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if c.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if c.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
-                <td style="padding:12px;"><form method="POST" action="{% url 'core:dashboard_library_delete' 'contract' c.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form></td>
+                <td style="padding:12px; display:flex; gap:6px;">
+                    <a href="{% url 'core:dashboard_library_edit' 'contract' c.pk %}" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#0ea5e9;border-color:#0ea5e9;"><i class="fa-solid fa-pen"></i></a>
+                    <form method="POST" action="{% url 'core:dashboard_library_delete' 'contract' c.pk %}" onsubmit="return confirm('هل أنت متأكد؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>

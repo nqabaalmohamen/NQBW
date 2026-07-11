@@ -1,0 +1,177 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}تعديل عنصر في المكتبة{% endblock %}
+{% block page_title %}تعديل: {{ item.title }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'core:dashboard_home' %}">الرئيسية</a>
+    <span class="sep">/</span> <a href="{% url 'core:dashboard_library' %}?section={{ section }}s">المكتبة الرقمية</a>
+    <span class="sep">/</span> تعديل
+</div>
+
+{% with msgs=messages %}{% if msgs %}
+    {% for m in msgs %}<div class="alert alert-{% if m.tags == 'error' %}danger{% else %}success{% endif %}" style="padding:12px 18px;border-radius:10px;margin-bottom:16px;background:{% if m.tags == 'error' %}#fef2f2{% else %}#f0fdf4{% endif %};border:1px solid {% if m.tags == 'error' %}#fca5a5{% else %}#86efac{% endif %};color:{% if m.tags == 'error' %}#991b1b{% else %}#166534{% endif %};">{{ m }}</div>{% endfor %}
+{% endif %}{% endwith %}
+
+<div class="card" style="max-width:800px;">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-pen" style="color:var(--gold);"></i> تعديل بيانات العنصر</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">العنوان *</label>
+                <input type="text" name="title" class="form-control" value="{{ item.title }}" required>
+            </div>
+            
+            {% if section == 'journal' %}
+            <div class="form-group"><label class="form-label">رقم العدد</label><input type="text" name="issue_number" class="form-control" value="{{ item.issue_number }}"></div>
+            <div class="form-group"><label class="form-label">تاريخ الإصدار</label><input type="date" name="publish_date" class="form-control" value="{{ item.publish_date|date:'Y-m-d' }}"></div>
+            {% elif section == 'legislation' %}
+            <div class="form-group">
+                <label class="form-label">النوع</label>
+                <select name="category" class="form-control">
+                    <option value="law" {% if item.category == 'law' %}selected{% endif %}>قانون</option>
+                    <option value="decree" {% if item.category == 'decree' %}selected{% endif %}>مرسوم / لائحة</option>
+                    <option value="ruling" {% if item.category == 'ruling' %}selected{% endif %}>حكم قضائي</option>
+                    <option value="circular" {% if item.category == 'circular' %}selected{% endif %}>منشور / تعميم</option>
+                    <option value="treaty" {% if item.category == 'treaty' %}selected{% endif %}>اتفاقية دولية</option>
+                </select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group"><label class="form-label">الرقم</label><input type="text" name="number" class="form-control" value="{{ item.number }}"></div>
+                <div class="form-group"><label class="form-label">السنة</label><input type="text" name="year" class="form-control" value="{{ item.year }}"></div>
+            </div>
+            {% elif section == 'book' %}
+            <div class="form-group"><label class="form-label">المؤلف</label><input type="text" name="author" class="form-control" value="{{ item.author }}"></div>
+            {% elif section == 'contract' %}
+            <div class="form-group">
+                <label class="form-label">النوع</label>
+                <select name="category" class="form-control">
+                    <option value="sale" {% if item.category == 'sale' %}selected{% endif %}>عقود البيع والشراء</option>
+                    <option value="rent" {% if item.category == 'rent' %}selected{% endif %}>عقود الإيجار</option>
+                    <option value="work" {% if item.category == 'work' %}selected{% endif %}>عقود العمل</option>
+                    <option value="company" {% if item.category == 'company' %}selected{% endif %}>عقود الشركات</option>
+                    <option value="proxy" {% if item.category == 'proxy' %}selected{% endif %}>توكيلات</option>
+                    <option value="divorce" {% if item.category == 'divorce' %}selected{% endif %}>أحوال شخصية</option>
+                    <option value="criminal" {% if item.category == 'criminal' %}selected{% endif %}>مذكرات جنائية</option>
+                    <option value="civil" {% if item.category == 'civil' %}selected{% endif %}>مذكرات مدنية</option>
+                    <option value="other" {% if item.category == 'other' %}selected{% endif %}>أخرى</option>
+                </select>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label class="form-label">الوصف / النبذة</label>
+                <textarea name="description" class="form-control" rows="4">{{ item.description }}</textarea>
+            </div>
+            
+            {% if section == 'journal' or section == 'book' %}
+            <div class="form-group">
+                <label class="form-label">تغيير صورة الغلاف (اتركه فارغاً للاحتفاظ بالصورة الحالية)</label>
+                {% if item.cover_image %}<p><a href="{{ item.cover_image.url }}" target="_blank">عرض الصورة الحالية</a></p>{% endif %}
+                <input type="file" name="cover_image" class="form-control" accept="image/*">
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label class="form-label">تغيير ملف PDF (اتركه فارغاً للاحتفاظ بالملف الحالي)</label>
+                {% if item.file %}<p><a href="{{ item.file.url }}" target="_blank">عرض الملف الحالي</a></p>{% endif %}
+                <input type="file" name="file" class="form-control" accept=".pdf,.doc,.docx">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">الرابط الخارجي (إن وجد)</label>
+                <input type="url" name="external_url" class="form-control" value="{{ item.external_url|default:'' }}">
+            </div>
+            
+            <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                <input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %} style="width:18px;height:18px;accent-color:var(--gold);"> 
+                <span>منشور (مرئي للزوار)</span>
+            </label>
+            
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-gold" style="padding:10px 30px;"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
+                <a href="{% url 'core:dashboard_library' %}?section={{ section }}s" class="btn btn-outline" style="padding:10px 30px;">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Apply chunked upload script to edit form as well!
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form[enctype="multipart/form-data"]');
+    if(form) {
+        form.addEventListener('submit', async (e) => {
+            const fileInput = form.querySelector('input[type="file"][name="file"]');
+            if (!fileInput || !fileInput.files.length) return;
+            
+            const file = fileInput.files[0];
+            if (file.size < 1000000) return; // If < 1MB, use normal upload
+            
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الرفع...';
+            submitBtn.disabled = true;
+            
+            try {
+                const chunkSize = 2 * 1024 * 1024; // 2MB
+                const totalChunks = Math.ceil(file.size / chunkSize);
+                let uploadId = '';
+                let fileUrl = '';
+                
+                for (let i = 0; i < totalChunks; i++) {
+                    const start = i * chunkSize;
+                    const end = Math.min(start + chunkSize, file.size);
+                    const chunk = file.slice(start, end);
+                    
+                    const fd = new FormData();
+                    fd.append('chunk', chunk);
+                    fd.append('chunk_index', i);
+                    fd.append('total_chunks', totalChunks);
+                    fd.append('file_name', file.name);
+                    if (uploadId) fd.append('upload_id', uploadId);
+                    
+                    const res = await fetch('/api/upload-chunk/', {
+                        method: 'POST',
+                        body: fd
+                    });
+                    
+                    if (!res.ok) throw new Error('فشل رفع الجزء ' + i);
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+                    
+                    uploadId = data.upload_id;
+                    if (data.url) fileUrl = data.url;
+                    
+                    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري الرفع (${Math.round((i+1)/totalChunks*100)}%)`;
+                }
+                
+                fileInput.value = ''; // clear file to bypass Vercel
+                
+                let extInput = form.querySelector('input[name="external_url"]');
+                if (!extInput) {
+                    extInput = document.createElement('input');
+                    extInput.type = 'hidden';
+                    extInput.name = 'external_url';
+                    form.appendChild(extInput);
+                }
+                extInput.value = window.location.origin + fileUrl;
+                
+                form.submit();
+                
+            } catch (err) {
+                alert('خطأ أثناء الرفع: ' + err.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
