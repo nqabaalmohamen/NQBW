@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.db.models import Q
-from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage, LibraryJournal, LibraryLegislation, LibraryBook, LibraryContract
+from .models import News, NewsImage, CouncilMember, Complaint, FAQ, UserProfile, SiteSettings, MedicalExam, MedicalExamImage, InstituteLecture, ChatSession, ChatMessage, LibraryLegislation, LibraryBook, LibraryContract
 from .chunk_upload import upload_chunk_api
 
 # ══════════════════════════════════════════
@@ -193,24 +193,17 @@ def medical_exam_detail(request, pk):
 # ══════════════════════════════════════════
 
 def library_home(request):
-    """الصفحة الرئيسية للمكتبة الرقمية"""
-    journals      = LibraryJournal.objects.filter(is_active=True)[:6]
+    """ الصفحة الرئيسية للمكتبة الرقمية"""
     legislations  = LibraryLegislation.objects.filter(is_active=True)[:6]
     books         = LibraryBook.objects.filter(is_active=True)[:6]
     contracts     = LibraryContract.objects.filter(is_active=True)[:6]
     return render(request, 'library/library_home.html', {
-        'journals': journals,
         'legislations': legislations,
         'books': books,
         'contracts': contracts,
     })
 
-def library_journals(request):
-    q = request.GET.get('q', '').strip()
-    qs = LibraryJournal.objects.filter(is_active=True)
-    if q:
-        qs = qs.filter(Q(title__icontains=q) | Q(issue_number__icontains=q))
-    return render(request, 'library/library_journals.html', {'journals': qs, 'q': q})
+
 
 def library_legislations(request):
     q        = request.GET.get('q', '').strip()
@@ -252,10 +245,9 @@ def library_contracts(request):
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_library(request):
-    section = request.GET.get('section', 'journals')
+    section = request.GET.get('section', 'legislations')
     
     sections = [
-        ('journals', 'المجلة الإلكترونية', 'fa-regular fa-newspaper'),
         ('legislations', 'التشريعات والأحكام', 'fa-solid fa-scale-balanced'),
         ('books', 'الكتب القانونية', 'fa-solid fa-book'),
         ('contracts', 'نماذج العقود', 'fa-solid fa-file-contract'),
@@ -264,7 +256,6 @@ def dashboard_library(request):
     ctx = {
         'section': section,
         'sections': sections,
-        'journals':     LibraryJournal.objects.all(),
         'legislations': LibraryLegislation.objects.all(),
         'books':        LibraryBook.objects.all(),
         'contracts':    LibraryContract.objects.all(),
@@ -275,18 +266,7 @@ def dashboard_library(request):
 def dashboard_library_add(request, section):
     if request.method == 'POST':
         try:
-            if section == 'journal':
-                LibraryJournal.objects.create(
-                    title=request.POST.get('title'),
-                    issue_number=request.POST.get('issue_number', ''),
-                    description=request.POST.get('description', ''),
-                    publish_date=request.POST.get('publish_date') or None,
-                    cover_image=request.FILES.get('cover_image'),
-                    file=request.FILES.get('file'),
-                    external_url=request.POST.get('external_url', ''),
-                    is_active=request.POST.get('is_active') == 'on',
-                )
-            elif section == 'legislation':
+            if section == 'legislation':
                 LibraryLegislation.objects.create(
                     title=request.POST.get('title'),
                     category=request.POST.get('category', 'law'),
@@ -324,7 +304,6 @@ def dashboard_library_add(request, section):
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_library_edit(request, section, pk):
     model_map = {
-        'journal': LibraryJournal,
         'legislation': LibraryLegislation,
         'book': LibraryBook,
         'contract': LibraryContract,
@@ -337,17 +316,7 @@ def dashboard_library_edit(request, section, pk):
     
     if request.method == 'POST':
         try:
-            if section == 'journal':
-                item.title = request.POST.get('title')
-                item.issue_number = request.POST.get('issue_number', '')
-                item.description = request.POST.get('description', '')
-                item.publish_date = request.POST.get('publish_date') or None
-                if request.FILES.get('cover_image'): item.cover_image = request.FILES.get('cover_image')
-                if request.FILES.get('file'): item.file = request.FILES.get('file')
-                item.external_url = request.POST.get('external_url', item.external_url)
-                item.is_active = request.POST.get('is_active') == 'on'
-                
-            elif section == 'legislation':
+            if section == 'legislation':
                 item.title = request.POST.get('title')
                 item.category = request.POST.get('category', 'law')
                 item.number = request.POST.get('number', '')
@@ -386,7 +355,6 @@ def dashboard_library_edit(request, section, pk):
 def dashboard_library_delete(request, section, pk):
     if request.method == 'POST':
         model_map = {
-            'journal': LibraryJournal,
             'legislation': LibraryLegislation,
             'book': LibraryBook,
             'contract': LibraryContract,
@@ -430,25 +398,9 @@ def seed_library_view(request):
     from django.http import HttpResponse
     from datetime import date
     try:
-        LibraryJournal.objects.all().delete()
         LibraryLegislation.objects.all().delete()
         LibraryBook.objects.all().delete()
         LibraryContract.objects.all().delete()
-
-        # ── Journals - real from egyls.com ──
-        EL = 'https://egyls.com/'
-        LibraryJournal.objects.create(title="مجلة المحاماة الإلكترونية - الإصدار الرابع عشر", issue_number="14",
-            description="أصدر المركز الإعلامي لنقابة المحامين العدد الرابع عشر من مجلة المحاماة الإلكترونية - مارس 2024.",
-            publish_date=date(2024, 4, 6), is_active=True,
-            external_url=EL+'%d8%b7%d8%a7%d9%84%d8%b9-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%b1%d8%a7%d8%a8%d8%b9-%d8%b9%d8%b4%d8%b1-%d9%85%d9%86-%d9%85%d8%ac%d9%84%d8%a9-%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d9%85/')
-        LibraryJournal.objects.create(title="مختارات من أحكام النقض - الإصدار الثالث عشر", issue_number="13",
-            description="مجموعة مختارة من أحكام محكمة النقض المتاحة بصيغة PDF لتيسير الاطلاع الإلكتروني.",
-            publish_date=date(2024, 3, 17), is_active=True,
-            external_url=EL+'%d9%85%d8%ae%d8%aa%d8%a7%d8%b1%d8%a7%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d9%83%d8%a7%d9%85-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d9%80-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%ab%d8%a7%d9%84/')
-        LibraryJournal.objects.create(title="مختارات من أحكام النقض - الإصدار الثاني عشر", issue_number="12",
-            description="مجموعة مختارة من أحكام محكمة النقض المتاحة بصيغة PDF - الإصدار الثاني عشر.",
-            publish_date=date(2024, 2, 3), is_active=True,
-            external_url=EL+'%d9%85%d8%ae%d8%aa%d8%a7%d8%b1%d8%a7%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d9%83%d8%a7%d9%85-%d8%a7%d9%84%d9%86%d9%82%d8%b6-%d9%80-%d8%a7%d9%84%d8%a5%d8%b5%d8%af%d8%a7%d8%b1-%d8%a7%d9%84%d8%ab%d8%a7%d9%86/')
 
         # ── Legislations - real from egyls.com ──
         LibraryLegislation.objects.create(title="بوابة التشريعات والأحكام المصرية", category="law", number="", year="2021",

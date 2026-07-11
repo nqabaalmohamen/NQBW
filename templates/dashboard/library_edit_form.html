@@ -26,10 +26,7 @@
                 <input type="text" name="title" class="form-control" value="{{ item.title }}" required>
             </div>
             
-            {% if section == 'journal' %}
-            <div class="form-group"><label class="form-label">رقم العدد</label><input type="text" name="issue_number" class="form-control" value="{{ item.issue_number }}"></div>
-            <div class="form-group"><label class="form-label">تاريخ الإصدار</label><input type="date" name="publish_date" class="form-control" value="{{ item.publish_date|date:'Y-m-d' }}"></div>
-            {% elif section == 'legislation' %}
+            {% if section == 'legislation' %}
             <div class="form-group">
                 <label class="form-label">النوع</label>
                 <select name="category" class="form-control">
@@ -68,7 +65,7 @@
                 <textarea name="description" class="form-control" rows="4">{{ item.description }}</textarea>
             </div>
             
-            {% if section == 'journal' or section == 'book' %}
+            {% if section == 'book' %}
             <div class="form-group">
                 <label class="form-label">تغيير صورة الغلاف (اتركه فارغاً للاحتفاظ بالصورة الحالية)</label>
                 {% if item.cover_image %}<p><a href="{{ item.cover_image.url }}" target="_blank">عرض الصورة الحالية</a></p>{% endif %}

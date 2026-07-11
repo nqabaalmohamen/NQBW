@@ -21,56 +21,8 @@
     {% for m in msgs %}<div class="alert alert-{% if m.tags == 'error' %}danger{% else %}success{% endif %}" style="padding:12px 18px;border-radius:10px;margin-bottom:16px;background:{% if m.tags == 'error' %}#fef2f2{% else %}#f0fdf4{% endif %};border:1px solid {% if m.tags == 'error' %}#fca5a5{% else %}#86efac{% endif %};color:{% if m.tags == 'error' %}#991b1b{% else %}#166534{% endif %};">{{ m }}</div>{% endfor %}
 {% endif %}{% endwith %}
 
-<!-- ─── Journals ─── -->
-{% if section == 'journals' %}
-<div class="card">
-    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
-        <h3><i class="fa-regular fa-newspaper" style="color:var(--gold);"></i> أعداد المجلة الإلكترونية</h3>
-        <button onclick="document.getElementById('addJournalModal').style.display='flex'" class="btn btn-gold"><i class="fa-solid fa-plus"></i> إضافة عدد</button>
-    </div>
-    <div class="card-body">
-        {% if journals %}
-        <table style="width:100%;border-collapse:collapse;">
-            <thead><tr style="background:var(--bg-dark);"><th style="padding:12px;text-align:right;">العنوان</th><th>العدد</th><th>التاريخ</th><th>ملف</th><th>الحالة</th><th>إجراء</th></tr></thead>
-            <tbody>
-            {% for j in journals %}
-            <tr style="border-bottom:1px solid var(--border);">
-                <td style="padding:12px;font-weight:600;">{{ j.title }}</td>
-                <td style="padding:12px;color:var(--text-muted);">{{ j.issue_number|default:"—" }}</td>
-                <td style="padding:12px;color:var(--text-muted);">{{ j.publish_date|default:"—" }}</td>
-                <td style="padding:12px;">{% if j.file %}<a href="{{ j.file.url }}" target="_blank" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>{% else %}—{% endif %}</td>
-                <td style="padding:12px;"><span style="background:{% if j.is_active %}#dcfce7{% else %}#fef2f2{% endif %};color:{% if j.is_active %}#166534{% else %}#991b1b{% endif %};padding:3px 10px;border-radius:20px;font-size:0.8rem;">{% if j.is_active %}منشور{% else %}مخفي{% endif %}</span></td>
-                <td style="padding:12px; display:flex; gap:6px;">
-                    <a href="{% url 'core:dashboard_library_edit' 'journal' j.pk %}" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#0ea5e9;border-color:#0ea5e9;"><i class="fa-solid fa-pen"></i></a>
-                    <form method="POST" action="{% url 'core:dashboard_library_delete' 'journal' j.pk %}" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:4px 12px;font-size:0.8rem;color:#dc2626;border-color:#dc2626;"><i class="fa-solid fa-trash"></i></button></form>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}<p style="color:var(--text-muted);text-align:center;padding:30px;">لا توجد أعداد مضافة بعد.</p>{% endif %}
-    </div>
-</div>
-
-<!-- Add Journal Modal -->
-<div id="addJournalModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
-    <div style="background:#fff;border-radius:16px;padding:32px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;">
-        <h3 style="margin-bottom:24px;"><i class="fa-regular fa-newspaper" style="color:var(--gold);"></i> إضافة عدد جديد</h3>
-        <form method="POST" action="{% url 'core:dashboard_library_add' 'journal' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group"><label class="form-label">عنوان العدد *</label><input type="text" name="title" class="form-control" required></div>
-            <div class="form-group"><label class="form-label">رقم العدد</label><input type="text" name="issue_number" class="form-control" placeholder="مثل: 15"></div>
-            <div class="form-group"><label class="form-label">وصف العدد</label><textarea name="description" class="form-control" rows="3"></textarea></div>
-            <div class="form-group"><label class="form-label">تاريخ الإصدار</label><input type="date" name="publish_date" class="form-control"></div>
-            <div class="form-group"><label class="form-label">صورة الغلاف</label><input type="file" name="cover_image" class="form-control" accept="image/*"></div>
-            <div class="form-group"><label class="form-label">ملف PDF</label><input type="file" name="file" class="form-control" accept=".pdf"></div>
-            <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;"><input type="checkbox" name="is_active" checked style="width:18px;height:18px;accent-color:var(--gold);"> <span>نشر فوراً</span></label>
-            <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> حفظ</button><button type="button" onclick="document.getElementById('addJournalModal').style.display='none'" class="btn btn-outline">إلغاء</button></div>
-        </form>
-    </div>
-</div>
-
-{% elif section == 'legislations' %}
+<!-- ─── Legislations ─── -->
+{% if section == 'legislations' %}
 <div class="card">
     <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
         <h3><i class="fa-solid fa-scale-balanced" style="color:var(--gold);"></i> التشريعات والأحكام</h3>

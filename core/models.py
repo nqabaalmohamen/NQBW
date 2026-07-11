@@ -282,26 +282,6 @@ class ChatMessage(models.Model):
 #  DIGITAL LIBRARY
 # ══════════════════════════════════════════
 
-class LibraryJournal(models.Model):
-    """المجلة الإلكترونية"""
-    title        = models.CharField(max_length=300, verbose_name="عنوان العدد")
-    issue_number = models.CharField(max_length=50, blank=True, verbose_name="رقم العدد")
-    description  = models.TextField(blank=True, verbose_name="وصف العدد")
-    cover_image  = models.ImageField(upload_to='library/journals/', blank=True, null=True, verbose_name="صورة الغلاف")
-    file         = models.FileField(upload_to='library/journals/files/', blank=True, null=True, verbose_name="ملف PDF")
-    external_url = models.URLField(blank=True, max_length=800, verbose_name="رابط خارجي")
-    publish_date = models.DateField(blank=True, null=True, verbose_name="تاريخ الإصدار")
-    is_active    = models.BooleanField(default=True, verbose_name="منشور")
-    created_at   = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "عدد المجلة"
-        verbose_name_plural = "المجلة الإلكترونية"
-        ordering = ['-publish_date', '-created_at']
-
-    def __str__(self):
-        return self.title
-
 
 class LibraryLegislation(models.Model):
     """بوابة التشريعات والأحكام"""
