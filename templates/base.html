@@ -708,6 +708,12 @@
                 } else if (t.includes('خبر') || t.includes('قرار') || t.includes('اعلان') || t.includes('إعلان')) {
                     reply = REPLIES.news();
                     matched = true;
+                } else if (t.includes('مكتبة') || t.includes('رقمية') || t.includes('كتب') || t.includes('كتاب') || t.includes('نموذج') || t.includes('نماذج') || t.includes('عقود') || t.includes('عقد')) {
+                    reply = REPLIES.library();
+                    matched = true;
+                } else if (t.includes('منصات') || t.includes('منصة') || t.includes('حكومية') || t.includes('محاكم') || t.includes('رقمية') || t.includes('مصر')) {
+                    reply = REPLIES.gov_platforms();
+                    matched = true;
                 }
                 
                 if (matched) {
