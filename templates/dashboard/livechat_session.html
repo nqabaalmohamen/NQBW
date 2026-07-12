@@ -133,6 +133,7 @@
             senderLabel.style.fontSize = '0.8rem';
             senderLabel.style.marginBottom = '4px';
             senderLabel.style.color = '#0056b3';
+            senderLabel.style.textAlign = 'right';
             div.appendChild(senderLabel);
         } else if (msg.sender === 'admin') {
             const senderLabel = document.createElement('strong');
@@ -140,7 +141,8 @@
             senderLabel.style.display = 'block';
             senderLabel.style.fontSize = '0.8rem';
             senderLabel.style.marginBottom = '4px';
-            senderLabel.style.color = '#ffd700';
+            senderLabel.style.color = '#e0f2fe'; /* Light blue/white instead of yellow */
+            senderLabel.style.textAlign = 'right';
             div.appendChild(senderLabel);
         }
         
