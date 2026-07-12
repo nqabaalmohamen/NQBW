@@ -25,6 +25,13 @@ class MaintenanceMiddleware:
             settings = SiteSettings.objects.first()
             if settings and settings.is_under_maintenance:
                 return render(request, 'maintenance.html', {'settings': settings}, status=503)
+                
+            # Track site visits
+            if not request.session.get('visited'):
+                request.session['visited'] = True
+                if settings:
+                    settings.total_visits += 1
+                    settings.save(update_fields=['total_visits'])
         except Exception:
             # Table might not exist yet during migrations
             pass

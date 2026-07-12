@@ -17,7 +17,10 @@
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">
-                <span><i class="fa-regular fa-calendar" style="color: var(--gold);"></i> تاريخ النشر: {{ news_item.date|date:"d M Y" }}</span>
+                <div>
+                    <span><i class="fa-regular fa-calendar" style="color: var(--gold);"></i> تاريخ النشر: {{ news_item.date|date:"d M Y" }}</span>
+                    <span style="margin-right: 20px;"><i class="fa-solid fa-eye" style="color: var(--gold);"></i> {{ news_item.views_count }} مشاهدة</span>
+                </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <span style="font-weight: 600;">تواصل معنا:</span>
                     <a href="https://www.facebook.com/profile.php?id=61583287921147&locale=ar_AR" target="_blank" style="color: #1877f2; font-size: 1.2rem;"><i class="fa-brands fa-facebook-f"></i></a>

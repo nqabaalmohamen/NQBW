@@ -74,6 +74,8 @@ urlpatterns = [
     path('api/upload-chunk/', views.upload_chunk_api, name='upload_chunk_api'),
     path('library/books/', views.library_books, name='library_books'),
     path('library/contracts/', views.library_contracts, name='library_contracts'),
+    path('library/books/<int:pk>/action/', views.library_book_action, name='library_book_action'),
+    path('library/contracts/<int:pk>/action/', views.library_contract_action, name='library_contract_action'),
 
     # ── Digital Library – Dashboard ──
     path('dashboard/library/', views.dashboard_library, name='dashboard_library'),

@@ -365,6 +365,35 @@
     </div>
 </section>
 
+<!-- SITE STATISTICS -->
+<section class="section-padding" style="background: #f8fafc;">
+    <div class="container">
+        <div class="section-title">
+            <h2>إحصائيات المنصة</h2>
+            <p>أرقام وإحصائيات تفاعلية حقيقية للموقع</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+            <div style="background: white; padding: 30px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-sm); flex: 1; min-width: 250px; transition: transform 0.3s;">
+                <i class="fa-solid fa-users fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="font-size: 2.5rem; color: var(--primary-dark); font-weight: 800; margin-bottom: 5px;">{{ site_settings.total_visits }}</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: bold;">إجمالي زيارات الموقع</p>
+            </div>
+            
+            <div style="background: white; padding: 30px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-sm); flex: 1; min-width: 250px; transition: transform 0.3s;">
+                <i class="fa-solid fa-user-check fa-3x" style="color: var(--gold); margin-bottom: 15px;"></i>
+                <h3 style="font-size: 2.5rem; color: var(--primary-dark); font-weight: 800; margin-bottom: 5px;">{{ users_count }}</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: bold;">عدد المشتركين (حسابات مفعلة)</p>
+            </div>
+            
+            <div style="background: white; padding: 30px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-sm); flex: 1; min-width: 250px; transition: transform 0.3s;">
+                <i class="fa-solid fa-newspaper fa-3x" style="color: #2563eb; margin-bottom: 15px;"></i>
+                <h3 style="font-size: 2.5rem; color: var(--primary-dark); font-weight: 800; margin-bottom: 5px;">{{ news_count }}</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: bold;">إجمالي الأخبار والقرارات</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
 
 {% block extra_js %}

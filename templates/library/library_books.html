@@ -53,19 +53,23 @@
     {% if books %}
     <div class="lib-grid lib-grid-3">
         {% for b in books %}
-        <div class="lib-card" {% if b.file %}style="cursor:pointer;" onclick="window.open('{{ b.file.url }}','_blank')"{% elif b.external_url %}style="cursor:pointer;" onclick="window.open('{{ b.external_url }}','_blank')"{% endif %}>
+        <div class="lib-card" {% if b.file %}style="cursor:pointer;" onclick="window.open('{% url 'core:library_book_action' b.pk %}?type=download','_blank')"{% elif b.external_url %}style="cursor:pointer;" onclick="window.open('{% url 'core:library_book_action' b.pk %}?type=view','_blank')"{% endif %}>
             <div class="lib-card-cover">
                 {% if b.cover_image %}<img src="{{ b.cover_image.url }}" alt="{{ b.title }}">{% else %}<i class="fa-solid fa-book"></i>{% endif %}
             </div>
             <div class="lib-card-body">
                 <h4>{{ b.title }}</h4>
                 {% if b.author %}<div class="lib-card-meta"><i class="fa-solid fa-user-pen fa-xs ms-1"></i> {{ b.author }}</div>{% endif %}
+                <div class="lib-card-meta" style="color:#2563eb; font-weight: 500;">
+                    <i class="fa-solid fa-eye ms-1"></i> {{ b.views_count }} مشاهدة &nbsp;|&nbsp;
+                    <i class="fa-solid fa-download ms-1"></i> {{ b.downloads_count }} تنزيل
+                </div>
                 <p>{{ b.description|truncatechars:100 }}</p>
                 <div class="lib-card-actions">
                     {% if b.file %}
-                    <a href="{{ b.file.url }}" target="_blank" class="lib-btn-dl" onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i> تحميل</a>
+                    <a href="{% url 'core:library_book_action' b.pk %}?type=download" target="_blank" class="lib-btn-dl" onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i> تحميل</a>
                     {% elif b.external_url %}
-                    <a href="{{ b.external_url }}" target="_blank" class="lib-btn-link" onclick="event.stopPropagation()"><i class="fa-solid fa-arrow-up-right-from-square"></i> عرض</a>
+                    <a href="{% url 'core:library_book_action' b.pk %}?type=view" target="_blank" class="lib-btn-link" onclick="event.stopPropagation()"><i class="fa-solid fa-arrow-up-right-from-square"></i> عرض</a>
                     {% endif %}
                 </div>
             </div>

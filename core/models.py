@@ -82,6 +82,7 @@ class News(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="منشور")
     in_slider = models.BooleanField(default=True, verbose_name="عرض في السلايدر الرئيسي")
     date = models.DateField(auto_now_add=True, verbose_name="تاريخ النشر")
+    views_count = models.PositiveIntegerField(default=0, verbose_name="عدد المشاهدات")
 
     class Meta:
         verbose_name = "خبر"
@@ -202,6 +203,7 @@ class SiteSettings(models.Model):
     
     is_under_maintenance = models.BooleanField(default=False, verbose_name="وضع الصيانة (قيد التطوير)")
     maintenance_end_date = models.DateTimeField(blank=True, null=True, verbose_name="موعد انتهاء التطوير (للعد التنازلي)")
+    total_visits = models.PositiveIntegerField(default=0, verbose_name="إجمالي زيارات الموقع")
     
     class Meta:
         verbose_name = "إعدادات الموقع"
@@ -293,6 +295,8 @@ class LibraryBook(models.Model):
     file        = models.FileField(upload_to='library/books/files/', blank=True, null=True, verbose_name="ملف PDF")
     external_url= models.URLField(blank=True, max_length=800, verbose_name="رابط خارجي")
     is_active   = models.BooleanField(default=True, verbose_name="منشور")
+    views_count = models.PositiveIntegerField(default=0, verbose_name="عدد المشاهدات")
+    downloads_count = models.PositiveIntegerField(default=0, verbose_name="عدد التنزيلات")
     created_at  = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -324,6 +328,8 @@ class LibraryContract(models.Model):
     file        = models.FileField(upload_to='library/contracts/', blank=True, null=True, verbose_name="ملف النموذج (PDF / Word)")
     external_url= models.URLField(blank=True, max_length=800, verbose_name="رابط خارجي")
     is_active   = models.BooleanField(default=True, verbose_name="منشور")
+    views_count = models.PositiveIntegerField(default=0, verbose_name="عدد المشاهدات")
+    downloads_count = models.PositiveIntegerField(default=0, verbose_name="عدد التنزيلات")
     created_at  = models.DateTimeField(auto_now_add=True)
 
     class Meta:

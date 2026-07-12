@@ -25,6 +25,7 @@ def home(request):
         'news_count': News.objects.filter(is_published=True).count(),
         'council_members': CouncilMember.objects.all()[:5],
         'site_settings': SiteSettings.get_settings(),
+        'users_count': UserProfile.objects.count(),
     }
     return render(request, 'index.html', ctx)
 
@@ -69,6 +70,14 @@ def news_list(request):
 
 def news_detail(request, pk):
     news_item = get_object_or_404(News, pk=pk, is_published=True)
+    
+    # Increment views
+    session_key = f'viewed_news_{pk}'
+    if not request.session.get(session_key):
+        news_item.views_count += 1
+        news_item.save(update_fields=['views_count'])
+        request.session[session_key] = True
+
     # Get 3 latest news for the sidebar/related section, excluding current
     related_news = News.objects.filter(is_published=True).exclude(pk=pk)[:3]
     return render(request, 'news_detail.html', {'news_item': news_item, 'related_news': related_news})
@@ -223,6 +232,36 @@ def library_contracts(request):
         'contracts': qs, 'q': q, 'cat': category,
         'categories': LibraryContract.CATEGORY_CHOICES,
     })
+
+def library_book_action(request, pk):
+    book = get_object_or_404(LibraryBook, pk=pk, is_active=True)
+    action_type = request.GET.get('type', 'view') # view or download
+    
+    if action_type == 'download' and book.file:
+        book.downloads_count += 1
+        book.save(update_fields=['downloads_count'])
+        return redirect(book.file.url)
+    elif action_type == 'view' and book.external_url:
+        book.views_count += 1
+        book.save(update_fields=['views_count'])
+        return redirect(book.external_url)
+        
+    return redirect('core:library_books')
+
+def library_contract_action(request, pk):
+    contract = get_object_or_404(LibraryContract, pk=pk, is_active=True)
+    action_type = request.GET.get('type', 'view') # view or download
+    
+    if action_type == 'download' and contract.file:
+        contract.downloads_count += 1
+        contract.save(update_fields=['downloads_count'])
+        return redirect(contract.file.url)
+    elif action_type == 'view' and contract.external_url:
+        contract.views_count += 1
+        contract.save(update_fields=['views_count'])
+        return redirect(contract.external_url)
+        
+    return redirect('core:library_contracts')
 
 
 # ══════════════════════════════════════════
