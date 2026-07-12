@@ -18,11 +18,14 @@
         width: 100%;
         margin-bottom: 15px;
     }
-    .wrapper-user {
-        justify-content: flex-start; /* RTL: right side */
+    /* margin-auto is foolproof regardless of RTL/LTR flex bugs */
+    .wrapper-user .msg {
+        margin-left: auto; /* Pushes to the right */
+        margin-right: 0;
     }
-    .wrapper-admin {
-        justify-content: flex-end; /* RTL: left side */
+    .wrapper-admin .msg {
+        margin-right: auto; /* Pushes to the left */
+        margin-left: 0;
     }
     .msg {
         max-width: 75%;
@@ -65,7 +68,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>
-        محادثة مع: {{ session.user_name }}
+        ⚡ المحادثة المباشرة مع: {{ session.user_name }}
         {% if session.status == 'waiting' %}
             <span class="badge bg-danger fs-6">في الانتظار</span>
         {% elif session.status == 'active' %}
