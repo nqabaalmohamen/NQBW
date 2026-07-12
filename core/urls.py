@@ -68,6 +68,7 @@ urlpatterns = [
     path('dashboard/institute/<int:pk>/delete/', views.dashboard_institute_delete, name='dashboard_institute_delete'),
     path('run-migrations-secret/', views.run_migrations_view, name='run_migrations_secret'),
     path('seed-library-secret/', views.seed_library_view, name='seed_library'),
+    path('seed-faqs-secret/', views.seed_faqs_view, name='seed_faqs'),
     path('media/db/<str:name>', views.serve_db_media, name='serve_db_media'),
 
     # ── Digital Library – Public ──
