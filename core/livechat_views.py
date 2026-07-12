@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.http import require_POST, require_GET
+from django.utils import timezone
 from .models import ChatSession, ChatMessage
 
 
@@ -63,7 +64,7 @@ def chat_poll(request):
             'id':      m['id'],
             'sender':  m['sender'],
             'message': m['message'],
-            'time':    m['created_at'].strftime('%I:%M %p'),
+            'time':    timezone.localtime(m['created_at']).strftime('%I:%M %p'),
         }
         for m in msgs
     ]
@@ -166,7 +167,7 @@ def chat_admin_poll(request, session_key):
             'id':      m['id'],
             'sender':  m['sender'],
             'message': m['message'],
-            'time':    m['created_at'].strftime('%I:%M %p'),
+            'time':    timezone.localtime(m['created_at']).strftime('%I:%M %p'),
         }
         for m in msgs
     ]
