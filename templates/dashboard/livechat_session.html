@@ -126,8 +126,26 @@
         const div = document.createElement('div');
         div.className = 'msg msg-' + msg.sender;
         
+        if (msg.sender === 'user') {
+            const senderLabel = document.createElement('strong');
+            senderLabel.innerHTML = '<i class="fa-solid fa-user"></i> المستخدم:';
+            senderLabel.style.display = 'block';
+            senderLabel.style.fontSize = '0.8rem';
+            senderLabel.style.marginBottom = '4px';
+            senderLabel.style.color = '#0056b3';
+            div.appendChild(senderLabel);
+        } else if (msg.sender === 'admin') {
+            const senderLabel = document.createElement('strong');
+            senderLabel.innerHTML = '<i class="fa-solid fa-headset"></i> أنا (المسئول):';
+            senderLabel.style.display = 'block';
+            senderLabel.style.fontSize = '0.8rem';
+            senderLabel.style.marginBottom = '4px';
+            senderLabel.style.color = '#ffd700';
+            div.appendChild(senderLabel);
+        }
+        
         const txt = document.createElement('span');
-        txt.textContent = msg.message;
+        txt.innerHTML = msg.message;
         div.appendChild(txt);
         
         const time = document.createElement('span');
