@@ -382,6 +382,15 @@
         let chatStep = sessionStorage.getItem('chat_chatStep') || (authUserName ? 'normal_chat' : 'ask_name');
         let badgeHidden = false;
 
+        // ── Persistent chat history across page navigations ──
+        let chatMessages = JSON.parse(sessionStorage.getItem('chat_messages') || '[]');
+
+        function saveMessages() {
+            // Keep only last 30 messages to avoid storage limits
+            if (chatMessages.length > 30) chatMessages = chatMessages.slice(-30);
+            try { sessionStorage.setItem('chat_messages', JSON.stringify(chatMessages)); } catch(e) {}
+        }
+
         function saveChatState() {
             sessionStorage.setItem('chat_userName', userName);
             sessionStorage.setItem('chat_chatStep', chatStep);
@@ -547,7 +556,7 @@
             if(options) options.style.display = 'flex';
         }
 
-        function appendMessage(text, sender) {
+        function appendMessage(text, sender, skipSave) {
             const body = document.getElementById('chatbotBody');
             const options = document.getElementById('chatOptions');
             const typingIndicator = document.getElementById('typingIndicator');
@@ -585,6 +594,12 @@
             }
             
             body.scrollTop = body.scrollHeight;
+
+            // Save to persistent history (skip for live-chat system messages)
+            if (!skipSave && sender !== 'system') {
+                chatMessages.push({ text, sender });
+                saveMessages();
+            }
         }
 
         function showTyping() {
@@ -767,23 +782,29 @@
                 pollLiveChat(); // Fetch immediately
             } 
             else if (chatStep === 'normal_chat' && userName) {
-                // Clear default greeting
+                // Clear the default HTML greeting
                 Array.from(body.children).forEach(child => {
                     if (child.id !== 'chatOptions' && child.id !== 'typingIndicator') {
                         child.style.display = 'none';
                     }
                 });
-                // If it's a fresh session but authenticated, welcome them properly
-                const isFreshSession = !sessionStorage.getItem('chat_chatStep');
-                let reply = isFreshSession 
-                    ? `أهلاً بك يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟` 
-                    : `أهلاً بك مجدداً يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟`;
-                
-                appendMessage(reply, 'bot');
-                if (options) options.style.display = 'flex';
-                
-                // Save it so it persists on reload
-                if (isFreshSession) saveChatState();
+
+                if (chatMessages.length > 0) {
+                    // ✅ Restore previous messages - user navigated from another page
+                    chatMessages.forEach(msg => {
+                        appendMessage(msg.text, msg.sender, true); // skipSave=true to avoid duplicating
+                    });
+                    if (options) {
+                        body.appendChild(options);
+                        options.style.display = 'flex';
+                    }
+                } else {
+                    // First time entering name — show welcome
+                    let reply = `أهلاً بك يا أستاذ ${userName}. كيف يمكنني مساعدتك اليوم؟ يمكنك الاختيار من الخدمات التالية أو كتابة استفسارك.`;
+                    appendMessage(reply, 'bot');
+                    if (options) options.style.display = 'flex';
+                    saveChatState();
+                }
             }
         }
 
