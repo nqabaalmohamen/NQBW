@@ -35,6 +35,7 @@ urlpatterns = [
     # ── Dashboard ──
     path('dashboard/', views.dashboard_home, name='dashboard_home'),
     path('dashboard/settings/', views.dashboard_settings, name='dashboard_settings'),
+    path('dashboard/notifications-count/', views.dashboard_notifications_count, name='dashboard_notifications_count'),
 
     path('dashboard/complaints/', views.dashboard_complaints, name='dashboard_complaints'),
     path('dashboard/complaints/<int:pk>/update/', views.dashboard_complaint_update, name='dashboard_complaint_update'),

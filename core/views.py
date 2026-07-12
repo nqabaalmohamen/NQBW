@@ -683,6 +683,28 @@ def dashboard_home(request):
     })
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_notifications_count(request):
+    """
+    API endpoint that returns notification badge counts for the admin sidebar.
+    Returns counts for: new complaints, new users (last 7 days), waiting live chats.
+    """
+    from datetime import timedelta
+    from django.utils import timezone
+
+    new_complaints  = Complaint.objects.filter(status='new').count()
+    week_ago        = timezone.now() - timedelta(days=7)
+    new_users       = User.objects.filter(is_staff=False, date_joined__gte=week_ago).count()
+    waiting_chats   = ChatSession.objects.filter(status='waiting').count()
+
+    return JsonResponse({
+        'complaints': new_complaints,
+        'users':      new_users,
+        'chats':      waiting_chats,
+        'total':      new_complaints + new_users + waiting_chats,
+    })
+
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_settings(request):
     settings = SiteSettings.get_settings()
     if request.method == 'POST':
