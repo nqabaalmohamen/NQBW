@@ -127,21 +127,15 @@
         div.className = 'msg msg-' + msg.sender;
         
         if (msg.sender === 'user') {
-            const senderLabel = document.createElement('strong');
-            senderLabel.innerHTML = '<i class="fa-solid fa-user"></i> المستخدم:';
-            senderLabel.style.display = 'block';
-            senderLabel.style.fontSize = '0.8rem';
-            senderLabel.style.marginBottom = '4px';
-            senderLabel.style.color = '#0056b3';
+            const senderLabel = document.createElement('div');
+            senderLabel.innerHTML = '<strong style="color: #0056b3; font-size: 0.8rem;"><i class="fa-solid fa-user"></i> المستخدم:</strong>';
+            senderLabel.style.marginBottom = '6px';
             senderLabel.style.textAlign = 'right';
             div.appendChild(senderLabel);
         } else if (msg.sender === 'admin') {
-            const senderLabel = document.createElement('strong');
-            senderLabel.innerHTML = '<i class="fa-solid fa-headset"></i> أنا (المسئول):';
-            senderLabel.style.display = 'block';
-            senderLabel.style.fontSize = '0.8rem';
-            senderLabel.style.marginBottom = '4px';
-            senderLabel.style.color = '#e0f2fe'; /* Light blue/white instead of yellow */
+            const senderLabel = document.createElement('div');
+            senderLabel.innerHTML = '<span style="background-color: rgba(255,255,255,0.25); color: #fff; font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; display: inline-block; font-weight: bold;"><i class="fa-solid fa-headset"></i> أنا (المسئول)</span>';
+            senderLabel.style.marginBottom = '8px';
             senderLabel.style.textAlign = 'right';
             div.appendChild(senderLabel);
         }
