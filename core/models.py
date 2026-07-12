@@ -320,6 +320,7 @@ class LibraryContract(models.Model):
     title       = models.CharField(max_length=300, verbose_name="اسم النموذج")
     category    = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other', verbose_name="التصنيف")
     description = models.TextField(blank=True, verbose_name="وصف النموذج")
+    cover_image = models.ImageField(upload_to='library/contracts/covers/', blank=True, null=True, verbose_name="صورة الغلاف")
     file        = models.FileField(upload_to='library/contracts/', blank=True, null=True, verbose_name="ملف النموذج (PDF / Word)")
     external_url= models.URLField(blank=True, max_length=800, verbose_name="رابط خارجي")
     is_active   = models.BooleanField(default=True, verbose_name="منشور")

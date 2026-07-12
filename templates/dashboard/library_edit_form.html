@@ -50,13 +50,11 @@
                 <textarea name="description" class="form-control" rows="4">{{ item.description }}</textarea>
             </div>
             
-            {% if section == 'book' %}
             <div class="form-group">
                 <label class="form-label">تغيير صورة الغلاف (اتركه فارغاً للاحتفاظ بالصورة الحالية)</label>
                 {% if item.cover_image %}<p><a href="{{ item.cover_image.url }}" target="_blank">عرض الصورة الحالية</a></p>{% endif %}
                 <input type="file" name="cover_image" class="form-control" accept="image/*">
             </div>
-            {% endif %}
             
             <div class="form-group">
                 <label class="form-label">تغيير ملف PDF (اتركه فارغاً للاحتفاظ بالملف الحالي)</label>

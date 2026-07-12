@@ -264,6 +264,7 @@ def dashboard_library_add(request, section):
                     title=request.POST.get('title'),
                     category=request.POST.get('category', 'other'),
                     description=request.POST.get('description', ''),
+                    cover_image=request.FILES.get('cover_image'),
                     file=request.FILES.get('file'),
                     external_url=request.POST.get('external_url', ''),
                     is_active=request.POST.get('is_active') == 'on',
@@ -300,6 +301,7 @@ def dashboard_library_edit(request, section, pk):
                 item.title = request.POST.get('title')
                 item.category = request.POST.get('category', 'other')
                 item.description = request.POST.get('description', '')
+                if request.FILES.get('cover_image'): item.cover_image = request.FILES.get('cover_image')
                 if request.FILES.get('file'): item.file = request.FILES.get('file')
                 item.external_url = request.POST.get('external_url', item.external_url)
                 item.is_active = request.POST.get('is_active') == 'on'
