@@ -48,6 +48,9 @@
                 <div style="margin-top:10px; display:flex; align-items:center; gap:12px;">
                     <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--gold);">
                     <small style="color:var(--text-muted);">الصورة الحالية — ارفع صورة جديدة للتغيير</small>
+                    <label style="display:flex; align-items:center; gap:4px; margin-left:10px; color:#dc2626; cursor:pointer;">
+                        <input type="checkbox" name="delete_image" style="width:16px; height:16px; accent-color:#dc2626;"> حذف الصورة
+                    </label>
                 </div>
                 {% endif %}
             </div>

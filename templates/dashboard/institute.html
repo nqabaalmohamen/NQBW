@@ -15,7 +15,7 @@
     {% for lec in lectures %}
     <div style="display: flex; gap: 15px; align-items: flex-start; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 12px; background: #fafafa;">
         {% if lec.image %}
-        <img src="{{ lec.image.url }}" alt="صورة" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+        <img src="{{ lec.image.url }}" alt="صورة" style="width: 80px; height: 80px; object-fit: contain; background: #f9f9f9; border-radius: 8px; flex-shrink: 0;">
         {% else %}
         <div style="width: 80px; height: 80px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <i class="fa-solid fa-image" style="color: #ccc; font-size: 1.5rem;"></i>

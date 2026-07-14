@@ -344,7 +344,12 @@ def dashboard_library_edit(request, section, pk):
                 item.title = request.POST.get('title')
                 item.author = request.POST.get('author', '')
                 item.description = request.POST.get('description', '')
-                if request.FILES.get('cover_image'): item.cover_image = request.FILES.get('cover_image')
+                if request.POST.get('delete_image') == 'on':
+                    if item.cover_image:
+                        item.cover_image.delete(save=False)
+                        item.cover_image = None
+                elif request.FILES.get('cover_image'): 
+                    item.cover_image = request.FILES.get('cover_image')
                 if request.FILES.get('file'): item.file = request.FILES.get('file')
                 item.external_url = request.POST.get('external_url', item.external_url)
                 item.is_active = request.POST.get('is_active') == 'on'
@@ -353,7 +358,12 @@ def dashboard_library_edit(request, section, pk):
                 item.title = request.POST.get('title')
                 item.category = request.POST.get('category', 'other')
                 item.description = request.POST.get('description', '')
-                if request.FILES.get('cover_image'): item.cover_image = request.FILES.get('cover_image')
+                if request.POST.get('delete_image') == 'on':
+                    if item.cover_image:
+                        item.cover_image.delete(save=False)
+                        item.cover_image = None
+                elif request.FILES.get('cover_image'): 
+                    item.cover_image = request.FILES.get('cover_image')
                 if request.FILES.get('file'): item.file = request.FILES.get('file')
                 item.external_url = request.POST.get('external_url', item.external_url)
                 item.is_active = request.POST.get('is_active') == 'on'
@@ -1064,8 +1074,14 @@ def dashboard_institute_edit(request, pk):
             lecture.description = request.POST.get('description', '')
             lecture.video_link = request.POST.get('video_link', '')
             lecture.lecture_date = request.POST.get('lecture_date') or None
-            if request.FILES.get('image'):
+            
+            if request.POST.get('delete_image') == 'on':
+                if lecture.image:
+                    lecture.image.delete(save=False)
+                    lecture.image = None
+            elif request.FILES.get('image'):
                 lecture.image = request.FILES.get('image')
+                
             if request.FILES.get('file'):
                 lecture.file = request.FILES.get('file')
             lecture.save()

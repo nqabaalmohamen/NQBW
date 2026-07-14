@@ -29,8 +29,11 @@
             <label class="form-label">صورة الخبر</label>
             {% if lecture.image %}
             <div style="margin-bottom: 10px;">
-                <img src="{{ lecture.image.url }}" alt="الصورة الحالية" style="max-width: 200px; max-height: 150px; border-radius: 8px; object-fit: cover; border: 1px solid #eee;">
+                <img src="{{ lecture.image.url }}" alt="الصورة الحالية" style="max-width: 200px; max-height: 150px; border-radius: 8px; object-fit: contain; background: #f9f9f9; border: 1px solid #eee;">
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin: 5px 0 0 0;">الصورة الحالية — ارفع صورة جديدة لاستبدالها</p>
+                <label style="display:flex; align-items:center; gap:8px; margin-top:8px; color:#dc2626; cursor:pointer;">
+                    <input type="checkbox" name="delete_image" style="width:16px; height:16px; accent-color:#dc2626;"> حذف الصورة الحالية
+                </label>
             </div>
             {% endif %}
             <input type="file" name="image" class="form-control" accept="image/*">
