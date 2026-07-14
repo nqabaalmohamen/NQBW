@@ -18,13 +18,13 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=19.0">
     <!-- Critical Overrides (bypass CDN cache) -->
     <style>
-        /* ── MOBILE SEARCH BAR ── */
+        /* ── SEARCH BAR ── */
         .search-bar-full {
             background: linear-gradient(135deg, #002f56 0%, #004b87 100%);
-            padding: 20px 20px 16px;
+            padding: 18px 20px 14px;
             border-bottom: none;
             position: sticky;
-            top: 60px;
+            top: 62px;
             z-index: 999;
             overflow: hidden;
         }
@@ -40,115 +40,127 @@
         }
         .search-form-full input {
             flex: 1; background: transparent; border: none;
-            padding: 14px 18px; color: white; outline: none;
+            padding: 13px 18px; color: white; outline: none;
             font-family: 'Cairo'; font-size: 1rem;
         }
         .search-form-full input::placeholder { color: rgba(255,255,255,0.55); }
         .search-form-full button {
             background: #d4af37; border: none; color: #002f56;
-            padding: 0 24px; height: 50px; cursor: pointer;
-            font-size: 0.9rem; font-family: 'Cairo'; font-weight: 800;
+            padding: 0 22px; height: 48px; cursor: pointer;
+            font-size: 0.88rem; font-family: 'Cairo'; font-weight: 800;
             border-radius: 0 50px 50px 0; transition: background 0.2s;
+            flex-shrink: 0;
         }
         .search-form-full button:hover { background: #b5952f; }
 
+        /* ── MOBILE SIDEBAR HEADER ITEM ── */
+        .mobile-menu-header { display: none; }
+
         /* ── PREMIUM MOBILE SIDEBAR ── */
         @media (max-width: 768px) {
-            /* hide desktop items */
             .user-actions { display: none !important; }
             .hamburger-btn { display: flex !important; }
             .mobile-only-nav { display: flex !important; }
-            .header-inner { min-height: 62px !important; }
-            .brand-logo-img { width: 42px !important; height: 42px !important; }
-            .search-bar-full { top: 62px !important; }
+            .header-inner { min-height: 62px !important; padding: 0 12px !important; }
+            .brand-logo-img { width: 40px !important; height: 40px !important; }
+            .brand-title { font-size: 0.9rem !important; }
 
             /* Sidebar panel */
-            .nav-links {
+            #navLinks {
                 position: fixed !important;
-                top: 0 !important; right: 0 !important; bottom: 0 !important;
-                transform: translateX(110%) !important;
-                width: min(295px, 82vw) !important;
-                height: 100dvh !important;
-                background: #ffffff !important;
+                top: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                transform: translateX(102%) !important;
+                width: 285px !important;
+                max-width: 85vw !important;
+                height: 100% !important;
+                background: #fff !important;
                 flex-direction: column !important;
                 align-items: stretch !important;
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
                 z-index: 1001 !important;
-                transition: transform 0.26s cubic-bezier(0.4,0,0.2,1) !important;
+                transition: transform 0.25s ease !important;
                 padding: 0 !important;
                 gap: 0 !important;
-                box-shadow: -4px 0 28px rgba(0,0,0,0.2) !important;
+                box-shadow: -2px 0 20px rgba(0,0,0,0.22) !important;
                 border-radius: 0 !important;
                 backdrop-filter: none !important;
                 will-change: transform !important;
+                list-style: none !important;
             }
-            .nav-links.mobile-open {
+            #navLinks.mobile-open {
                 transform: translateX(0) !important;
             }
-            /* Gradient header inside sidebar */
-            .nav-links::before {
-                content: 'القائمة الرئيسية' !important;
-                display: block !important;
-                position: sticky !important;
-                top: 0 !important; left: 0 !important; right: 0 !important;
-                z-index: 2 !important;
+
+            /* Real header element */
+            .mobile-menu-header {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
                 background: linear-gradient(135deg, #002f56, #004b87) !important;
                 color: #fff !important;
+                padding: 16px 18px !important;
+                border-bottom: 3px solid #d4af37 !important;
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 10 !important;
                 font-family: 'Tajawal', sans-serif !important;
                 font-size: 1rem !important;
                 font-weight: 800 !important;
-                padding: 16px 20px !important;
-                border-bottom: 3px solid #d4af37 !important;
-                letter-spacing: 0.3px !important;
             }
-            /* Nav items */
-            .nav-links > li > a {
-                padding: 13px 18px !important;
-                font-size: 0.92rem !important;
+
+            /* Nav links */
+            #navLinks > li > a {
+                padding: 14px 18px !important;
+                font-size: 0.93rem !important;
                 font-weight: 700 !important;
-                border-bottom: 1px solid #f0f4f8 !important;
+                border-bottom: 1px solid #eef2f6 !important;
                 border-radius: 0 !important;
                 color: #002f56 !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                transition: background 0.15s, border-right 0.15s !important;
+                background: transparent !important;
+                transition: background 0.15s !important;
             }
-            .nav-links > li > a::after { display: none !important; }
-            .nav-links > li > a:hover,
-            .nav-links > li > a.active {
-                background: rgba(0,75,135,0.06) !important;
+            #navLinks > li > a::after { display: none !important; }
+            #navLinks > li > a:hover,
+            #navLinks > li > a.active {
+                background: #f0f6ff !important;
                 color: #004b87 !important;
-                padding-right: 24px !important;
                 border-right: 3px solid #d4af37 !important;
             }
-            /* Mobile sub-dropdowns */
-            .dropdown { position: static !important; }
-            .dropdown-menu {
+
+            /* Dropdowns on mobile */
+            #navLinks .dropdown { position: static !important; }
+            #navLinks .dropdown-menu {
                 position: static !important;
                 box-shadow: none !important;
                 border: none !important;
                 border-right: 3px solid #d4af37 !important;
                 border-radius: 0 !important;
-                background: #f8fafc !important;
+                background: #f7f9fc !important;
                 margin: 0 !important;
-                display: none;
+                display: none !important;
             }
-            .dropdown-menu.open { display: block !important; }
-            .dropdown-menu li a {
-                padding: 11px 30px !important;
+            #navLinks .dropdown-menu.open { display: block !important; }
+            #navLinks .dropdown-menu li a {
+                padding: 11px 28px !important;
                 font-size: 0.87rem !important;
-                color: #6c7a89 !important;
+                color: #5a6a7a !important;
                 border-bottom: 1px solid #eef2f6 !important;
+                display: block !important;
             }
+
             /* Mobile user section */
             .mobile-only-nav {
                 flex-direction: column !important;
-                background: #f8fafc !important;
                 border-top: 2px solid #d4af37 !important;
-                padding-top: 0 !important;
-                margin-top: 6px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: #f7f9fc !important;
             }
             .mobile-only-nav a {
                 display: flex !important;
@@ -160,10 +172,13 @@
                 font-size: 0.9rem !important;
                 border-bottom: 1px solid #eef2f6 !important;
                 transition: background 0.15s !important;
+                text-decoration: none !important;
+                background: transparent !important;
             }
-            .mobile-only-nav a i { color: #d4af37 !important; width: 18px; text-align: center; }
-            .mobile-only-nav a:hover { background: rgba(0,75,135,0.06) !important; }
-            /* Mobile overlay */
+            .mobile-only-nav a i { color: #d4af37 !important; width: 20px; text-align: center; flex-shrink: 0; }
+            .mobile-only-nav a:hover { background: #eef4ff !important; }
+
+            /* Overlay */
             .mobile-overlay { z-index: 1000 !important; }
         }
     </style>
@@ -184,6 +199,12 @@
 
             <!-- Main Navigation Links (Desktop) -->
             <ul class="nav-links" id="navLinks">
+                <!-- Mobile sidebar header -->
+                <li class="mobile-menu-header">
+                    <span>القائمة الرئيسية</span>
+                    <button onclick="closeMobileMenu()" style="background:transparent;border:none;color:rgba(255,255,255,0.8);font-size:1.4rem;cursor:pointer;line-height:1;padding:0;">&#x2715;</button>
+                </li>
+
                 <li><a href="{% url 'core:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><i class="fa-solid fa-house fa-sm ms-1"></i> الرئيسية</a></li>
                 
                 <li class="dropdown">
@@ -216,13 +237,13 @@
                 <!-- Mobile-only user actions -->
                 <li class="mobile-only-nav">
                     {% if request.user.is_authenticated %}
-                        <div style="padding: 12px 20px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
-                            <div style="width:40px; height:40px; background: var(--gold); color: white; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; flex-shrink:0;">
+                        <div style="padding:12px 16px;background:#eef2f7;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e7ef;">
+                            <div style="width:36px;height:36px;background:#d4af37;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;">
                                 {{ request.user.first_name|first|default:request.user.username|first|upper }}
                             </div>
                             <div>
-                                <div style="color:var(--primary-dark); font-weight:800; font-size:1rem;">{{ request.user.first_name|default:request.user.username }}</div>
-                                <div style="color:var(--text-muted); font-size:0.85rem;">{{ request.user.username }}</div>
+                                <div style="color:#002f56;font-weight:800;font-size:0.9rem;">{{ request.user.first_name|default:request.user.username }}</div>
+                                <div style="color:#6c7a89;font-size:0.78rem;">{{ request.user.username }}</div>
                             </div>
                         </div>
                         {% if request.user.is_staff %}
