@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=16.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=19.0">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -195,69 +195,51 @@
             }
         });
 
-        // Live Search Logic
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            const suggestionsBox = document.getElementById('searchSuggestions');
-            let debounceTimer;
+        // Live Search Logic - runs after full page load
+        window.addEventListener('load', function() {
+            var searchInput = document.getElementById('searchInput');
+            var suggestionsBox = document.getElementById('searchSuggestions');
+            if (!searchInput || !suggestionsBox) return;
+            var debounceTimer;
 
             searchInput.addEventListener('input', function() {
                 clearTimeout(debounceTimer);
-                const query = this.value.trim();
-                
-                if (query.length < 2) {
-                    suggestionsBox.style.display = 'none';
-                    return;
-                }
+                var query = this.value.trim();
+                if (query.length < 2) { suggestionsBox.style.display = 'none'; return; }
 
-                debounceTimer = setTimeout(() => {
-                    fetch(`/search/api/?q=${encodeURIComponent(query)}`)
-                        .then(res => res.json())
-                        .then(data => {
+                debounceTimer = setTimeout(function() {
+                    fetch('/search/api/?q=' + encodeURIComponent(query))
+                        .then(function(res) { return res.json(); })
+                        .then(function(data) {
+                            suggestionsBox.innerHTML = '';
                             if (data.results && data.results.length > 0) {
-                                suggestionsBox.innerHTML = '';
-                                data.results.forEach(item => {
-                                    const div = document.createElement('a');
-                                    div.href = item.url;
-                                    div.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: var(--primary-dark); transition: background 0.2s;';
-                                    div.onmouseover = () => div.style.background = '#f8fafc';
-                                    div.onmouseout = () => div.style.background = 'transparent';
-                                    
-                                    let icon = 'fa-arrow-left';
-                                    if(item.type === 'خبر') icon = 'fa-newspaper';
-                                    if(item.type === 'عضو مجلس') icon = 'fa-user-tie';
-                                    if(item.type === 'خدمة' || item.type === 'بوابة') icon = 'fa-landmark';
-                                    if(item.type === 'كتاب') icon = 'fa-book';
-                                    if(item.type === 'عقد') icon = 'fa-file-contract';
-
-                                    div.innerHTML = `
-                                        <div style="display:flex; align-items:center; gap:12px;">
-                                            <div style="width:36px; height:36px; border-radius:8px; background:rgba(0,75,135,0.06); display:flex; align-items:center; justify-content:center; color:var(--primary);">
-                                                <i class="fa-solid ${icon}"></i>
-                                            </div>
-                                            <div>
-                                                <div style="font-weight:700; font-size:0.95rem;">${item.title}</div>
-                                                <div style="font-size:0.75rem; color:var(--text-muted);">${item.type}</div>
-                                            </div>
-                                        </div>
-                                        <i class="fa-solid fa-chevron-left" style="color:var(--text-muted); font-size:0.8rem;"></i>
-                                    `;
-                                    suggestionsBox.appendChild(div);
+                                data.results.forEach(function(item) {
+                                    var icons = { 'خبر':'fa-newspaper','عضو مجلس':'fa-user-tie','خدمة':'fa-landmark','بوابة':'fa-landmark','كتاب':'fa-book','عقد':'fa-file-contract' };
+                                    var icon = icons[item.type] || 'fa-arrow-left';
+                                    var a = document.createElement('a');
+                                    a.href = item.url;
+                                    a.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid #f0f0f0;text-decoration:none;color:#002f56;transition:background 0.15s;gap:12px;';
+                                    a.onmouseover = function(){this.style.background='#f4f8ff';};
+                                    a.onmouseout  = function(){this.style.background='transparent';};
+                                    a.innerHTML = '<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">'
+                                        + '<div style="width:34px;height:34px;border-radius:8px;background:rgba(0,75,135,0.08);display:flex;align-items:center;justify-content:center;color:#004b87;flex-shrink:0;"><i class="fa-solid ' + icon + '"></i></div>'
+                                        + '<div style="min-width:0;"><div style="font-weight:700;font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + item.title + '</div>'
+                                        + '<div style="font-size:0.72rem;color:#6c7a89;margin-top:1px;">' + item.type + '</div></div></div>'
+                                        + '<i class="fa-solid fa-chevron-left" style="color:#aaa;font-size:0.75rem;flex-shrink:0;"></i>';
+                                    suggestionsBox.appendChild(a);
                                 });
                                 suggestionsBox.style.display = 'block';
                             } else {
-                                suggestionsBox.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted);">لا توجد نتائج مطابقة لبحثك</div>';
+                                suggestionsBox.innerHTML = '<div style="padding:18px;text-align:center;color:#6c7a89;font-size:0.9rem;">لا توجد نتائج لـ «' + query + '»</div>';
                                 suggestionsBox.style.display = 'block';
                             }
-                        });
-                }, 300);
+                        })
+                        .catch(function(){});
+                }, 280);
             });
 
-            // Close suggestions when clicking outside
             document.addEventListener('click', function(e) {
-                if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-                    suggestionsBox.style.display = 'none';
-                }
+                if (!e.target.closest('#fullWidthSearch')) suggestionsBox.style.display = 'none';
             });
         });
 
