@@ -1016,6 +1016,34 @@ def dashboard_medical_exam_add(request):
     return render(request, 'dashboard/medical_exam_form.html')
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
+def dashboard_medical_exam_edit(request, pk):
+    exam = get_object_or_404(MedicalExam, pk=pk)
+    if request.method == 'POST':
+        exam.title = request.POST.get('title')
+        exam.exam_date = request.POST.get('exam_date')
+        
+        try:
+            exam.save()
+            
+            # Handle additional multiple images
+            images = request.FILES.getlist('images')
+            for idx, img in enumerate(images):
+                MedicalExamImage.objects.create(
+                    exam=exam,
+                    image=img,
+                    order=idx
+                )
+                
+            messages.success(request, 'تم تعديل الكشف الطبي بنجاح.')
+        except Exception as e:
+            if 'Read-only' in str(e):
+                messages.error(request, f'عفواً، خطأ: {str(e)} - {type(e).__name__}')
+            else:
+                messages.error(request, f'حدث خطأ: {str(e)}')
+        return redirect('core:dashboard_medical_exams')
+    return render(request, 'dashboard/medical_exam_form.html', {'exam': exam})
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_medical_exam_delete(request, pk):
     if request.method == 'POST':
         get_object_or_404(MedicalExam, pk=pk).delete()

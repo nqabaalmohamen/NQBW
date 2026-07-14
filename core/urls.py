@@ -59,6 +59,7 @@ urlpatterns = [
     # ── Medical Exams ──
     path('dashboard/medical-exams/', views.dashboard_medical_exams, name='dashboard_medical_exams'),
     path('dashboard/medical-exams/add/', views.dashboard_medical_exam_add, name='dashboard_medical_exam_add'),
+    path('dashboard/medical-exams/<int:pk>/edit/', views.dashboard_medical_exam_edit, name='dashboard_medical_exam_edit'),
     path('dashboard/medical-exams/<int:pk>/delete/', views.dashboard_medical_exam_delete, name='dashboard_medical_exam_delete'),
     path('dashboard/medical-exams/<int:exam_pk>/image/<int:img_pk>/delete/', views.dashboard_medical_exam_image_delete, name='dashboard_medical_exam_image_delete'),
 
