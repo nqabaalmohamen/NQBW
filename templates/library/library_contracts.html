@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            {% if c.description %}<p style="font-size:0.82rem;color:#777;margin:10px 0;line-height:1.5;">{{ c.description|truncatechars:80 }}</p>{% endif %}
+            {% if c.description %}<p style="color: white; font-size:0.82rem;color:#777;margin:10px 0;line-height:1.5;">{{ c.description|truncatechars:80 }}</p>{% endif %}
             {% if c.file %}
             <a href="{% url 'core:library_contract_action' c.pk %}?type=download" target="_blank" class="lib-btn-dl" style="width:100%;justify-content:center;" onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i> تحميل النموذج</a>
             {% elif c.external_url %}
