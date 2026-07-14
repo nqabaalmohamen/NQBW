@@ -1025,6 +1025,11 @@ def dashboard_medical_exam_edit(request, pk):
         try:
             exam.save()
             
+            # Handle image deletion
+            delete_image_ids = request.POST.getlist('delete_images')
+            if delete_image_ids:
+                MedicalExamImage.objects.filter(id__in=delete_image_ids, exam=exam).delete()
+            
             # Handle additional multiple images
             images = request.FILES.getlist('images')
             for idx, img in enumerate(images):
