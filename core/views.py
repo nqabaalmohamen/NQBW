@@ -679,17 +679,36 @@ def dashboard_logout(request):
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_home(request):
+    from datetime import timedelta
+    from django.utils import timezone
+    today = timezone.now().date()
+    week_ago = timezone.now() - timedelta(days=7)
+    month_ago = timezone.now() - timedelta(days=30)
+
     stats = {
-        'complaints_count': Complaint.objects.count(),
-        'new_complaints':   Complaint.objects.filter(status='new').count(),
-        'news_count':       News.objects.count(),
-        'council_count':    CouncilMember.objects.count(),
-        'users_count':      User.objects.filter(is_staff=False).count(),
+        'complaints_count':      Complaint.objects.count(),
+        'new_complaints':        Complaint.objects.filter(status='new').count(),
+        'in_progress_complaints':Complaint.objects.filter(status='in_progress').count(),
+        'resolved_complaints':   Complaint.objects.filter(status='resolved').count(),
+        'news_count':            News.objects.count(),
+        'news_this_month':       News.objects.filter(created_at__gte=month_ago).count(),
+        'council_count':         CouncilMember.objects.count(),
+        'users_count':           User.objects.filter(is_staff=False).count(),
+        'new_users_week':        User.objects.filter(is_staff=False, date_joined__gte=week_ago).count(),
+        'institute_count':       InstituteLecture.objects.count(),
+        'medical_exams_count':   MedicalExam.objects.count(),
+        'library_books':         LibraryBook.objects.filter(is_active=True).count(),
+        'library_contracts':     LibraryContract.objects.filter(is_active=True).count(),
+        'total_visits':          SiteSettings.objects.first().total_visits if SiteSettings.objects.exists() else 0,
     }
     recent_complaints = Complaint.objects.order_by('-created_at')[:5]
+    recent_news = News.objects.order_by('-created_at')[:3]
+    recent_users = User.objects.filter(is_staff=False).order_by('-date_joined')[:5]
     return render(request, 'dashboard/home.html', {
         'stats': stats,
         'recent_complaints': recent_complaints,
+        'recent_news': recent_news,
+        'recent_users': recent_users,
     })
 
 @user_passes_test(is_admin, login_url='/dashboard/login/')

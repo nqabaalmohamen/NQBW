@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=15.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=16.0">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -140,11 +140,21 @@
     <!-- Full Width Search Bar (Hidden by Default) -->
     <div id="fullWidthSearch" class="search-bar-full" style="display:none; position: relative;">
         <form action="{% url 'core:search' %}" method="GET" class="search-form-full">
-            <input type="text" name="q" id="searchInput" placeholder="ابحث عن الخدمات، الأخبار، أو المحامين..." required autocomplete="off">
-            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:1.1rem; padding: 0 0 0 10px; flex-shrink:0;"></i>
+            <input type="text" name="q" id="searchInput" placeholder="ابحث في الأخبار، المعهد، مجلس النقابة، الكتب، العقود..." required autocomplete="off">
+            <button type="submit">بحث</button>
         </form>
+        <!-- Search Tags -->
+        <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px;">
+            <span style="font-size:0.8rem; color:rgba(255,255,255,0.7);">بحث سريع:</span>
+            <a href="{% url 'core:search' %}?q=معهد المحاماة" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">معهد المحاماة</a>
+            <a href="{% url 'core:search' %}?q=مجلس النقابة" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">مجلس النقابة</a>
+            <a href="{% url 'core:search' %}?q=الكشف الطبي" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">الكشف الطبي</a>
+            <a href="{% url 'core:search' %}?q=كتب قانونية" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">كتب قانونية</a>
+            <a href="{% url 'core:search' %}?q=عقود" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">نماذج عقود</a>
+        </div>
         <!-- Search Suggestions Dropdown -->
-        <div id="searchSuggestions" class="search-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 8px 8px; z-index: 1000; overflow: hidden; max-height: 300px; overflow-y: auto;">
+        <div id="searchSuggestions" style="display: none; position: absolute; top: calc(100% + 60px); left: 50%; transform: translateX(-50%); width: min(800px, 90%); background: white; box-shadow: 0 8px 30px rgba(0,0,0,0.15); border-radius: 14px; z-index: 1000; overflow: hidden; max-height: 360px; overflow-y: auto;">
             <!-- Results injected here -->
         </div>
     </div>
@@ -153,9 +163,37 @@
         function toggleSearch() {
             const searchBar = document.getElementById('fullWidthSearch');
             const searchInput = document.getElementById('searchInput');
-            searchBar.style.display = searchBar.style.display === 'none' ? 'block' : 'none';
-            if (searchBar.style.display === 'block') searchInput.focus();
+            const isOpen = searchBar.dataset.open === 'true';
+            if (isOpen) {
+                searchBar.style.maxHeight = '0';
+                searchBar.style.opacity = '0';
+                searchBar.style.padding = '0 20px';
+                setTimeout(() => { searchBar.style.display = 'none'; }, 400);
+                searchBar.dataset.open = 'false';
+            } else {
+                searchBar.style.display = 'block';
+                searchBar.style.maxHeight = '0';
+                searchBar.style.opacity = '0';
+                searchBar.style.overflow = 'hidden';
+                searchBar.style.transition = 'max-height 0.55s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease, padding 0.4s ease';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        searchBar.style.maxHeight = '200px';
+                        searchBar.style.opacity = '1';
+                        searchBar.style.padding = '20px 20px 16px';
+                    });
+                });
+                setTimeout(() => { searchInput.focus(); }, 200);
+                searchBar.dataset.open = 'true';
+            }
         }
+        // Close search on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const searchBar = document.getElementById('fullWidthSearch');
+                if (searchBar && searchBar.dataset.open === 'true') toggleSearch();
+            }
+        });
 
         function toggleDropdown(e, id) {
             e.preventDefault();
