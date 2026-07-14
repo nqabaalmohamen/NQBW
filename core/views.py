@@ -706,7 +706,7 @@ def dashboard_home(request):
         'in_progress_complaints':Complaint.objects.filter(status='in_progress').count(),
         'resolved_complaints':   Complaint.objects.filter(status='resolved').count(),
         'news_count':            News.objects.count(),
-        'news_this_month':       News.objects.filter(created_at__gte=month_ago).count(),
+        'news_this_month':       News.objects.filter(date__gte=month_ago).count(),
         'council_count':         CouncilMember.objects.count(),
         'users_count':           User.objects.filter(is_staff=False).count(),
         'new_users_week':        User.objects.filter(is_staff=False, date_joined__gte=week_ago).count(),
@@ -717,7 +717,7 @@ def dashboard_home(request):
         'total_visits':          SiteSettings.objects.first().total_visits if SiteSettings.objects.exists() else 0,
     }
     recent_complaints = Complaint.objects.order_by('-created_at')[:5]
-    recent_news = News.objects.order_by('-created_at')[:3]
+    recent_news = News.objects.order_by('-date')[:3]
     recent_users = User.objects.filter(is_staff=False).order_by('-date_joined')[:5]
     return render(request, 'dashboard/home.html', {
         'stats': stats,
