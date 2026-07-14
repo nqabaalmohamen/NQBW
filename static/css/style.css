@@ -35,6 +35,12 @@ body {
 }
 
 h1,h2,h3,h4,h5,h6 { font-family: 'Tajawal', sans-serif; font-weight: 700; color: var(--primary-dark); }
+/* Ensure headings are visible on primary dark backgrounds */
+section[style*="var(--primary)"] h1, 
+section[style*="var(--primary)"] h2, 
+section[style*="var(--primary)"] h3 { 
+    color: var(--white) !important; 
+}
 a { text-decoration: none; color: var(--primary); transition: var(--transition); }
 a:hover { color: var(--primary-light); }
 ul { list-style: none; }
