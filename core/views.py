@@ -155,9 +155,14 @@ def search_api(request):
     words = query.split()
     news_q = Q()
     council_q = Q()
+    book_q = Q()
+    contract_q = Q()
+    
     for word in words:
         news_q |= Q(title__icontains=word)
         council_q |= Q(name__icontains=word) | Q(position__icontains=word)
+        book_q |= Q(title__icontains=word) | Q(author__icontains=word)
+        contract_q |= Q(title__icontains=word) | Q(description__icontains=word)
         
     results = []
     
@@ -171,8 +176,18 @@ def search_api(request):
         results.append({'title': 'الكشف الطبي', 'url': reverse('core:dashboard_medical_exams'), 'type': 'خدمة'})
     if "شك" in query_lower or "مقترح" in query_lower:
         results.append({'title': 'الشكاوى والمقترحات', 'url': reverse('core:contact'), 'type': 'خدمة'})
-    if "منص" in query_lower or "حكوم" in query_lower or "رقمي" in query_lower or "عدل" in query_lower or "ضرائب" in query_lower or "عقاري" in query_lower or "نيابة" in query_lower:
+    if "منص" in query_lower or "حكوم" in query_lower or "رقمي" in query_lower or "عدل" in query_lower:
         results.append({'title': 'المنصات الحكومية', 'url': reverse('core:gov_platform'), 'type': 'بوابة'})
+        
+    # Books
+    books = LibraryBook.objects.filter(book_q, is_active=True).distinct()[:4]
+    for b in books:
+        results.append({'title': b.title, 'url': reverse('core:library_books'), 'type': 'كتاب'})
+        
+    # Contracts
+    contracts = LibraryContract.objects.filter(contract_q, is_active=True).distinct()[:4]
+    for c in contracts:
+        results.append({'title': c.title, 'url': reverse('core:library_contracts'), 'type': 'عقد'})
         
     # Council
     council = CouncilMember.objects.filter(council_q).distinct()[:3]

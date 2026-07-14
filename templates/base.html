@@ -195,6 +195,72 @@
             }
         });
 
+        // Live Search Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestionsBox = document.getElementById('searchSuggestions');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const query = this.value.trim();
+                
+                if (query.length < 2) {
+                    suggestionsBox.style.display = 'none';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetch(`/search/api/?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.results && data.results.length > 0) {
+                                suggestionsBox.innerHTML = '';
+                                data.results.forEach(item => {
+                                    const div = document.createElement('a');
+                                    div.href = item.url;
+                                    div.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: var(--primary-dark); transition: background 0.2s;';
+                                    div.onmouseover = () => div.style.background = '#f8fafc';
+                                    div.onmouseout = () => div.style.background = 'transparent';
+                                    
+                                    let icon = 'fa-arrow-left';
+                                    if(item.type === 'خبر') icon = 'fa-newspaper';
+                                    if(item.type === 'عضو مجلس') icon = 'fa-user-tie';
+                                    if(item.type === 'خدمة' || item.type === 'بوابة') icon = 'fa-landmark';
+                                    if(item.type === 'كتاب') icon = 'fa-book';
+                                    if(item.type === 'عقد') icon = 'fa-file-contract';
+
+                                    div.innerHTML = `
+                                        <div style="display:flex; align-items:center; gap:12px;">
+                                            <div style="width:36px; height:36px; border-radius:8px; background:rgba(0,75,135,0.06); display:flex; align-items:center; justify-content:center; color:var(--primary);">
+                                                <i class="fa-solid ${icon}"></i>
+                                            </div>
+                                            <div>
+                                                <div style="font-weight:700; font-size:0.95rem;">${item.title}</div>
+                                                <div style="font-size:0.75rem; color:var(--text-muted);">${item.type}</div>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-left" style="color:var(--text-muted); font-size:0.8rem;"></i>
+                                    `;
+                                    suggestionsBox.appendChild(div);
+                                });
+                                suggestionsBox.style.display = 'block';
+                            } else {
+                                suggestionsBox.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted);">لا توجد نتائج مطابقة لبحثك</div>';
+                                suggestionsBox.style.display = 'block';
+                            }
+                        });
+                }, 300);
+            });
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+        });
+
         function toggleDropdown(e, id) {
             e.preventDefault();
             e.stopPropagation();

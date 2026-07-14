@@ -553,21 +553,24 @@ img { max-width: 100%; display: block; }
     .nav-links {
         position: fixed;
         top: 0;
-        right: -100%;
+        right: 0;
+        transform: translateX(100%);
         width: min(320px, 85vw);
         height: 100vh;
         background: rgba(255, 255, 255, 0.98);
         backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         flex-direction: column;
         align-items: stretch;
         overflow-y: auto;
         box-shadow: -10px 0 40px rgba(0,0,0,0.1);
         z-index: 1000;
-        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-        padding: 80px 0 40px; /* Space for close btn/header */
+        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        padding: 80px 0 40px;
         gap: 0;
         justify-content: flex-start;
-        border-radius: 20px 0 0 20px;
+        border-radius: 24px 0 0 24px;
+        will-change: transform;
     }
     .nav-links::before {
         content: 'القائمة الرئيسية';
@@ -579,7 +582,7 @@ img { max-width: 100%; display: block; }
         font-weight: 800;
         color: var(--primary-dark);
     }
-    .nav-links.mobile-open { right: 0; }
+    .nav-links.mobile-open { transform: translateX(0); }
 
     .nav-links > li > a {
         padding: 14px 20px;
