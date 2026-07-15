@@ -26,7 +26,7 @@
             position: sticky;
             top: 62px;
             z-index: 999;
-            overflow: hidden;
+            overflow: visible;
         }
         .search-form-full {
             display: flex;
@@ -52,6 +52,49 @@
             flex-shrink: 0;
         }
         .search-form-full button:hover { background: #b5952f; }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            max-width: 750px;
+            margin: 0 auto;
+            display: none;
+            border: 1px solid #eef2f6;
+            border-top: none;
+        }
+        .search-results-dropdown.active { display: block; }
+        .search-results-dropdown a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f4f8;
+            color: #002f56;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+        .search-results-dropdown a:hover { background: #f4f8fc; padding-right: 25px; }
+        .search-results-dropdown a:last-child { border-bottom: none; border-radius: 0 0 15px 15px; }
+        .search-results-dropdown a .res-type {
+            font-size: 0.75rem;
+            background: #eef4ff;
+            color: #004b87;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        .search-loading-text {
+            padding: 15px; text-align: center; color: #6c7a89; font-size: 0.9rem;
+        }
 
         /* ── PREMIUM MOBILE SIDEBAR & DROPDOWN (Bypass Cache) ── */
         @media (max-width: 768px) {
@@ -359,6 +402,7 @@
             <input type="text" name="q" id="searchInput" placeholder="ابحث في الأخبار، المعهد، مجلس النقابة، الكتب، العقود..." required autocomplete="off">
             <button type="submit">بحث</button>
         </form>
+        <div id="searchResultsDropdown" class="search-results-dropdown"></div>
         <!-- Search Tags -->
         <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px;">
             <span style="font-size:0.8rem; color:rgba(255,255,255,0.7);">بحث سريع:</span>
@@ -1038,7 +1082,75 @@
 
         initChat();
     </script>
+    <script>
+        // ── LIVE SEARCH (AUTOCOMPLETE) ──
+        const searchInput = document.getElementById('searchInput');
+        const searchDropdown = document.getElementById('searchResultsDropdown');
+        let searchTimeout = null;
 
+        if (searchInput && searchDropdown) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                clearTimeout(searchTimeout);
+                
+                if (query.length < 2) {
+                    searchDropdown.classList.remove('active');
+                    searchDropdown.innerHTML = '';
+                    return;
+                }
 
+                searchDropdown.innerHTML = '<div class="search-loading-text"><i class="fa-solid fa-spinner fa-spin ms-2"></i> جاري البحث...</div>';
+                searchDropdown.classList.add('active');
+
+                searchTimeout = setTimeout(() => {
+                    fetch(`/search/api/?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.results || data.results.length === 0) {
+                                searchDropdown.innerHTML = '<div class="search-loading-text">لا توجد نتائج مطابقة لبحثك.</div>';
+                                return;
+                            }
+                            
+                            let html = '';
+                            data.results.forEach(item => {
+                                let icon = 'fa-arrow-left';
+                                if(item.type === 'خبر') icon = 'fa-newspaper';
+                                else if(item.type === 'خدمة') icon = 'fa-concierge-bell';
+                                else if(item.type === 'بوابة') icon = 'fa-landmark';
+                                else if(item.type === 'كتاب') icon = 'fa-book';
+                                else if(item.type === 'عقد') icon = 'fa-file-contract';
+                                else if(item.type === 'عضو مجلس') icon = 'fa-user-tie';
+
+                                html += `
+                                    <a href="${item.url}">
+                                        <span><i class="fa-solid ${icon} ms-2" style="color:#d4af37;"></i> ${item.title}</span>
+                                        <span class="res-type">${item.type}</span>
+                                    </a>
+                                `;
+                            });
+                            searchDropdown.innerHTML = html;
+                        })
+                        .catch(err => {
+                            searchDropdown.innerHTML = '<div class="search-loading-text">حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.</div>';
+                        });
+                }, 300); // 300ms debounce
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.remove('active');
+                }
+            });
+            
+            // Re-open if clicking on input and it has value
+            searchInput.addEventListener('focus', function() {
+                if (this.value.trim().length >= 2 && searchDropdown.innerHTML !== '') {
+                    searchDropdown.classList.add('active');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
