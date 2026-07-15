@@ -571,12 +571,12 @@ img { max-width: 100%; display: block; }
         overflow-y: auto;
         overflow-x: hidden;
         z-index: 1005; /* Must be higher than overlay, but inside header */
-        transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+        transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         padding: 0;
         gap: 0;
         justify-content: flex-start;
         will-change: transform;
-        box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
     }
     .nav-links.mobile-open { transform: translateX(0); }
 
@@ -647,6 +647,15 @@ img { max-width: 100%; display: block; }
         border-radius: 0;
         background: #fafcfd;
         margin: 0;
+        display: block !important;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+    #navLinks .dropdown-menu.open {
+        max-height: 400px !important;
+        opacity: 1 !important;
     }
     .dropdown-menu li a {
         padding: 12px 35px;
