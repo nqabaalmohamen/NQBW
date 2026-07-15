@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=19.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20.0">
     <!-- Critical Overrides (bypass CDN cache) -->
     <style>
         /* ── SEARCH BAR ── */
@@ -52,135 +52,6 @@
             flex-shrink: 0;
         }
         .search-form-full button:hover { background: #b5952f; }
-
-        /* ── MOBILE SIDEBAR HEADER ITEM ── */
-        .mobile-menu-header { display: none; }
-
-        /* ── PREMIUM MOBILE SIDEBAR ── */
-        @media (max-width: 768px) {
-            .user-actions { display: none !important; }
-            .hamburger-btn { display: flex !important; }
-            .mobile-only-nav { display: flex !important; }
-            .header-inner { min-height: 62px !important; padding: 0 12px !important; }
-            .brand-logo-img { width: 40px !important; height: 40px !important; }
-            .brand-title { font-size: 0.9rem !important; }
-
-            /* Sidebar panel */
-            #navLinks {
-                position: fixed !important;
-                top: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                transform: translateX(102%) !important;
-                width: 285px !important;
-                max-width: 85vw !important;
-                height: 100% !important;
-                background: #fff !important;
-                flex-direction: column !important;
-                align-items: stretch !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                z-index: 1001 !important;
-                transition: transform 0.25s ease !important;
-                padding: 0 !important;
-                gap: 0 !important;
-                box-shadow: -2px 0 20px rgba(0,0,0,0.22) !important;
-                border-radius: 0 !important;
-                backdrop-filter: none !important;
-                will-change: transform !important;
-                list-style: none !important;
-            }
-            #navLinks.mobile-open {
-                transform: translateX(0) !important;
-            }
-
-            /* Real header element */
-            .mobile-menu-header {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                background: linear-gradient(135deg, #002f56, #004b87) !important;
-                color: #fff !important;
-                padding: 16px 18px !important;
-                border-bottom: 3px solid #d4af37 !important;
-                position: sticky !important;
-                top: 0 !important;
-                z-index: 10 !important;
-                font-family: 'Tajawal', sans-serif !important;
-                font-size: 1rem !important;
-                font-weight: 800 !important;
-            }
-
-            /* Nav links */
-            #navLinks > li > a {
-                padding: 14px 18px !important;
-                font-size: 0.93rem !important;
-                font-weight: 700 !important;
-                border-bottom: 1px solid #eef2f6 !important;
-                border-radius: 0 !important;
-                color: #002f56 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                background: transparent !important;
-                transition: background 0.15s !important;
-            }
-            #navLinks > li > a::after { display: none !important; }
-            #navLinks > li > a:hover,
-            #navLinks > li > a.active {
-                background: #f0f6ff !important;
-                color: #004b87 !important;
-                border-right: 3px solid #d4af37 !important;
-            }
-
-            /* Dropdowns on mobile */
-            #navLinks .dropdown { position: static !important; }
-            #navLinks .dropdown-menu {
-                position: static !important;
-                box-shadow: none !important;
-                border: none !important;
-                border-right: 3px solid #d4af37 !important;
-                border-radius: 0 !important;
-                background: #f7f9fc !important;
-                margin: 0 !important;
-                display: none !important;
-            }
-            #navLinks .dropdown-menu.open { display: block !important; }
-            #navLinks .dropdown-menu li a {
-                padding: 11px 28px !important;
-                font-size: 0.87rem !important;
-                color: #5a6a7a !important;
-                border-bottom: 1px solid #eef2f6 !important;
-                display: block !important;
-            }
-
-            /* Mobile user section */
-            .mobile-only-nav {
-                flex-direction: column !important;
-                border-top: 2px solid #d4af37 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                background: #f7f9fc !important;
-            }
-            .mobile-only-nav a {
-                display: flex !important;
-                align-items: center !important;
-                gap: 12px !important;
-                padding: 13px 18px !important;
-                color: #002f56 !important;
-                font-weight: 700 !important;
-                font-size: 0.9rem !important;
-                border-bottom: 1px solid #eef2f6 !important;
-                transition: background 0.15s !important;
-                text-decoration: none !important;
-                background: transparent !important;
-            }
-            .mobile-only-nav a i { color: #d4af37 !important; width: 20px; text-align: center; flex-shrink: 0; }
-            .mobile-only-nav a:hover { background: #eef4ff !important; }
-
-            /* Overlay */
-            .mobile-overlay { z-index: 1000 !important; }
-        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>

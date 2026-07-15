@@ -327,13 +327,19 @@ img { max-width: 100%; display: block; }
 
 /* Mobile Overlay */
 .mobile-overlay {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 30, 60, 0.65); /* Rich dark transparent overlay */
+    backdrop-filter: blur(4px);
     z-index: 998;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-.mobile-overlay.active { display: block; }
+.mobile-overlay.active { 
+    opacity: 1;
+    visibility: visible;
+}
 
 /* Mobile-only items inside nav */
 .mobile-only-nav { display: none; }
@@ -555,59 +561,80 @@ img { max-width: 100%; display: block; }
         top: 0;
         right: 0;
         bottom: 0;
-        transform: translateX(100%);
-        width: min(300px, 82vw);
+        transform: translateX(102%);
+        width: 290px;
+        max-width: 85vw;
         height: 100dvh;
-        background: #fff;
+        background: #ffffff;
         flex-direction: column;
         align-items: stretch;
         overflow-y: auto;
         overflow-x: hidden;
-        z-index: 1001;
-        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1005; /* Must be higher than overlay, but inside header */
+        transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
         padding: 0;
         gap: 0;
         justify-content: flex-start;
         will-change: transform;
-        box-shadow: -6px 0 32px rgba(0,0,0,0.18);
-    }
-    /* Gradient header bar inside sidebar */
-    .nav-links::before {
-        content: 'القائمة الرئيسية';
-        display: block;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-        color: #fff;
-        font-family: 'Tajawal', sans-serif;
-        font-size: 1.05rem;
-        font-weight: 800;
-        padding: 18px 20px;
-        letter-spacing: 0.5px;
-        border-bottom: 3px solid var(--gold);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
     }
     .nav-links.mobile-open { transform: translateX(0); }
 
+    /* Mobile Menu Real Header */
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        color: #fff;
+        padding: 20px;
+        border-bottom: 3px solid var(--gold);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+    .mobile-menu-header button {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: none;
+        color: #fff !important;
+        font-size: 1.2rem !important;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    .mobile-menu-header button:hover {
+        background: var(--danger) !important;
+    }
+
+    /* Mobile Nav Links */
     .nav-links > li > a {
-        padding: 13px 20px;
+        padding: 16px 20px;
         border-radius: 0;
-        font-size: 0.93rem;
+        font-size: 0.95rem;
         font-weight: 700;
         border-bottom: 1px solid #f0f4f8;
         display: flex;
         align-items: center;
         justify-content: space-between;
         color: var(--primary-dark);
-        transition: background 0.18s, padding-right 0.18s;
+        background: #ffffff;
+        transition: all 0.2s ease;
     }
     .nav-links > li > a::after { display: none; }
     .nav-links > li > a:hover, .nav-links > li > a.active {
-        background: linear-gradient(90deg, rgba(0,75,135,0.07) 0%, transparent 100%);
+        background: #f4f8fc;
         color: var(--primary);
         padding-right: 26px;
-        border-right: 3px solid var(--gold);
+        border-right: 4px solid var(--gold);
     }
 
     /* Mobile Dropdowns */
@@ -618,42 +645,46 @@ img { max-width: 100%; display: block; }
         border: none;
         border-right: 3px solid var(--gold);
         border-radius: 0;
-        background: #f8fafc;
+        background: #fafcfd;
         margin: 0;
     }
     .dropdown-menu li a {
-        padding: 11px 32px;
-        font-size: 0.88rem;
+        padding: 12px 35px;
+        font-size: 0.9rem;
+        font-weight: 600;
         color: var(--text-muted);
         border-bottom: 1px solid #eef2f6;
+        transition: background 0.2s, padding-right 0.2s;
     }
-    .dropdown-menu li a:hover { color: var(--primary); background: rgba(0,75,135,0.04); }
+    .dropdown-menu li a:hover { color: var(--primary); background: #f0f4f8; padding-right: 40px; }
 
     /* Mobile user links */
     .mobile-only-nav {
         display: flex;
         flex-direction: column;
-        margin-top: 8px;
+        margin-top: auto;
         background: #f8fafc;
-        border-top: 2px solid var(--gold);
+        border-top: 3px solid var(--gold);
     }
     .mobile-only-nav a {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 13px 20px;
+        padding: 15px 20px;
         color: var(--primary-dark);
         font-weight: 700;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         border-bottom: 1px solid #eef2f6;
-        transition: background 0.18s;
+        transition: background 0.2s;
+        text-decoration: none;
     }
-    .mobile-only-nav a i { color: var(--gold); width: 18px; text-align: center; }
-    .mobile-only-nav a:hover { background: rgba(0,75,135,0.06); color: var(--primary); }
+    .mobile-only-nav a i { color: var(--gold); width: 22px; text-align: center; font-size: 1.1rem; }
+    .mobile-only-nav a:hover { background: #eef4ff; color: var(--primary); }
 
     /* Hide desktop elements */
     .user-actions { display: none; }
     .header-date { display: none; }
+    .mobile-menu-header { display: flex; } /* Show in mobile */
 
     /* Show hamburger */
     .hamburger-btn { display: flex; z-index: 1001; }
