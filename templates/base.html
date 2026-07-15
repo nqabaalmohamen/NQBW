@@ -131,15 +131,26 @@
             .nav-links > li > a {
                 padding: 16px 20px !important;
                 border-radius: 0 !important;
-                font-size: 0.95rem !important;
+                font-size: 0.98rem !important;
                 font-weight: 700 !important;
                 border-bottom: 1px solid #f0f4f8 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
+                display: block !important;
                 color: #002f56 !important;
                 background: #ffffff !important;
                 transition: all 0.2s ease !important;
+                text-align: right !important;
+            }
+            .nav-links > li > a > i:first-child {
+                width: 25px !important;
+                text-align: center !important;
+                margin-left: 8px !important;
+                color: #d4af37 !important;
+                font-size: 1.1rem !important;
+            }
+            .nav-links > li > a > .fa-chevron-down {
+                float: left !important;
+                margin-top: 6px !important;
+                color: #95a5a6 !important;
             }
             .nav-links > li > a:hover, .nav-links > li > a.active {
                 background: #f4f8fc !important;
@@ -170,11 +181,19 @@
             }
             .dropdown-menu li a {
                 padding: 12px 35px !important;
-                font-size: 0.9rem !important;
+                font-size: 0.95rem !important;
                 font-weight: 600 !important;
-                color: #6c7a89 !important;
+                color: #5a6a7a !important;
                 border-bottom: 1px solid #eef2f6 !important;
                 transition: background 0.2s, padding-right 0.2s !important;
+                display: block !important;
+                text-align: right !important;
+            }
+            .dropdown-menu li a > i:first-child {
+                width: 22px !important;
+                text-align: center !important;
+                margin-left: 8px !important;
+                font-size: 1rem !important;
             }
             .dropdown-menu li a:hover { color: #004b87 !important; background: #f0f4f8 !important; padding-right: 40px !important; }
 
