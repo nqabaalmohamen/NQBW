@@ -52,8 +52,12 @@
             flex-shrink: 0;
         }
         .search-form-full button:hover { background: #b5952f; }
-
-        .search-form-full button:hover { background: #b5952f; }
+        .qtag {
+            background: rgba(255,255,255,0.15); color: white;
+            padding: 4px 14px; border-radius: 20px; font-size: 0.82rem;
+            text-decoration: none; transition: background 0.2s;
+        }
+        .qtag:hover { background: rgba(255,255,255,0.28); color: #fff; }
 
         .search-results-dropdown {
             position: absolute;
@@ -401,25 +405,40 @@
     <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
 
     <!-- Full Width Search Bar (Hidden by Default) -->
-    <div id="fullWidthSearch" class="search-bar-full" style="display:none; position: relative;">
-        <form action="{% url 'core:search' %}" method="GET" class="search-form-full">
-            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:1.1rem; padding: 0 0 0 10px; flex-shrink:0;"></i>
-            <input type="text" name="q" id="searchInput" placeholder="ابحث في الأخبار، المعهد، مجلس النقابة، الكتب، العقود..." required autocomplete="off">
-            <button type="submit">بحث</button>
-        </form>
-        <div id="searchResultsDropdown" class="search-results-dropdown"></div>
-        <!-- Search Tags -->
-        <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px;">
-            <span style="font-size:0.8rem; color:rgba(255,255,255,0.7);">بحث سريع:</span>
-            <a href="{% url 'core:search' %}?q=معهد المحاماة" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">معهد المحاماة</a>
-            <a href="{% url 'core:search' %}?q=مجلس النقابة" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">مجلس النقابة</a>
-            <a href="{% url 'core:search' %}?q=الكشف الطبي" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">الكشف الطبي</a>
-            <a href="{% url 'core:search' %}?q=كتب قانونية" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">كتب قانونية</a>
-            <a href="{% url 'core:search' %}?q=عقود" style="background:rgba(255,255,255,0.15); color:white; padding:4px 14px; border-radius:20px; font-size:0.82rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">نماذج عقود</a>
+    <div id="fullWidthSearch" class="search-bar-full" style="display:none;">
+        <!-- Search Input Wrapper — position:relative so dropdown anchors to it -->
+        <div style="position:relative; max-width:750px; margin:0 auto;">
+            <form action="{% url 'core:search' %}" method="GET" class="search-form-full" id="mainSearchForm" autocomplete="off">
+                <i class="fa-solid fa-magnifying-glass" style="color:rgba(255,255,255,0.6); font-size:1.1rem; padding: 0 0 0 14px; flex-shrink:0;"></i>
+                <input type="text" name="q" id="searchInput"
+                       placeholder="ابحث في الأخبار، الخدمات، الكتب، الأعضاء..."
+                       autocomplete="off" spellcheck="false" style="direction:rtl;">
+                <button type="submit">بحث</button>
+            </form>
+            <!-- Live Results Dropdown -->
+            <div id="liveSearchDropdown" style="
+                display:none;
+                position:absolute;
+                top:calc(100% + 6px);
+                left:0; right:0;
+                background:#fff;
+                border-radius:14px;
+                box-shadow:0 12px 40px rgba(0,30,60,0.22);
+                overflow:hidden;
+                z-index:2000;
+                max-height:420px;
+                overflow-y:auto;
+                border:1px solid #e2e8f0;
+            "></div>
         </div>
-        <!-- Search Suggestions Dropdown -->
-        <div id="searchSuggestions" style="display: none; position: absolute; top: calc(100% + 60px); left: 50%; transform: translateX(-50%); width: min(800px, 90%); background: white; box-shadow: 0 8px 30px rgba(0,0,0,0.15); border-radius: 14px; z-index: 1000; overflow: hidden; max-height: 360px; overflow-y: auto;">
-            <!-- Results injected here -->
+        <!-- Quick Tags -->
+        <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:14px;">
+            <span style="font-size:0.8rem; color:rgba(255,255,255,0.65);">بحث سريع:</span>
+            <a href="{% url 'core:search' %}?q=معهد المحاماة" class="qtag">معهد المحاماة</a>
+            <a href="{% url 'core:search' %}?q=مجلس النقابة" class="qtag">مجلس النقابة</a>
+            <a href="{% url 'core:search' %}?q=الكشف الطبي" class="qtag">الكشف الطبي</a>
+            <a href="{% url 'core:search' %}?q=كتب قانونية" class="qtag">كتب قانونية</a>
+            <a href="{% url 'core:search' %}?q=عقود" class="qtag">نماذج عقود</a>
         </div>
     </div>
 
@@ -1087,75 +1106,136 @@
 
         initChat();
     </script>
+
     <script>
-        // ── LIVE SEARCH (AUTOCOMPLETE) ──
-        const searchInput = document.getElementById('searchInput');
-        const searchDropdown = document.getElementById('searchResultsDropdown');
-        let searchTimeout = null;
+    /* ══════════════════════════════════════════════════
+       LIVE SEARCH — Google-style instant results
+       Targets: #searchInput  →  #liveSearchDropdown
+    ══════════════════════════════════════════════════ */
+    (function () {
+        const ICON_MAP = {
+            'خبر':       'fa-newspaper',
+            'خدمة':      'fa-gear',
+            'بوابة':     'fa-landmark',
+            'كتاب':      'fa-book',
+            'عقد':       'fa-file-contract',
+            'عضو مجلس': 'fa-user-tie',
+        };
 
-        if (searchInput && searchDropdown) {
-            searchInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                
-                clearTimeout(searchTimeout);
-                
-                if (query.length < 2) {
-                    searchDropdown.classList.remove('active');
-                    searchDropdown.innerHTML = '';
-                    return;
-                }
+        const LOADING_HTML = `
+            <div style="padding:18px;text-align:center;color:#6c7a89;font-size:0.9rem;">
+                <i class="fa-solid fa-spinner fa-spin" style="margin-left:8px;color:#d4af37;"></i>
+                جاري البحث...
+            </div>`;
 
-                searchDropdown.innerHTML = '<div class="search-loading-text"><i class="fa-solid fa-spinner fa-spin ms-2"></i> جاري البحث...</div>';
-                searchDropdown.classList.add('active');
+        const EMPTY_HTML = `
+            <div style="padding:18px;text-align:center;color:#95a5a6;font-size:0.9rem;">
+                <i class="fa-solid fa-magnifying-glass" style="display:block;font-size:2rem;margin-bottom:8px;color:#dde;"></i>
+                لا توجد نتائج مطابقة
+            </div>`;
 
-                searchTimeout = setTimeout(() => {
-                    fetch(`/search/api/?q=${encodeURIComponent(query)}`)
-                        .then(res => res.json())
+        function buildResultHTML(results) {
+            return results.map(item => {
+                const icon  = ICON_MAP[item.type] || 'fa-circle-dot';
+                return `
+                <a href="${item.url}" style="
+                    display:flex; align-items:center; justify-content:space-between;
+                    padding:13px 18px; border-bottom:1px solid #f0f4f8;
+                    color:#002f56; text-decoration:none; font-size:0.95rem;
+                    transition:background 0.18s, padding-right 0.18s; gap:10px;
+                ">
+                    <span style="display:flex;align-items:center;gap:10px;">
+                        <i class="fa-solid ${icon}" style="color:#d4af37;width:18px;text-align:center;font-size:1rem;flex-shrink:0;"></i>
+                        <span>${item.title}</span>
+                    </span>
+                    <span style="
+                        font-size:0.72rem;background:#eef4ff;color:#004b87;
+                        padding:3px 10px;border-radius:12px;font-weight:700;white-space:nowrap;flex-shrink:0;
+                    ">${item.type}</span>
+                </a>`;
+            }).join('');
+        }
+
+        let debounce = null;
+        let lastQuery = '';
+
+        function initLiveSearch() {
+            const inp  = document.getElementById('searchInput');
+            const drop = document.getElementById('liveSearchDropdown');
+            if (!inp || !drop) return;
+
+            function show(html) {
+                drop.innerHTML = html;
+                drop.style.display = 'block';
+            }
+            function hide() {
+                drop.style.display = 'none';
+                drop.innerHTML = '';
+            }
+
+            inp.addEventListener('input', function () {
+                const q = this.value.trim();
+                clearTimeout(debounce);
+
+                if (q.length < 2) { hide(); lastQuery = ''; return; }
+                if (q === lastQuery) return;
+                lastQuery = q;
+
+                show(LOADING_HTML);
+
+                debounce = setTimeout(() => {
+                    fetch('/search/api/?q=' + encodeURIComponent(q))
+                        .then(r => {
+                            if (!r.ok) throw new Error('HTTP ' + r.status);
+                            return r.json();
+                        })
                         .then(data => {
                             if (!data.results || data.results.length === 0) {
-                                searchDropdown.innerHTML = '<div class="search-loading-text">لا توجد نتائج مطابقة لبحثك.</div>';
-                                return;
+                                show(EMPTY_HTML);
+                            } else {
+                                show(buildResultHTML(data.results));
+                                // hover effect
+                                drop.querySelectorAll('a').forEach(a => {
+                                    a.addEventListener('mouseenter', () => {
+                                        a.style.background = '#f4f8fc';
+                                        a.style.paddingRight = '24px';
+                                    });
+                                    a.addEventListener('mouseleave', () => {
+                                        a.style.background = '';
+                                        a.style.paddingRight = '';
+                                    });
+                                });
                             }
-                            
-                            let html = '';
-                            data.results.forEach(item => {
-                                let icon = 'fa-arrow-left';
-                                if(item.type === 'خبر') icon = 'fa-newspaper';
-                                else if(item.type === 'خدمة') icon = 'fa-concierge-bell';
-                                else if(item.type === 'بوابة') icon = 'fa-landmark';
-                                else if(item.type === 'كتاب') icon = 'fa-book';
-                                else if(item.type === 'عقد') icon = 'fa-file-contract';
-                                else if(item.type === 'عضو مجلس') icon = 'fa-user-tie';
-
-                                html += `
-                                    <a href="${item.url}">
-                                        <span><i class="fa-solid ${icon} ms-2" style="color:#d4af37;"></i> ${item.title}</span>
-                                        <span class="res-type">${item.type}</span>
-                                    </a>
-                                `;
-                            });
-                            searchDropdown.innerHTML = html;
                         })
-                        .catch(err => {
-                            searchDropdown.innerHTML = '<div class="search-loading-text">حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.</div>';
+                        .catch(() => {
+                            show('<div style="padding:15px;text-align:center;color:#e74c3c;font-size:0.88rem;">حدث خطأ. يرجى المحاولة مجدداً.</div>');
                         });
-                }, 300); // 300ms debounce
+                }, 280);
             });
 
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
-                    searchDropdown.classList.remove('active');
+            // Close on outside click
+            document.addEventListener('click', e => {
+                if (!inp.contains(e.target) && !drop.contains(e.target)) hide();
+            });
+            // Re-open on focus if there's text
+            inp.addEventListener('focus', () => {
+                if (inp.value.trim().length >= 2 && drop.innerHTML) {
+                    drop.style.display = 'block';
                 }
             });
-            
-            // Re-open if clicking on input and it has value
-            searchInput.addEventListener('focus', function() {
-                if (this.value.trim().length >= 2 && searchDropdown.innerHTML !== '') {
-                    searchDropdown.classList.add('active');
-                }
+            // Keyboard: Escape closes
+            inp.addEventListener('keydown', e => {
+                if (e.key === 'Escape') hide();
             });
         }
+
+        // Run when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initLiveSearch);
+        } else {
+            initLiveSearch();
+        }
+    })();
     </script>
 </body>
 </html>
