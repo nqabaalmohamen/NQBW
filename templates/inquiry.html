@@ -93,7 +93,14 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
         // 2. Fetch from the dynamic tunnel
         const apiUrl = `${tunnelUrlStr}/api/unified-inquiry/?q=${encodeURIComponent(query)}&sys=${encodeURIComponent(systemType)}`;
         
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'ngrok-skip-browser-warning': 'true',
+                'Bypass-Tunnel-Reminder': 'true'
+            }
+        });
+        
         const data = await response.json();
         
         loadingSpinner.classList.add('d-none');
