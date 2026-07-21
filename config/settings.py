@@ -164,3 +164,22 @@ CORS_ALLOW_ALL_ORIGINS = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ══════════════════════════════════════════════════════════
+#  INTERNAL SYSTEMS — Direct SQLite DB Paths (Read-Only)
+#  These allow the public website to run inquiries against
+#  the internal systems WITHOUT modifying them.
+# ══════════════════════════════════════════════════════════
+import os as _os
+_SYSTEMS_ROOT = _os.path.join(
+    'D:\\',
+    'الانظمة الخاصة بنقابة المحامين   بالفيوم الرسمي',
+    'النظام المدمج الشهادات و الشئون القانونية و الارشيف'
+)
+
+INTERNAL_SYSTEMS = {
+    'certificates_db': _os.path.join(_SYSTEMS_ROOT, 'برنامج الشهادات', 'db.sqlite3'),
+    'complaints_db':   _os.path.join(_SYSTEMS_ROOT, 'نظام الشؤون القانونية', 'db.sqlite3'),
+    'archive_db':      _os.path.join(_SYSTEMS_ROOT, 'برنامج الأرشيف', 'db.sqlite3'),
+}
+

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import inquiry_views
 from . import livechat_views as lc
 
 app_name = 'core'
@@ -16,6 +17,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('search/api/', views.search_api, name='search_api'),
     path('gov-platform/', views.gov_platform, name='gov_platform'),
+    path('inquiry/', inquiry_views.check_internal_systems, name='inquiry'),
 
     # ── New Services ──
     path('institute/', views.institute_page, name='institute'),

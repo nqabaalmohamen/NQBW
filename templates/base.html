@@ -352,6 +352,7 @@
                     </ul>
                 </li>
                 <li><a href="{% url 'core:council' %}" class="{% if request.resolver_match.url_name == 'council' %}active{% endif %}"><i class="fa-solid fa-users fa-sm ms-1"></i> مجلس النقابة</a></li>
+                <li><a href="{% url 'core:inquiry' %}" class="{% if request.resolver_match.url_name == 'inquiry' %}active{% endif %}"><i class="fa-solid fa-magnifying-glass fa-sm ms-1"></i> استعلام</a></li>
                 
                 <li class="dropdown">
                     <a href="javascript:void(0);" onclick="toggleDropdown(event, 'contactDropdown')" class="{% if request.resolver_match.url_name == 'contact' or request.resolver_match.url_name == 'faq' %}active{% endif %}"><i class="fa-regular fa-comments fa-sm ms-1"></i> التواصل <i class="fa-solid fa-chevron-down fa-xs"></i></a>
