@@ -657,6 +657,103 @@
             window.location.href = `/gov-platform/?url=${encoded}&name=${encodedName}`;
         }
     </script>
+
+    <!-- ══ SMOOTH PAGE TRANSITION SYSTEM ══ -->
+    <div id="pageProgressBar" style="
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #d4af37, #f4d982, #d4af37);
+        background-size: 200% 100%;
+        width: 0%;
+        z-index: 99999;
+        opacity: 0;
+        transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+        animation: shimmer 1.5s infinite;
+    "></div>
+    <style>
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .page-exit {
+            animation: fadeOutSlideUp 0.45s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+        }
+        @keyframes fadeOutSlideUp {
+            0%   { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-12px); }
+        }
+    </style>
+    <script>
+        (function() {
+            var bar = document.getElementById('pageProgressBar');
+            var pageMain = document.querySelector('.page-main');
+            var navigating = false;
+
+            function startTransition(href) {
+                if (navigating) return;
+                navigating = true;
+
+                // Show golden progress bar
+                bar.style.opacity = '1';
+                bar.style.width = '0%';
+                setTimeout(function() { bar.style.width = '75%'; }, 30);
+
+                // Fade out the main content
+                if (pageMain) {
+                    pageMain.classList.add('page-exit');
+                }
+
+                // Navigate after animation completes
+                setTimeout(function() {
+                    bar.style.width = '100%';
+                    setTimeout(function() {
+                        window.location.href = href;
+                    }, 150);
+                }, 400);
+            }
+
+            // Intercept all internal link clicks
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a[href]');
+                if (!link) return;
+
+                var href = link.getAttribute('href');
+                if (!href) return;
+
+                // Skip: external links, anchors, javascript, mailto, new tab
+                if (
+                    href.startsWith('http') && !href.includes(window.location.hostname) ||
+                    href.startsWith('#') ||
+                    href.startsWith('javascript') ||
+                    href.startsWith('mailto') ||
+                    href.startsWith('tel') ||
+                    link.target === '_blank' ||
+                    e.ctrlKey || e.metaKey || e.shiftKey
+                ) return;
+
+                e.preventDefault();
+                startTransition(href);
+            }, true);
+
+            // On page load: complete the progress bar
+            window.addEventListener('load', function() {
+                bar.style.width = '100%';
+                bar.style.opacity = '1';
+                setTimeout(function() {
+                    bar.style.opacity = '0';
+                    setTimeout(function() { bar.style.width = '0%'; }, 400);
+                }, 300);
+            });
+
+            // On browser back/forward button
+            window.addEventListener('pageshow', function(e) {
+                if (e.persisted && pageMain) {
+                    pageMain.classList.remove('page-exit');
+                }
+            });
+        })();
+    </script>
     {% block extra_js %}{% endblock %}
 
     <!-- Chatbot Widget -->
