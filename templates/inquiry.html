@@ -75,24 +75,11 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
     loadingSpinner.classList.remove('d-none');
 
     try {
-        // 1. Fetch dynamic tunnel URL from Keyval
-        const cacheBuster = new Date().getTime();
-        const keyvalRes = await fetch('https://api.keyval.org/get/nqaba_almohamen_fayoum_archive_tunnel_secure?_t=' + cacheBuster);
-        const keyvalJson = await keyvalRes.json();
-        let tunnelUrlStr = keyvalJson.val;
-        if (tunnelUrlStr) {
-            tunnelUrlStr = tunnelUrlStr.trim().replace('https_', 'https://');
-        } else {
-            throw new Error('Could not get URL from Keyval');
-        }
+        // الدومين الثابت والدائم للنفق الآمن (لا يتغير أبداً)
+        const TUNNEL_URL = 'https://goldfish-banked-valley.ngrok-free.dev';
 
-        // Check if URL looks valid
-        if (!tunnelUrlStr.startsWith('http')) {
-            throw new Error('Invalid tunnel URL');
-        }
-
-        // 2. Fetch from the dynamic tunnel
-        const apiUrl = `${tunnelUrlStr}/api/unified-inquiry/?q=${encodeURIComponent(query)}&sys=${encodeURIComponent(systemType)}`;
+        // Fetch from the tunnel directly
+        const apiUrl = `${TUNNEL_URL}/api/unified-inquiry/?q=${encodeURIComponent(query)}&sys=${encodeURIComponent(systemType)}`;
         
         const response = await fetch(apiUrl, {
             method: 'GET',
