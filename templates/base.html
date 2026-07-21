@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}بوابة نقابة المحامين بالفيوم{% endblock %}</title>
+    <meta name="view-transition" content="same-origin">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,6 +35,17 @@
             opacity: 1 !important;
             max-height: 500px !important;
             transform: translateY(0) !important;
+        }
+        
+        /* ── PAGE TRANSITION ANIMATION ── */
+        .page-main {
+            animation: fadeInSlideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        @keyframes fadeInSlideUp {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         
         /* ── SEARCH BAR ── */
