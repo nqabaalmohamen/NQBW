@@ -77,8 +77,13 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
     try {
         // 1. Fetch dynamic tunnel URL from Keyval
         const keyvalRes = await fetch('https://api.keyval.org/get/nqaba_almohamen_fayoum_archive_tunnel_secure');
-        let tunnelUrlStr = await keyvalRes.text();
-        tunnelUrlStr = tunnelUrlStr.trim().replace('https_', 'https://');
+        const keyvalJson = await keyvalRes.json();
+        let tunnelUrlStr = keyvalJson.val;
+        if (tunnelUrlStr) {
+            tunnelUrlStr = tunnelUrlStr.trim().replace('https_', 'https://');
+        } else {
+            throw new Error('Could not get URL from Keyval');
+        }
 
         // Check if URL looks valid
         if (!tunnelUrlStr.startsWith('http')) {
