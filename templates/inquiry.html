@@ -76,7 +76,8 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
 
     try {
         // 1. Fetch dynamic tunnel URL from Keyval
-        const keyvalRes = await fetch('https://api.keyval.org/get/nqaba_almohamen_fayoum_archive_tunnel_secure');
+        const cacheBuster = new Date().getTime();
+        const keyvalRes = await fetch('https://api.keyval.org/get/nqaba_almohamen_fayoum_archive_tunnel_secure?_t=' + cacheBuster);
         const keyvalJson = await keyvalRes.json();
         let tunnelUrlStr = keyvalJson.val;
         if (tunnelUrlStr) {
@@ -215,6 +216,10 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
                 </div>
                 <h3 class="text-warning fw-bold mb-3">غير متصل بالأنظمة</h3>
                 <p class="fs-5 text-muted">يبدو أن أجهزة النقابة المركزية مغلقة حالياً أو لا يوجد اتصال بالإنترنت. يرجى المحاولة لاحقاً أثناء مواعيد العمل الرسمية.</p>
+                <div class="alert alert-danger mt-3 text-start" style="direction: ltr;">
+                    <strong>تفاصيل الخطأ التقني (لتشخيص المشكلة):</strong><br>
+                    ${err.name}: ${err.message}
+                </div>
                 <button onclick="document.getElementById('inquiryForm').dispatchEvent(new Event('submit'))" class="btn btn-outline-secondary mt-3">إعادة المحاولة</button>
             </div>
         </div>`;
