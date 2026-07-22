@@ -234,7 +234,26 @@ let selectedSystem = 'archive';
 (function(){
     const params = new URLSearchParams(window.location.search);
     const s = params.get('sys');
-    if (s === 'complaint' || s === 'certificate') selectSystem(s);
+    
+    const titles = {
+        archive: { title: 'الاستعلام عن معاملة أرشيفية', desc: 'استعلم عن حالة معاملتك في الأرشيف وموقفها الحالي' },
+        complaint: { title: 'الاستعلام عن الشكاوى القانونية', desc: 'تابع حالة الشكوى والقرارات الصادرة بها' },
+        certificate: { title: 'الاستعلام عن الشهادات الموثقة', desc: 'تحقق من صحة وحالة شهادتك المعتمدة' }
+    };
+    
+    if (s && titles[s]) {
+        // If a specific system is selected, hide the switcher cards to make it independent
+        document.querySelector('.sys-cards').style.display = 'none';
+        
+        // Update Hero Title
+        document.querySelector('.inquiry-hero h1').innerHTML = `<i class="fa-solid fa-search ms-2"></i> ${titles[s].title}`;
+        document.querySelector('.inquiry-hero p').innerText = titles[s].desc;
+        
+        selectSystem(s);
+    } else {
+        // Default
+        selectSystem('archive');
+    }
 })();
 
 function selectSystem(sys) {
@@ -243,14 +262,17 @@ function selectSystem(sys) {
     document.querySelectorAll('.sys-card').forEach(c => {
         c.classList.remove('active-archive','active-complaint','active-cert');
     });
+    
     const map = { archive: 'active-archive', complaint: 'active-complaint', certificate: 'active-cert' };
-    document.getElementById('card-' + (sys === 'certificate' ? 'cert' : sys)).classList.add(map[sys]);
+    const targetCard = document.getElementById('card-' + (sys === 'certificate' ? 'cert' : sys));
+    if (targetCard) targetCard.classList.add(map[sys]);
 
     const hints = {
-        archive:     'معاملة أرشيفية — أدخل رقم المعاملة فقط (مثال: 1)',
-        complaint:   'شكوى قانونية — أدخل رقم الشكوى فقط (مثال: 83)',
-        certificate: 'شهادة موثقة — أدخل رقم الشهادة فقط (مثال: 5)'
+        archive:     'أدخل رقم المعاملة فقط (مثال: 1)',
+        complaint:   'أدخل رقم الشكوى فقط (مثال: 83)',
+        certificate: 'أدخل رقم الشهادة فقط (مثال: 5)'
     };
+    
     document.getElementById('searchHint').innerHTML =
         `<i class="fa-solid fa-circle-info ms-1" style="color:#4f6af5;"></i> ${hints[sys]}`;
     document.getElementById('queryInput').focus();
