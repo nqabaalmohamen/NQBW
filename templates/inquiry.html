@@ -1,207 +1,389 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}الاستعلام عن معاملة | بوابة نقابة المحامين بالفيوم{% endblock %}
+{% block title %}الاستعلام الشامل | بوابة نقابة المحامين بالفيوم{% endblock %}
 
 {% block content %}
-<div class="page-header" style="background: linear-gradient(135deg, #002f56 0%, #004b87 100%); color: white; padding: 4rem 0 2rem; text-align: center; margin-bottom: 3rem;">
+
+<style>
+/* ── Hero ── */
+.inquiry-hero {
+    background: linear-gradient(135deg, #002f56 0%, #004b87 60%, #0069c0 100%);
+    color: white;
+    padding: 3.5rem 0 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.inquiry-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.4;
+}
+.inquiry-hero h1 { font-weight: 800; font-size: 2.2rem; position: relative; }
+.inquiry-hero p  { font-size: 1.1rem; opacity: 0.85; position: relative; }
+
+/* ── System Cards ── */
+.sys-cards { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: -3rem; margin-bottom: 2rem; }
+.sys-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem 1.8rem;
+    width: 200px;
+    text-align: center;
+    cursor: pointer;
+    border: 3px solid transparent;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    transition: all .25s ease;
+    position: relative;
+    user-select: none;
+}
+.sys-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
+.sys-card.active-archive  { border-color: #4f6af5; background: #f0f3ff; }
+.sys-card.active-complaint{ border-color: #16a34a; background: #f0fdf4; }
+.sys-card.active-cert     { border-color: #d4af37; background: #fffbeb; }
+.sys-card .sys-icon { font-size: 2.2rem; margin-bottom: .6rem; }
+.sys-card .sys-label { font-weight: 700; font-size: .95rem; color: #002f56; }
+.sys-card .sys-hint  { font-size: .78rem; color: #7a8ea0; margin-top: .3rem; }
+.sys-card .check-mark {
+    position: absolute; top: -10px; left: -10px;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; color: white;
+    opacity: 0; transform: scale(0); transition: all .2s;
+}
+.sys-card.active-archive  .check-mark { background:#4f6af5; opacity:1; transform:scale(1); }
+.sys-card.active-complaint .check-mark{ background:#16a34a; opacity:1; transform:scale(1); }
+.sys-card.active-cert     .check-mark { background:#d4af37; opacity:1; transform:scale(1); }
+
+/* ── Search Box ── */
+.search-wrap {
+    max-width: 560px;
+    margin: 0 auto 2rem;
+}
+.search-input-group {
+    display: flex;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+.search-input-group input {
+    flex: 1;
+    border: none;
+    padding: 1rem 1.4rem;
+    font-size: 1.2rem;
+    font-family: inherit;
+    text-align: center;
+    outline: none;
+    background: white;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.search-input-group button {
+    border: none;
+    padding: 1rem 1.8rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background: #002f56;
+    color: white;
+    cursor: pointer;
+    transition: background .2s;
+}
+.search-input-group button:hover { background: #004b87; }
+.search-hint { text-align: center; font-size: .85rem; color: #7a8ea0; margin-top: .6rem; }
+
+/* ── Spinner ── */
+.spinner-wrap {
+    display: none;
+    text-align: center;
+    padding: 3rem;
+}
+.spinner-wrap.visible { display: block; }
+.spinner-ring {
+    display: inline-block;
+    width: 64px; height: 64px;
+    border: 6px solid #e2e8f0;
+    border-top-color: #004b87;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Result Card ── */
+.result-card {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    animation: fadeUp .5s ease;
+}
+@keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to   { opacity:1; transform: translateY(0); }
+}
+.result-header { padding: 1.4rem 2rem; text-align: center; }
+.result-header h4 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+.result-body { background: white; padding: 2rem 2rem 2.5rem; }
+.status-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .6rem 1.4rem;
+    border-radius: 50px;
+    font-weight: 700; font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+}
+.status-badge.done    { background: #f0fdf4; color: #15803d; }
+.status-badge.pending { background: #eff6ff; color: #1d4ed8; }
+
+.data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 576px) { .data-grid { grid-template-columns: 1fr; } }
+.data-cell {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+}
+.data-cell.full { grid-column: 1 / -1; }
+.data-cell label { font-size: .78rem; color: #7a8ea0; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: .3rem; }
+.data-cell .val  { font-size: 1.05rem; font-weight: 700; color: #002f56; }
+
+.note-box {
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+}
+.note-box.warning { background: #fffbeb; border-right: 4px solid #f59e0b; }
+.note-box.success { background: #f0fdf4; border-right: 4px solid #22c55e; }
+.note-box label { font-size: .8rem; font-weight: 700; margin-bottom: .4rem; display: block; }
+.note-box.warning label { color: #92400e; }
+.note-box.success label { color: #15803d; }
+
+/* ── Error Card ── */
+.err-card {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    animation: fadeUp .5s ease;
+}
+
+.main-wrap { max-width: 720px; margin: 0 auto; padding: 0 1rem 4rem; }
+</style>
+
+<!-- Hero -->
+<div class="inquiry-hero">
     <div class="container">
-        <h1 style="font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-magnifying-glass"></i> الاستعلام الشامل</h1>
-        <p style="font-size: 1.2rem; opacity: 0.9;">استعلم عن حالة الشهادات، الشكاوى، والمعاملات الأرشيفية</p>
+        <h1><i class="fa-solid fa-shield-halved ms-2"></i>البوابة الاستعلامية الموحدة</h1>
+        <p>استعلم عن حالة معاملاتك في الأرشيف، الشؤون القانونية، والشهادات بثوانٍ</p>
     </div>
 </div>
 
-<div class="container" style="margin-bottom: 5rem; max-width: 800px;">
-    <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px;">
-        <div class="card-body p-4 p-md-5">
-            <form id="inquiryForm" class="mb-0">
-                <div class="mb-4 text-center">
-                    <div class="row g-3 mb-4" dir="rtl">
-                        <div class="col-12">
-                            <label class="form-label fw-bold">اختر نوع الاستعلام:</label>
-                            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="system_type" id="sys_archive" value="archive" checked>
-                                    <label class="form-check-label" for="sys_archive"><i class="fa-solid fa-file-contract text-primary"></i> معاملة أرشيفية</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="system_type" id="sys_complaint" value="complaint">
-                                    <label class="form-check-label" for="sys_complaint"><i class="fa-solid fa-scale-balanced text-success"></i> شكوى قانونية</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="system_type" id="sys_certificate" value="certificate">
-                                    <label class="form-check-label" for="sys_certificate"><i class="fa-solid fa-certificate text-warning"></i> شهادة موثقة</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <label for="query" class="form-label fw-bold" style="font-size: 1.1rem;">أدخل رقم الاستعلام:</label>
-                    <div class="input-group input-group-lg" style="direction: ltr;">
-                        <button class="btn btn-primary px-4" type="submit" id="button-addon2" style="border-radius: 5px 0 0 5px;">
-                            <i class="fa-solid fa-search"></i> بحث
-                        </button>
-                        <input type="text" class="form-control text-center" id="query" name="q" placeholder="مثال: TRK-2026-1 أو 2026-001 أو 1-2026" style="border-radius: 0 5px 5px 0;" required>
-                    </div>
-                </div>
-            </form>
+<div class="main-wrap">
+
+    <!-- System Cards -->
+    <div class="sys-cards">
+        <div class="sys-card active-archive" id="card-archive" onclick="selectSystem('archive')">
+            <div class="check-mark"><i class="fa-solid fa-check"></i></div>
+            <div class="sys-icon" style="color:#4f6af5;"><i class="fa-solid fa-file-contract"></i></div>
+            <div class="sys-label">معاملة أرشيفية</div>
+            <div class="sys-hint">أدخل رقم المعاملة فقط<br>مثال: <strong>1</strong></div>
+        </div>
+        <div class="sys-card" id="card-complaint" onclick="selectSystem('complaint')">
+            <div class="check-mark"><i class="fa-solid fa-check"></i></div>
+            <div class="sys-icon" style="color:#16a34a;"><i class="fa-solid fa-scale-balanced"></i></div>
+            <div class="sys-label">شكوى قانونية</div>
+            <div class="sys-hint">أدخل رقم الشكوى فقط<br>مثال: <strong>83</strong></div>
+        </div>
+        <div class="sys-card" id="card-cert" onclick="selectSystem('certificate')">
+            <div class="check-mark"><i class="fa-solid fa-check"></i></div>
+            <div class="sys-icon" style="color:#d4af37;"><i class="fa-solid fa-certificate"></i></div>
+            <div class="sys-label">شهادة موثقة</div>
+            <div class="sys-hint">أدخل رقم الشهادة فقط<br>مثال: <strong>5</strong></div>
         </div>
     </div>
 
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="text-center d-none" style="padding: 3rem;">
-        <i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 4rem;"></i>
-        <p class="mt-3 fs-5 text-muted">جاري الاتصال بقواعد بيانات النقابة عبر النفق الآمن...</p>
+    <!-- Search Box -->
+    <div class="search-wrap">
+        <form id="inquiryForm" onsubmit="doSearch(event)">
+            <div class="search-input-group">
+                <button type="submit"><i class="fa-solid fa-search ms-1"></i> بحث</button>
+                <input type="number" id="queryInput" min="1" placeholder="أدخل الرقم هنا..." required>
+            </div>
+        </form>
+        <div class="search-hint" id="searchHint">
+            <i class="fa-solid fa-circle-info ms-1" style="color:#4f6af5;"></i>
+            اختر النظام أولاً، ثم أدخل الرقم فقط — بدون سنة أو بادئة
+        </div>
     </div>
 
-    <!-- Result Container -->
-    <div id="resultContainer"></div>
+    <!-- Spinner -->
+    <div class="spinner-wrap" id="spinner">
+        <div class="spinner-ring"></div>
+        <p style="color:#7a8ea0; margin-top:1rem; font-size:.95rem;">جاري الاتصال بقواعد البيانات...</p>
+    </div>
 
+    <!-- Result -->
+    <div id="resultArea"></div>
 </div>
 
 <script>
-document.getElementById('inquiryForm').addEventListener('submit', async function(e) {
+const CURRENT_YEAR = new Date().getFullYear();
+let selectedSystem = 'archive';
+
+// Pre-select based on ?sys= param in URL
+(function(){
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get('sys');
+    if (s === 'complaint' || s === 'certificate') selectSystem(s);
+})();
+
+function selectSystem(sys) {
+    selectedSystem = sys;
+    // Remove all active classes
+    document.querySelectorAll('.sys-card').forEach(c => {
+        c.classList.remove('active-archive','active-complaint','active-cert');
+    });
+    const map = { archive: 'active-archive', complaint: 'active-complaint', certificate: 'active-cert' };
+    document.getElementById('card-' + (sys === 'certificate' ? 'cert' : sys)).classList.add(map[sys]);
+
+    const hints = {
+        archive:     'معاملة أرشيفية — أدخل رقم المعاملة فقط (مثال: 1)',
+        complaint:   'شكوى قانونية — أدخل رقم الشكوى فقط (مثال: 83)',
+        certificate: 'شهادة موثقة — أدخل رقم الشهادة فقط (مثال: 5)'
+    };
+    document.getElementById('searchHint').innerHTML =
+        `<i class="fa-solid fa-circle-info ms-1" style="color:#4f6af5;"></i> ${hints[sys]}`;
+    document.getElementById('queryInput').focus();
+    document.getElementById('resultArea').innerHTML = '';
+}
+
+function buildQuery(num, sys) {
+    const n = num.toString().trim();
+    if (sys === 'archive')     return `TRK-${CURRENT_YEAR}-${n}`;
+    if (sys === 'certificate') return `${n}-${CURRENT_YEAR}`;
+    return n; // complaint — just the number
+}
+
+async function doSearch(e) {
     e.preventDefault();
-    const query = document.getElementById('query').value.trim();
-    if(!query) return;
+    const num = document.getElementById('queryInput').value.trim();
+    if (!num) return;
 
-    // Get selected system
-    const systemType = document.querySelector('input[name="system_type"]:checked').value;
+    const q = buildQuery(num, selectedSystem);
+    const spinner  = document.getElementById('spinner');
+    const resultArea = document.getElementById('resultArea');
 
-    const resultContainer = document.getElementById('resultContainer');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-
-    resultContainer.innerHTML = '';
-    loadingSpinner.classList.remove('d-none');
+    resultArea.innerHTML = '';
+    spinner.classList.add('visible');
 
     try {
-        // ✅ الحل الجذري: المتصفح يكلم Vercel فقط، وVercel هو من يتصل بسيرفر النقابة
-        const apiUrl = `/api/inquiry/?q=${encodeURIComponent(query)}&sys=${encodeURIComponent(systemType)}`;
-
-        const response = await fetch(apiUrl);
-        
-        const data = await response.json();
-        
-        loadingSpinner.classList.add('d-none');
-        
-        if (data.success) {
-            const sys = data.system;
-            const item = data.data;
-            
-            let headerClass = 'bg-warning text-dark';
-            let iconClass = 'fa-certificate';
-            let sysName = 'شهادة موثقة';
-            
-            if (sys === 'archive') {
-                headerClass = 'bg-primary text-white';
-                iconClass = 'fa-file-contract';
-                sysName = 'معاملة أرشيفية';
-            } else if (sys === 'complaint') {
-                headerClass = 'bg-success text-white';
-                iconClass = 'fa-scale-balanced';
-                sysName = 'شكوى قانونية';
-            }
-
-            const statusIcon = item.is_completed 
-                ? '<i class="fa-solid fa-circle-check text-success" style="font-size: 4rem;"></i>'
-                : '<i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 4rem;"></i>';
-            const statusColor = item.is_completed ? 'text-success' : 'text-primary';
-
-            let missingInfoHtml = '';
-            if (item.missing_info) {
-                missingInfoHtml = `
-                <div class="col-12">
-                    <div class="p-3 bg-warning bg-opacity-10 rounded border border-warning">
-                        <h6 class="text-warning-emphasis mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i> نواقص وملاحظات مطلوبة</h6>
-                        <p class="mb-0">${item.missing_info.replace(/\\n/g, '<br>')}</p>
-                    </div>
-                </div>`;
-            }
-
-            let completionNoteHtml = '';
-            if (item.completion_note && item.is_completed) {
-                completionNoteHtml = `
-                <div class="col-12">
-                    <div class="p-3 bg-success bg-opacity-10 rounded border border-success">
-                        <h6 class="text-success-emphasis mb-2"><i class="fa-solid fa-circle-info me-2"></i> تعليمات الاستلام</h6>
-                        <p class="mb-0">${item.completion_note.replace(/\\n/g, '<br>')}</p>
-                    </div>
-                </div>`;
-            }
-
-            resultContainer.innerHTML = `
-            <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden; animation: fadeInSlideUp 0.6s ease forwards;">
-                <div class="card-header text-center py-3 ${headerClass}">
-                    <h4 class="mb-0 fw-bold"><i class="fa-solid ${iconClass}"></i> ${sysName}</h4>
-                </div>
-                <div class="card-body p-4 p-md-5">
-                    <div class="text-center mb-4">
-                        <div class="mb-3">${statusIcon}</div>
-                        <h3 class="${statusColor} fw-bold">${item.status}</h3>
-                    </div>
-                    <hr class="my-4 text-muted">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded h-100">
-                                <h6 class="text-muted mb-2"><i class="fa-solid fa-hashtag me-2"></i> رقم الاستعلام</h6>
-                                <p class="fw-bold mb-0 fs-5" style="direction: ltr; text-align: right;">${item.number}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded h-100">
-                                <h6 class="text-muted mb-2"><i class="fa-solid fa-user me-2"></i> اسم صاحب الشأن</h6>
-                                <p class="fw-bold mb-0 fs-5">${item.client || "غير متوفر"}</p>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2"><i class="fa-solid fa-book-open me-2"></i> الموضوع / العنوان</h6>
-                                <p class="fw-bold mb-0 fs-5">${item.title}</p>
-                            </div>
-                        </div>
-                        ${item.date ? `
-                        <div class="col-12">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2"><i class="fa-regular fa-calendar me-2"></i> تاريخ آخر تحديث</h6>
-                                <p class="fw-bold mb-0" style="direction: ltr; text-align: right;">${item.date}</p>
-                            </div>
-                        </div>` : ''}
-                        ${missingInfoHtml}
-                        ${completionNoteHtml}
-                    </div>
-                </div>
-            </div>`;
-        } else {
-            resultContainer.innerHTML = `
-            <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden; animation: fadeInSlideUp 0.6s ease forwards;">
-                <div class="card-body p-5 text-center">
-                    <div class="mb-4">
-                        <i class="fa-solid fa-circle-xmark text-danger" style="font-size: 5rem;"></i>
-                    </div>
-                    <h3 class="text-danger fw-bold mb-3">عذراً!</h3>
-                    <p class="fs-5 text-muted">${data.error || "لم يتم العثور على نتائج."}</p>
-                </div>
-            </div>`;
-        }
-    } catch (err) {
-        console.error(err);
-        loadingSpinner.classList.add('d-none');
-        resultContainer.innerHTML = `
-        <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden; animation: fadeInSlideUp 0.6s ease forwards;">
-            <div class="card-body p-5 text-center">
-                <div class="mb-4">
-                    <i class="fa-solid fa-server text-warning" style="font-size: 5rem;"></i>
-                </div>
-                <h3 class="text-warning fw-bold mb-3">غير متصل بالأنظمة</h3>
-                <p class="fs-5 text-muted">يبدو أن أجهزة النقابة المركزية مغلقة حالياً أو لا يوجد اتصال بالإنترنت. يرجى المحاولة لاحقاً أثناء مواعيد العمل الرسمية.</p>
-                <div class="alert alert-danger mt-3 text-start" style="direction: ltr;">
-                    <strong>تفاصيل الخطأ التقني (لتشخيص المشكلة):</strong><br>
-                    ${err.name}: ${err.message}
-                </div>
-                <button onclick="document.getElementById('inquiryForm').dispatchEvent(new Event('submit'))" class="btn btn-outline-secondary mt-3">إعادة المحاولة</button>
-            </div>
+        const res = await fetch(`/api/inquiry/?q=${encodeURIComponent(q)}&sys=${encodeURIComponent(selectedSystem)}&num=${encodeURIComponent(num)}`);
+        const data = await res.json();
+        spinner.classList.remove('visible');
+        renderResult(data, selectedSystem);
+    } catch(err) {
+        spinner.classList.remove('visible');
+        resultArea.innerHTML = `
+        <div class="err-card">
+            <div style="font-size:4rem; margin-bottom:1rem;"><i class="fa-solid fa-server" style="color:#f59e0b;"></i></div>
+            <h3 style="color:#92400e; font-weight:800;">غير متصل بالأنظمة</h3>
+            <p style="color:#6b7280;">يبدو أن أجهزة النقابة المركزية مغلقة حالياً. يرجى المحاولة أثناء مواعيد العمل الرسمية.</p>
+            <button onclick="doSearch(new Event('x'))" class="btn btn-outline-secondary mt-3 px-4">
+                <i class="fa-solid fa-rotate-right ms-1"></i> إعادة المحاولة
+            </button>
         </div>`;
     }
-});
+}
+
+function renderResult(data, sys) {
+    const resultArea = document.getElementById('resultArea');
+
+    if (!data.success) {
+        resultArea.innerHTML = `
+        <div class="err-card">
+            <div style="font-size:4rem; margin-bottom:1rem;"><i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i></div>
+            <h3 style="color:#dc2626; font-weight:800;">لم يتم العثور على بيانات</h3>
+            <p style="color:#6b7280;">${data.error || 'تأكد من الرقم المُدخل وأعد المحاولة.'}</p>
+        </div>`;
+        return;
+    }
+
+    const d = data.data;
+    const isDone = d.is_completed;
+
+    const headers = {
+        archive:     { bg: 'linear-gradient(135deg,#4f6af5,#7c8ff7)', icon:'fa-file-contract', label:'معاملة أرشيفية' },
+        complaint:   { bg: 'linear-gradient(135deg,#16a34a,#22c55e)', icon:'fa-scale-balanced', label:'شكوى قانونية'   },
+        certificate: { bg: 'linear-gradient(135deg,#d4af37,#f0c940)', icon:'fa-certificate',   label:'شهادة موثقة'     }
+    };
+    const h = headers[sys] || headers.archive;
+
+    // Build extra fields based on system
+    let extraFields = '';
+    if (sys === 'archive') {
+        if (d.department) extraFields += dataCell('القسم المختص', d.department);
+        if (d.received_at) extraFields += dataCell('تاريخ الاستلام', d.received_at);
+        if (d.completed_at) extraFields += dataCell('تاريخ الانتهاء', d.completed_at);
+        if (d.employee)   extraFields += dataCell('الموظف المسؤول', d.employee);
+    }
+    if (sys === 'complaint') {
+        if (d.against)     extraFields += dataCell('المشكو ضده', d.against);
+        if (d.category)    extraFields += dataCell('نوع الشكوى', d.category);
+        if (d.session_date)extraFields += dataCell('جلسة الاستماع', d.session_date);
+        if (d.resolution)  extraFields += dataCell('القرار', d.resolution, true);
+    }
+    if (sys === 'certificate') {
+        if (d.cert_type)   extraFields += dataCell('نوع الشهادة', d.cert_type);
+        if (d.course)      extraFields += dataCell('الدورة', d.course, true);
+        if (d.hours)       extraFields += dataCell('عدد الساعات', d.hours);
+    }
+
+    let missingHtml = '';
+    if (d.missing_info) {
+        missingHtml = `<div class="note-box warning mt-3">
+            <label><i class="fa-solid fa-triangle-exclamation ms-1"></i> نواقص ومطلوبات</label>
+            <div style="color:#78350f;">${d.missing_info.replace(/\n/g,'<br>')}</div>
+        </div>`;
+    }
+    let completionHtml = '';
+    if (d.completion_note && isDone) {
+        completionHtml = `<div class="note-box success mt-3">
+            <label><i class="fa-solid fa-circle-check ms-1"></i> تعليمات الاستلام</label>
+            <div style="color:#14532d;">${d.completion_note.replace(/\n/g,'<br>')}</div>
+        </div>`;
+    }
+
+    resultArea.innerHTML = `
+    <div class="result-card">
+        <div class="result-header" style="background:${h.bg}; color:white;">
+            <h4><i class="fa-solid ${h.icon} ms-2"></i>${h.label}</h4>
+        </div>
+        <div class="result-body">
+            <div class="text-center mb-4">
+                <div class="status-badge ${isDone ? 'done':'pending'}">
+                    <i class="fa-solid ${isDone ? 'fa-circle-check':'fa-spinner fa-spin'}"></i>
+                    ${d.status}
+                </div>
+            </div>
+            <div class="data-grid">
+                ${dataCell('رقم الاستعلام', d.number)}
+                ${dataCell('صاحب الشأن', d.client || 'غير متوفر')}
+                ${dataCell('الموضوع / العنوان', d.title, true)}
+                ${d.date ? dataCell('تاريخ آخر تحديث', d.date) : ''}
+                ${extraFields}
+            </div>
+            ${missingHtml}
+            ${completionHtml}
+        </div>
+    </div>`;
+}
+
+function dataCell(label, val, full=false) {
+    return `<div class="data-cell${full?' full':''}">
+        <label>${label}</label>
+        <div class="val">${val}</div>
+    </div>`;
+}
 </script>
+
 {% endblock %}
