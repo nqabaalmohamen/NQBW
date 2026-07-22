@@ -83,8 +83,19 @@ def proxy_inquiry_api(request):
     # Local system is offline or unreachable - Fallback to Cached Data
     from .models import CachedInquiry
     lookup_num = num if num else query
+    
+    # 1. Try exact match
     cached = CachedInquiry.objects.filter(system_type=sys_type, inquiry_number=lookup_num).first()
     
+    # 2. Try partial match if not found
+    if not cached:
+        if sys_type == 'archive':
+            cached = CachedInquiry.objects.filter(system_type=sys_type, inquiry_number__endswith=f"-{lookup_num}").first()
+        elif sys_type == 'certificate':
+            cached = CachedInquiry.objects.filter(system_type=sys_type, inquiry_number__startswith=f"{lookup_num}-").first()
+        elif sys_type == 'complaint':
+            cached = CachedInquiry.objects.filter(system_type=sys_type, inquiry_number__startswith=f"{lookup_num}/").first()
+            
     if cached:
         return JsonResponse(cached.response_data, status=200, json_dumps_params={'ensure_ascii': False})
     
