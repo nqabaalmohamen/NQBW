@@ -34,14 +34,15 @@ def proxy_inquiry_api(request):
     """
     query = request.GET.get('q', '').strip()
     sys_type = request.GET.get('sys', '').strip()
+    num = request.GET.get('num', '').strip()
 
-    if not query:
+    if not query and not num:
         return JsonResponse({'success': False, 'error': 'رقم الاستعلام مطلوب'}, status=400,
                             json_dumps_params={'ensure_ascii': False})
 
     target_url = (
         f"{TUNNEL_URL}/api/unified-inquiry/"
-        f"?q={urllib.parse.quote(query)}&sys={urllib.parse.quote(sys_type)}"
+        f"?q={urllib.parse.quote(query)}&sys={urllib.parse.quote(sys_type)}&num={urllib.parse.quote(num)}"
     )
 
     try:
