@@ -90,6 +90,30 @@ def proxy_inquiry_api(request):
     
     return JsonResponse({'success': False, 'error': 'لم يتم العثور على بيانات بهذا الرقم.'}, status=200, json_dumps_params={'ensure_ascii': False})
 
+@csrf_exempt
+def bulk_sync_api(request):
+    """
+    Receives all local DB data and caches it for offline use.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+        
+    try:
+        data = json_module.loads(request.body)
+        records = data.get('records', [])
+        
+        from .models import CachedInquiry
+        for rec in records:
+            CachedInquiry.objects.update_or_create(
+                system_type=rec['system_type'],
+                inquiry_number=rec['inquiry_number'],
+                defaults={'response_data': rec['response_data']}
+            )
+        return JsonResponse({'success': True, 'synced_count': len(records)})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
 
 # ---------------------------------------------------------------------------
 # Import needed for URL building
