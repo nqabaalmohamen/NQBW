@@ -250,7 +250,6 @@ let selectedSystem = 'archive';
         document.querySelector('.inquiry-hero p').innerText = titles[s].desc;
         
         selectSystem(s);
-        fetchLatestData(s);
     } else {
         // Default
         selectSystem('archive');
@@ -399,64 +398,6 @@ function renderResult(data, sys) {
             ${completionHtml}
         </div>
     </div>`;
-}
-
-async function fetchLatestData(sys) {
-    const spinner = document.getElementById('spinner');
-    const resultArea = document.getElementById('resultArea');
-    spinner.classList.add('visible');
-    
-    try {
-        const res = await fetch(`/api/inquiry/?q=latest&sys=${encodeURIComponent(sys)}&num=latest`);
-        const data = await res.json();
-        spinner.classList.remove('visible');
-        if (data.is_list) {
-            renderList(data, sys);
-        } else {
-            renderResult(data, sys);
-        }
-    } catch(err) {
-        spinner.classList.remove('visible');
-    }
-}
-
-function renderList(data, sys) {
-    const resultArea = document.getElementById('resultArea');
-    if (!data.success || !data.data || data.data.length === 0) {
-        return; // do nothing if no latest data
-    }
-
-    const headers = {
-        archive:     { label:'أحدث المعاملات الأرشيفية' },
-        complaint:   { label:'أحدث الشكاوى القانونية' },
-        certificate: { label:'أحدث الشهادات الموثقة' }
-    };
-    const h = headers[sys] || headers.archive;
-
-    let html = `<h4 style="margin-top:2rem; color:var(--primary);"><i class="fa-solid fa-clock-rotate-left ms-2"></i>${h.label}</h4>`;
-    html += `<div style="display:grid; gap:1rem; margin-top:1rem;">`;
-    
-    data.data.forEach(d => {
-        const isDone = d.is_completed;
-        html += `
-        <div class="result-card" style="margin-top:0; cursor:pointer;" onclick="document.getElementById('queryInput').value='${d.number}'; doSearch(new Event('submit'));">
-            <div class="result-body" style="padding: 1.5rem;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div>
-                        <strong style="color:var(--dark); font-size:1.1rem;">${d.title}</strong>
-                        <div style="color:#6b7280; font-size:0.9rem; margin-top:5px;">رقم: ${d.number} | صاحب الشأن: ${d.client || 'غير متوفر'}</div>
-                    </div>
-                    <div class="status-badge ${isDone ? 'done':'pending'}" style="margin:0;">
-                        <i class="fa-solid ${isDone ? 'fa-circle-check':'fa-spinner fa-spin'}"></i>
-                        ${d.status}
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    });
-    
-    html += `</div>`;
-    resultArea.innerHTML = html;
 }
 
 function dataCell(label, val, full=false) {
