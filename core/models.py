@@ -217,14 +217,26 @@ class SiteSettings(models.Model):
 
     @classmethod
     def get_settings(cls):
-        from django.db import OperationalError
         try:
             settings, created = cls.objects.get_or_create(pk=1)
             return settings
-        except OperationalError:
-            # Fallback for read-only environments (e.g. Vercel with SQLite)
-            # Returns an unsaved default instance so the site doesn't crash
-            return cls(pk=1)
+        except Exception:
+            # Fallback: return unsaved default instance (migration may not be applied yet)
+            return cls()
+
+    @classmethod
+    def get_settings_safe(cls):
+        """Returns settings with is_inquiry_open=True if field doesn't exist yet."""
+        try:
+            obj = cls.objects.filter(pk=1).values().first()
+            if obj:
+                s = cls()
+                for k, v in obj.items():
+                    setattr(s, k, v)
+                return s
+            return cls()
+        except Exception:
+            return cls()
 
 class DatabaseFile(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="اسم الملف")
