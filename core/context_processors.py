@@ -1,19 +1,17 @@
-from .models import SiteSettings
-
 def site_settings(request):
+    """
+    Injects site_settings into all templates safely.
+    Falls back to default model values if DB is unavailable or not migrated.
+    """
     try:
-        from django.db import connection
-        # Check the column exists before accessing it
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT is_inquiry_open FROM core_sitesettings LIMIT 1")
-        settings = SiteSettings.objects.first()
-        if not settings:
-            settings = SiteSettings.objects.create()
-        return {'site_settings': settings}
+        from .models import SiteSettings
+        obj = SiteSettings.objects.first()
+        if obj is None:
+            obj = SiteSettings()  # unsaved instance with all field defaults
+        return {'site_settings': obj}
     except Exception:
-        # Migration not applied yet — return a safe object
-        class SafeSettings:
-            is_inquiry_open = True
-            is_institute_open = False
-            slider_speed = 4000
-        return {'site_settings': SafeSettings()}
+        try:
+            from .models import SiteSettings
+            return {'site_settings': SiteSettings()}  # All defaults, no DB needed
+        except Exception:
+            return {'site_settings': None}
