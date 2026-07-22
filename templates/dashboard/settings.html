@@ -36,6 +36,14 @@
             </div>
 
             <hr style="border-top: 1px solid #eee; margin: 30px 0;">
+            <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-magnifying-glass"></i> إعدادات البوابة الاستعلامية</h3>
+
+            <div class="form-group form-full" style="display: flex; align-items: center; gap: 15px;">
+                <input type="checkbox" name="is_inquiry_open" id="is_inquiry_open" style="width:20px; height:20px;" {% if settings.is_inquiry_open %}checked{% endif %}>
+                <label for="is_inquiry_open" style="font-weight: bold; font-size: 1.1rem; cursor: pointer; margin: 0;">تفعيل قسم الاستعلام في الموقع (إظهار للجميع)</label>
+            </div>
+
+            <hr style="border-top: 1px solid #eee; margin: 30px 0;">
             <h3 style="color: var(--gold); margin-bottom: 20px;"><i class="fa-solid fa-person-digging"></i> وضع الصيانة (قيد التطوير)</h3>
 
             <div class="form-group form-full" style="display: flex; align-items: center; gap: 15px;">

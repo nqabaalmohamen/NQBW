@@ -199,7 +199,10 @@ class FAQ(models.Model):
 class SiteSettings(models.Model):
     slider_speed = models.IntegerField(default=4000, verbose_name="سرعة السليدر (بالميلي ثانية)")
     institute_registration_link = models.URLField(verbose_name="رابط التقديم في معهد المحاماة (مثل Google Form)", blank=True, null=True)
-    is_institute_open = models.BooleanField(default=False, verbose_name="تفعيل زر التقديم لمعهد المحاماة")
+    is_institute_open = models.BooleanField(default=False, verbose_name="فتح التسجيل لمعهد المحاماة")
+    
+    # Inquiry Settings
+    is_inquiry_open = models.BooleanField(default=True, verbose_name="تفعيل قسم الاستعلام في الموقع")
     
     is_under_maintenance = models.BooleanField(default=False, verbose_name="وضع الصيانة (قيد التطوير)")
     maintenance_end_date = models.DateTimeField(blank=True, null=True, verbose_name="موعد انتهاء التطوير (للعد التنازلي)")
