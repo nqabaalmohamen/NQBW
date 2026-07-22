@@ -57,6 +57,17 @@ def proxy_inquiry_api(request):
         with urllib.request.urlopen(req, timeout=10) as resp:
             raw = resp.read().decode('utf-8')
             data = json_module.loads(raw)
+            
+            # Save successful response to cache
+            if data.get('success'):
+                from .models import CachedInquiry
+                lookup_num = num if num else query
+                CachedInquiry.objects.update_or_create(
+                    system_type=sys_type,
+                    inquiry_number=lookup_num,
+                    defaults={'response_data': data}
+                )
+                
             return JsonResponse(data, status=200, json_dumps_params={'ensure_ascii': False})
 
     except urllib.error.HTTPError as e:
@@ -65,15 +76,19 @@ def proxy_inquiry_api(request):
             data = json_module.loads(err_body)
             return JsonResponse(data, status=e.code, json_dumps_params={'ensure_ascii': False})
         except Exception:
-            return JsonResponse(
-                {'success': False, 'error': f'خطأ من النظام المركزي: {e.code}'},
-                status=502, json_dumps_params={'ensure_ascii': False}
-            )
+            pass # Fall through to cache
     except Exception as e:
-        return JsonResponse(
-            {'success': False, 'error': 'أجهزة النقابة المركزية مغلقة حالياً أو لا يوجد اتصال بالإنترنت.'},
-            status=503, json_dumps_params={'ensure_ascii': False}
-        )
+        pass # Fall through to cache
+        
+    # Local system is offline or unreachable - Fallback to Cached Data
+    from .models import CachedInquiry
+    lookup_num = num if num else query
+    cached = CachedInquiry.objects.filter(system_type=sys_type, inquiry_number=lookup_num).first()
+    
+    if cached:
+        return JsonResponse(cached.response_data, status=200, json_dumps_params={'ensure_ascii': False})
+    
+    return JsonResponse({'success': False, 'error': 'لم يتم العثور على بيانات بهذا الرقم.'}, status=200, json_dumps_params={'ensure_ascii': False})
 
 
 # ---------------------------------------------------------------------------

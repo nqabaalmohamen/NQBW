@@ -352,3 +352,19 @@ class LibraryContract(models.Model):
     def __str__(self):
         return self.title
 
+class CachedInquiry(models.Model):
+    """
+    Saves the latest successful inquiry response for offline fallback.
+    """
+    system_type = models.CharField(max_length=50, verbose_name="النظام (أرشيف/شكاوى/شهادات)")
+    inquiry_number = models.CharField(max_length=50, verbose_name="رقم الاستعلام")
+    response_data = models.JSONField(verbose_name="بيانات الرد المحفوظة")
+    last_updated = models.DateTimeField(auto_now=True, verbose_name="آخر تحديث")
+
+    class Meta:
+        verbose_name = "استعلام مؤرشف (Cache)"
+        verbose_name_plural = "الاستعلامات المؤرشفة (Cache)"
+        unique_together = ('system_type', 'inquiry_number')
+
+    def __str__(self):
+        return f"{self.system_type} - {self.inquiry_number}"
