@@ -334,9 +334,9 @@ function renderResult(data, sys) {
     const isDone = d.is_completed;
 
     const headers = {
-        archive:     { bg: 'linear-gradient(135deg,#4f6af5,#7c8ff7)', icon:'fa-file-contract', label:'معاملة أرشيفية' },
-        complaint:   { bg: 'linear-gradient(135deg,#16a34a,#22c55e)', icon:'fa-scale-balanced', label:'شكوى قانونية'   },
-        certificate: { bg: 'linear-gradient(135deg,#d4af37,#f0c940)', icon:'fa-certificate',   label:'شهادة موثقة'     }
+        archive:     { bg: 'linear-gradient(135deg,#4f6af5,#7c8ff7)', icon:'fa-file-contract', label:'معاملة أرشيفية', statusLabel:'حالة الطلب' },
+        complaint:   { bg: 'linear-gradient(135deg,#16a34a,#22c55e)', icon:'fa-scale-balanced', label:'شكوى قانونية', statusLabel:'حالة الشكوى' },
+        certificate: { bg: 'linear-gradient(135deg,#d4af37,#f0c940)', icon:'fa-certificate',   label:'شهادة موثقة', statusLabel:'حالة الشهادة' }
     };
     const h = headers[sys] || headers.archive;
 
@@ -384,7 +384,7 @@ function renderResult(data, sys) {
             <div class="text-center mb-4">
                 <div class="status-badge ${isDone ? 'done':'pending'}">
                     <i class="fa-solid ${isDone ? 'fa-circle-check':'fa-spinner fa-spin'}"></i>
-                    حالة الطلب: ${d.status}
+                    ${h.statusLabel}: ${d.status}
                 </div>
             </div>
             <div class="data-grid">
