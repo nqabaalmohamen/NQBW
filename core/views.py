@@ -779,7 +779,7 @@ def dashboard_settings(request):
         
         settings.institute_registration_link = request.POST.get('institute_registration_link', '')
         settings.is_institute_open = request.POST.get('is_institute_open') == 'on'
-        
+        settings.is_inquiry_open = request.POST.get('is_inquiry_open') == 'on'
         settings.is_under_maintenance = request.POST.get('is_under_maintenance') == 'on'
         end_date = request.POST.get('maintenance_end_date')
         if end_date:
