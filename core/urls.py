@@ -18,6 +18,7 @@ urlpatterns = [
     path('search/api/', views.search_api, name='search_api'),
     path('gov-platform/', views.gov_platform, name='gov_platform'),
     path('inquiry/', inquiry_views.check_internal_systems, name='inquiry'),
+    path('api/inquiry/', inquiry_views.proxy_inquiry_api, name='inquiry_api'),
 
     # ── New Services ──
     path('institute/', views.institute_page, name='institute'),

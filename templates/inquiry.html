@@ -75,19 +75,10 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
     loadingSpinner.classList.remove('d-none');
 
     try {
-        // الدومين الثابت والدائم للنفق الآمن (لا يتغير أبداً)
-        const TUNNEL_URL = 'https://goldfish-banked-valley.ngrok-free.dev';
+        // ✅ الحل الجذري: المتصفح يكلم Vercel فقط، وVercel هو من يتصل بسيرفر النقابة
+        const apiUrl = `/api/inquiry/?q=${encodeURIComponent(query)}&sys=${encodeURIComponent(systemType)}`;
 
-        // Fetch from the tunnel directly
-        const apiUrl = `${TUNNEL_URL}/api/unified-inquiry/?q=${encodeURIComponent(query)}&sys=${encodeURIComponent(systemType)}`;
-        
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'ngrok-skip-browser-warning': 'true',
-                'Bypass-Tunnel-Reminder': 'true'
-            }
-        });
+        const response = await fetch(apiUrl);
         
         const data = await response.json();
         
