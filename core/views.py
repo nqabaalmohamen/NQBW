@@ -24,7 +24,7 @@ def home(request):
         'latest_news': News.objects.filter(is_published=True, in_slider=True)[:6],
         'news_count': News.objects.filter(is_published=True).count(),
         'council_members': CouncilMember.objects.all()[:5],
-        'site_settings': SiteSettings.get_settings(),
+        'site_settings': SiteSettings.get_settings(),  # safe fallback built into get_settings()
         'users_count': UserProfile.objects.count(),
     }
     return render(request, 'index.html', ctx)
@@ -735,7 +735,7 @@ def dashboard_home(request):
         'medical_exams_count':   MedicalExam.objects.count(),
         'library_books':         LibraryBook.objects.filter(is_active=True).count(),
         'library_contracts':     LibraryContract.objects.filter(is_active=True).count(),
-        'total_visits':          SiteSettings.objects.first().total_visits if SiteSettings.objects.exists() else 0,
+        'total_visits':          SiteSettings.get_settings().total_visits,
     }
     recent_complaints = Complaint.objects.order_by('-created_at')[:5]
     recent_news = News.objects.order_by('-date')[:3]
@@ -779,8 +779,6 @@ def dashboard_settings(request):
         
         settings.institute_registration_link = request.POST.get('institute_registration_link', '')
         settings.is_institute_open = request.POST.get('is_institute_open') == 'on'
-        
-        settings.is_inquiry_open = request.POST.get('is_inquiry_open') == 'on'
         
         settings.is_under_maintenance = request.POST.get('is_under_maintenance') == 'on'
         end_date = request.POST.get('maintenance_end_date')

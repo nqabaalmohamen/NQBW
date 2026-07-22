@@ -353,7 +353,6 @@
                 </li>
                 <li><a href="{% url 'core:council' %}" class="{% if request.resolver_match.url_name == 'council' %}active{% endif %}"><i class="fa-solid fa-users fa-sm ms-1"></i> مجلس النقابة</a></li>
                 
-                {% if site_settings and site_settings.is_inquiry_open or not site_settings %}
                 <li class="dropdown">
                     <a href="javascript:void(0);" onclick="toggleDropdown(event, 'inquiryDropdown')" class="{% if request.resolver_match.url_name == 'inquiry' %}active{% endif %}"><i class="fa-solid fa-magnifying-glass fa-sm ms-1"></i> استعلام <i class="fa-solid fa-chevron-down fa-xs"></i></a>
                     <ul id="inquiryDropdown" class="dropdown-menu">
@@ -362,7 +361,6 @@
                         <li><a href="{% url 'core:inquiry' %}?sys=certificate"><i class="fa-solid fa-certificate fa-sm ms-1" style="color:#d4af37;"></i> شهادة موثقة</a></li>
                     </ul>
                 </li>
-                {% endif %}
                 
                 <li class="dropdown">
                     <a href="javascript:void(0);" onclick="toggleDropdown(event, 'contactDropdown')" class="{% if request.resolver_match.url_name == 'contact' or request.resolver_match.url_name == 'faq' %}active{% endif %}"><i class="fa-regular fa-comments fa-sm ms-1"></i> التواصل <i class="fa-solid fa-chevron-down fa-xs"></i></a>
