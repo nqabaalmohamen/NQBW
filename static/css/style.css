@@ -535,22 +535,49 @@ img { max-width: 100%; display: block; }
    RESPONSIVE
    ========================================================================= */
 
-/* Large Tablet */
+/* Medium/Large Tablet & Small Desktop Scaling */
+@media (max-width: 1280px) {
+    .header-inner {
+        padding: 0 15px;
+        min-height: 100px;
+        gap: 12px;
+    }
+    .brand-logo-img {
+        height: 85px;
+    }
+    .brand-title {
+        font-size: 1.4rem;
+    }
+    .nav-links > li > a {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    .header-date {
+        font-size: 0.85rem;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .header-date {
+        display: none !important;
+    }
+    .social-links-header {
+        display: none !important;
+    }
+    .nav-links > li > a {
+        padding: 8px 8px;
+        font-size: 0.88rem;
+    }
+}
+
 @media (max-width: 1024px) {
-    .header-date { display: none; }
-    .nav-links > li > a { padding: 8px 9px; font-size: 0.85rem; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .footer-col.about-col { grid-column: 1 / -1; }
 }
 
-/* Tablet */
-@media (max-width: 900px) {
-    .brand-title { font-size: 0.95rem; }
-    .nav-links > li > a { font-size: 0.82rem; padding: 7px 8px; }
-}
-
-/* Mobile - Main Breakpoint */
-@media (max-width: 768px) {
+/* Mobile - Main Breakpoint (Tablets & Mobiles) */
+@media (max-width: 992px) {
 
     /* Header */
     .header-inner {
