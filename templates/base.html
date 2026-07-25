@@ -135,8 +135,61 @@
         /* ── HIDE MOBILE ELEMENTS ON DESKTOP ── */
         .mobile-menu-header { display: none !important; }
 
+        /* ── HEADER RESPONSIVENESS & USER PROFILE FIX ── */
+        .header-inner {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-wrap: nowrap !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+        }
+
+        .user-actions {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-actions {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* ── DESKTOP RESPONSIVE SCALING (FOR 1251px to 1450px) ── */
+        @media (min-width: 1251px) and (max-width: 1450px) {
+            .header-date,
+            .social-links-header {
+                display: none !important;
+            }
+            .brand-logo-img {
+                height: 75px !important;
+            }
+            .brand-title {
+                font-size: 1.35rem !important;
+            }
+            .nav-links > li > a {
+                padding: 6px 8px !important;
+                font-size: 0.9rem !important;
+            }
+            .btn-outline-sm,
+            .btn-user-sm,
+            .btn-gold-sm {
+                padding: 6px 12px !important;
+                font-size: 0.88rem !important;
+            }
+            .nav-actions {
+                gap: 8px !important;
+            }
+        }
+
         /* ── PREMIUM MOBILE SIDEBAR & DROPDOWN (Bypass Cache) ── */
-        @media (max-width: 1150px) {
+        @media (max-width: 1250px) {
             .mobile-overlay {
                 opacity: 0 !important;
                 visibility: hidden !important;
@@ -306,6 +359,7 @@
 
             .user-actions { display: none !important; }
             .header-date { display: none !important; }
+            .social-links-header { display: none !important; }
             .hamburger-btn { display: flex !important; z-index: 1001 !important; }
         }
     </style>

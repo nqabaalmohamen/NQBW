@@ -536,7 +536,7 @@ img { max-width: 100%; display: block; }
    ========================================================================= */
 
 /* Small Desktop Scaling */
-@media (max-width: 1300px) {
+@media (max-width: 1450px) {
     .header-date {
         display: none !important;
     }
@@ -549,14 +549,14 @@ img { max-width: 100%; display: block; }
         gap: 12px;
     }
     .brand-logo-img {
-        height: 85px;
+        height: 75px;
     }
     .brand-title {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
     }
     .nav-links > li > a {
-        padding: 8px 10px;
-        font-size: 0.95rem;
+        padding: 6px 8px;
+        font-size: 0.9rem;
     }
 }
 
@@ -566,7 +566,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* Mobile - Main Breakpoint (Tablets & Mobiles) */
-@media (max-width: 1150px) {
+@media (max-width: 1250px) {
 
     /* Header */
     .header-inner {
