@@ -535,8 +535,14 @@ img { max-width: 100%; display: block; }
    RESPONSIVE
    ========================================================================= */
 
-/* Medium/Large Tablet & Small Desktop Scaling */
-@media (max-width: 1280px) {
+/* Small Desktop Scaling */
+@media (max-width: 1300px) {
+    .header-date {
+        display: none !important;
+    }
+    .social-links-header {
+        display: none !important;
+    }
     .header-inner {
         padding: 0 15px;
         min-height: 100px;
@@ -549,25 +555,8 @@ img { max-width: 100%; display: block; }
         font-size: 1.4rem;
     }
     .nav-links > li > a {
-        padding: 10px 12px;
+        padding: 8px 10px;
         font-size: 0.95rem;
-    }
-    .header-date {
-        font-size: 0.85rem;
-        gap: 4px;
-    }
-}
-
-@media (max-width: 1150px) {
-    .header-date {
-        display: none !important;
-    }
-    .social-links-header {
-        display: none !important;
-    }
-    .nav-links > li > a {
-        padding: 8px 8px;
-        font-size: 0.88rem;
     }
 }
 
@@ -577,7 +566,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* Mobile - Main Breakpoint (Tablets & Mobiles) */
-@media (max-width: 992px) {
+@media (max-width: 1150px) {
 
     /* Header */
     .header-inner {
