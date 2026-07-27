@@ -258,10 +258,7 @@
         color: #fff;
         direction: rtl;
         text-align: right;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start; /* flex-start in RTL aligns to the right */
-        justify-content: center;
+        /* إزالة flex لتجنب مشاكل المحاذاة */
     }
     .fw-text-col .fw-slide-cat {
         display: block;
@@ -291,7 +288,7 @@
         font-weight: bold;
         font-size: 1rem;
         transition: background 0.3s, transform 0.2s;
-        align-self: flex-start; /* Ensures it stays right-aligned in RTL */
+        float: right; /* ضمان ظهور الزر في اليمين */
     }
     .fw-text-col .fw-slide-btn:hover {
         background: #0c2b4a;
