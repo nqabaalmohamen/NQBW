@@ -424,24 +424,21 @@
     @media (max-width: 767px) {
         /* السماح بالتصفح الطبيعي للصفحة عبر اللمس */
         .fw-slider-section { touch-action: pan-y; }
-        
-        /* السلايدر يأخذ ارتفاعاً محدداً ومناسباً للهاتف */
-        .fwSwiper { height: 75vh; min-height: 0; max-height: 680px; touch-action: pan-y; }
+        .fwSwiper { height: 70vh; min-height: 0; max-height: 650px; touch-action: pan-y; }
         .fw-slide-inner { align-items: stretch; }
         
-        /* تخطيط عمودي يستغل كل المساحة */
+        /* تخطيط عمودي: صورة فوق، كلام تحت */
         .fw-slide-layout {
-            flex-direction: column; /* الصورة فوق، النص تحت */
-            padding: 0;
+            flex-direction: column;
+            padding: 0 0 90px 0; /* مساحة سفلية للزر والأدوات */
             gap: 0;
             height: 100%;
             align-items: stretch;
-            justify-content: stretch;
         }
 
-        /* الصورة تأخذ 58% من الارتفاع */
+        /* الصورة تملأ الجزء العلوي */
         .fw-image-col { 
-            flex: 0 0 58%; 
+            flex: 0 0 56%; 
             max-width: 100%; 
             width: 100%;
             overflow: hidden;
@@ -452,49 +449,53 @@
             height: 100%;
             max-width: 100%;
             max-height: 100%;
-            object-fit: cover; /* تملأ المساحة بالكامل */
-            border-radius: 0; /* بدون حواف دائرية لتملأ الشاشة */
-            transform: none !important; /* إلغاء تأثير 3D على الموبايل */
+            object-fit: cover;
+            border-radius: 0;
+            transform: none !important;
         }
 
-        /* النص يأخذ الـ 42% المتبقية */
+        /* النص تحت الصورة */
         .fw-text-col { 
-            flex: 1; 
+            flex: 1;
             max-width: 100%; 
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 15px 15px 80px 15px;
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+            padding: 12px 15px 0 15px;
         }
-        .fw-text-col .fw-slide-title { font-size: 1.2rem !important; margin-bottom: 8px !important; }
-        .fw-text-col .fw-slide-cat { font-size: 0.75rem; margin-bottom: 6px; }
+        .fw-text-col .fw-slide-title { 
+            font-size: 1.15rem !important; 
+            margin-bottom: 0 !important;
+            line-height: 1.5 !important;
+        }
+        .fw-text-col .fw-slide-cat { font-size: 0.75rem; margin-bottom: 4px; }
         
-        /* زر التفاصيل في اليسار بصف موازي للتحكم */
+        /* ━━ الصف السفلي: زر يسار + دائرة/أسهم يمين ━━ */
+        /* زر التفاصيل في أسفل يسار */
         .fw-text-col .fw-slide-btn { 
             position: absolute;
-            bottom: 20px;
+            bottom: 22px;
             left: 15px;
             float: none;
             margin: 0;
             z-index: 10;
-            padding: 8px 20px;
+            padding: 9px 22px;
             font-size: 0.9rem;
         }
         
-        /* الشريط الجانبي في اليمين */
+        /* الدائرة فوق الأسهم - في أسفل يمين */
         .fw-sidebar { 
             position: absolute;
-            top: auto;
-            bottom: 20px;
+            bottom: 12px;
             right: 15px;
             left: auto;
+            top: auto;
             transform: none;
-            flex-direction: column;
+            flex-direction: column; /* دائرة فوق الأسهم */
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .fwSwiperThumb { display: none; }
     }
