@@ -197,261 +197,287 @@
     /* ══════════════════════════════════════════
        FULLWIDTH SLIDER (طراز egyls.com)
     ══════════════════════════════════════════ */
-    .fw-slider-section { background: #0d1b2a; }
 
-    /* Main slide */
-    .fwSwiper { width: 100%; height: 72vh; min-height: 420px; max-height: 680px; }
-    .fw-slide-inner { width: 100%; height: 100%; position: relative; overflow: hidden; }
+    /* القسم الخارجي */
+    .fw-slider-section { background: #1a1a2e; position: relative; overflow: hidden; }
+
+    /* السلايدر الرئيسي */
+    .fwSwiper { width: 100%; height: 85vh; min-height: 500px; max-height: 750px; position: relative; }
+
+    /* الشريحة الداخلية */
+    .fw-slide-inner {
+        width: 100%; height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* الصورة الخلفية المموهة */
     .fw-slide-bg {
         width: 100%; height: 100%;
         object-fit: cover;
         position: absolute; top: 0; left: 0;
-        transition: transform 8s ease;
+        filter: blur(14px) brightness(0.35);
+        transform: scale(1.12);
+        z-index: 1;
+        transition: none;
     }
-    .fwSwiper .swiper-slide-active .fw-slide-bg { transform: scale(1.06); }
-    .fw-slide-nopic {
-        width: 100%; height: 100%;
-        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 6rem; color: rgba(255,255,255,0.15);
-        position: absolute; top: 0; left: 0;
+
+    /* المحتوى المركزي داخل الشريحة */
+    .fw-slide-content-wrapper {
+        position: relative; z-index: 3;
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 100px 0 30px;
+        gap: 40px;
+        direction: rtl;
     }
-    .fw-slide-overlay {
-        position: absolute; inset: 0;
-        background: linear-gradient(to top,
-            rgba(0,0,0,0.9) 0%,
-            rgba(0,0,0,0.55) 40%,
-            rgba(0,0,0,0.15) 75%,
-            rgba(0,0,0,0.05) 100%);
-        z-index: 2;
-    }
-    .fw-slide-content {
-        position: absolute;
-        bottom: 0;
-        right: 0; left: 0;
-        z-index: 3;
-        padding: 0 40px 30px;
+
+    /* عمود النص (يمين) */
+    .fw-slide-text-col {
+        flex: 0 0 45%;
         text-align: right;
         direction: rtl;
     }
+
+    /* عمود الصورة (يسار) */
+    .fw-slide-image-col {
+        flex: 0 0 50%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .fw-slide-image-col img {
+        width: 100%;
+        max-width: 560px;
+        height: auto;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .fw-slide-image-placeholder {
+        width: 100%; max-width: 560px;
+        aspect-ratio: 4/3;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.2); font-size: 5rem;
+    }
+
+    /* تصنيف الخبر */
     .fw-slide-cat {
         display: inline-block;
-        background: var(--gold);
-        color: var(--primary-dark);
-        padding: 5px 18px;
-        border-radius: 30px;
-        font-size: 0.85rem;
-        font-weight: 700;
+        color: rgba(255,255,255,0.7);
+        font-size: 1rem;
+        font-weight: 600;
         margin-bottom: 14px;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
     }
+
+    /* عنوان الخبر */
     .fw-slide-title {
         color: #fff !important;
-        font-size: clamp(1.4rem, 3vw, 2.4rem) !important;
+        font-size: clamp(1.6rem, 2.8vw, 2.5rem) !important;
         font-weight: 800 !important;
         line-height: 1.5 !important;
-        margin-bottom: 22px !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        max-width: 80%;
+        margin-bottom: 30px !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
+
+    /* زر التفاصيل */
     .fw-slide-btn {
-        display: inline-flex;
+        display: inline-block;
+        background: #143a64;
+        color: #fff !important;
+        text-decoration: none !important;
+        padding: 12px 36px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: background 0.3s, transform 0.2s;
+        border: 2px solid rgba(255,255,255,0.2);
+    }
+    .fw-slide-btn:hover {
+        background: #0c2b4a;
+        transform: translateY(-2px);
+        color: #fff !important;
+    }
+
+    /* شريط التحكم العمودي (يمين الشاشة) */
+    .fw-controls-wrapper {
+        position: absolute;
+        left: 22px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
         align-items: center;
         gap: 10px;
-        background: #fff;
-        color: var(--primary) !important;
-        text-decoration: none !important;
-        padding: 12px 32px;
-        border-radius: 50px;
-        font-weight: 700;
-        font-size: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-        transition: background 0.3s, transform 0.3s;
-    }
-    .fw-slide-btn:hover { background: var(--gold); transform: translateY(-2px); }
-    .fw-slide-num {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        z-index: 4;
-        background: rgba(0,0,0,0.45);
-        color: #fff;
-        padding: 5px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: bold;
-        backdrop-filter: blur(4px);
     }
 
-    /* Arrows */
-    .fw-arrow { color: #fff !important; background: rgba(0,0,0,0.35) !important; border-radius: 50% !important; width: 48px !important; height: 48px !important; backdrop-filter: blur(4px); transition: background 0.3s !important; }
-    .fw-arrow:hover { background: var(--gold) !important; }
-    .fw-arrow::after { font-size: 1rem !important; font-weight: 900 !important; }
-
-    /* Progress ring */
-    .fw-progress-ring {
-        position: absolute;
-        bottom: 22px; left: 22px;
-        z-index: 10;
-        width: 46px; height: 46px;
-        display: flex; align-items: center; justify-content: center;
-        background: rgba(0,0,0,0.4);
+    /* الأسهم العمودية */
+    .fw-arrow-btn {
+        width: 38px; height: 38px;
+        background: rgba(255,255,255,0.15);
+        border: none;
         border-radius: 50%;
-        backdrop-filter: blur(4px);
+        color: #fff;
+        font-size: 0.85rem;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+        backdrop-filter: blur(6px);
     }
-    .fw-progress-ring svg {
-        --progress: 0;
-        position: absolute; left: 0; top: 0;
-        width: 100%; height: 100%;
-        stroke-width: 3px;
-        stroke: var(--gold);
-        fill: none;
-        stroke-dashoffset: calc(125.6 * (1 - var(--progress)));
-        stroke-dasharray: 125.6;
-        transform: rotate(-90deg);
-    }
+    .fw-arrow-btn:hover { background: rgba(255,255,255,0.35); }
 
-    /* Thumbnails strip */
+    /* السلايدر المصغر العمودي */
     .fwSwiperThumb {
-        width: 100%;
-        height: 100px;
-        background: var(--primary-dark);
-        padding: 6px 0 !important;
-        box-sizing: border-box;
+        width: 56px;
+        height: 220px;
+        overflow: hidden;
+        margin: 0;
     }
-    .fwSwiperThumb .swiper-wrapper { align-items: stretch; }
     .fw-thumb-slide {
-        width: 160px !important;
-        height: 88px !important;
-        border-radius: 6px;
+        width: 56px !important;
+        height: 56px !important;
+        border-radius: 50%;
         overflow: hidden;
         cursor: pointer;
-        position: relative;
-        flex-shrink: 0;
+        opacity: 0.45;
+        transition: opacity 0.3s, transform 0.3s;
         border: 2px solid transparent;
-        transition: border-color 0.3s;
-        margin: 0 4px;
+        box-sizing: border-box;
     }
-    .fw-thumb-slide.swiper-slide-thumb-active { border-color: var(--gold) !important; }
+    .fwSwiperThumb .swiper-slide-thumb-active {
+        opacity: 1;
+        border-color: #fff;
+        transform: scale(1.12);
+    }
     .fw-thumb-img {
         width: 100%; height: 100%;
         object-fit: cover;
-        position: absolute; top: 0; left: 0;
     }
     .fw-thumb-nopic {
-        background: rgba(255,255,255,0.08);
+        width: 100%; height: 100%;
+        background: rgba(20,58,100,0.8);
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem; color: rgba(255,255,255,0.2);
-    }
-    .fw-thumb-overlay {
-        position: absolute; inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 100%);
-        z-index: 2;
-    }
-    .fw-thumb-title {
-        position: absolute; bottom: 6px; right: 6px; left: 6px;
-        z-index: 3;
-        color: #fff;
-        font-size: 0.72rem;
-        font-weight: 600;
-        line-height: 1.3;
-        text-align: right;
-        direction: rtl;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        color: rgba(255,255,255,0.4); font-size: 1.2rem;
     }
 
-    @media (max-width: 768px) {
-        .fwSwiper { height: 65vh; min-height: 380px; max-height: 520px; }
-        .fw-slide-content { padding: 0 16px 20px; }
-        .fw-slide-title { max-width: 100%; font-size: 1.3rem !important; }
-        .fwSwiperThumb { height: 80px; }
-        .fw-thumb-slide { width: 120px !important; height: 68px !important; }
+    /* Responsive */
+    @media (max-width: 991px) {
+        .fw-slide-content-wrapper {
+            flex-direction: column;
+            padding: 30px 80px 30px 20px;
+            text-align: center;
+            gap: 20px;
+        }
+        .fw-slide-text-col { flex: 0 0 100%; text-align: center; }
+        .fw-slide-image-col { flex: 0 0 100%; justify-content: center; }
+        .fw-slide-image-col img { max-width: 100%; aspect-ratio: 16/9; }
+        .fwSwiper { height: auto; min-height: 80vh; }
+        .fw-slide-title { font-size: 1.4rem !important; }
+        .fw-controls-wrapper { left: 8px; }
+        .fwSwiperThumb { height: 170px; }
+        .fw-thumb-slide { width: 44px !important; height: 44px !important; }
+        .fw-arrow-btn { width: 30px; height: 30px; }
     }
 </style>
 {% endblock %}
+
 
 {% block content %}
 {% if site_settings.slider_style == 'fullwidth' %}
 {# ══════════════════════════════════════════════════════════════ #}
 {#  FULLWIDTH SLIDER  (طراز نقابة المحامين المصرية - egyls.com)  #}
 {# ══════════════════════════════════════════════════════════════ #}
-<section class="fw-slider-section" style="position:relative; z-index:1;">
-    <!-- Main Fullwidth Slider -->
+<section class="fw-slider-section">
+    <!-- Main Fullwidth Swiper -->
     <div class="swiper fwSwiper">
         <div class="swiper-wrapper">
             {% for item in latest_news %}
             <div class="swiper-slide">
                 <div class="fw-slide-inner">
+                    <!-- خلفية مموهة -->
                     {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="fw-slide-bg">
+                    <img src="{{ item.image.url }}" alt="" class="fw-slide-bg" aria-hidden="true">
                     {% else %}
-                    <div class="fw-slide-bg fw-slide-nopic">
-                        <i class="fa-solid fa-scale-balanced"></i>
-                    </div>
+                    <div class="fw-slide-bg" style="background: #0c2b4a;"></div>
                     {% endif %}
-                    <div class="fw-slide-overlay"></div>
-                    <div class="fw-slide-content container">
-                        <span class="fw-slide-cat">
-                            {% if item.category == 'decision' %}⚖️ قرار{% elif item.category == 'announcement' %}📢 إعلان{% elif item.category == 'event' %}🎪 فعالية{% else %}📰 خبر{% endif %}
-                        </span>
-                        <h2 class="fw-slide-title">{{ item.title }}</h2>
-                        <a href="{% url 'core:news_detail' item.id %}" class="fw-slide-btn">
-                            للمزيد من التفاصيل <i class="fa-solid fa-arrow-left ms-2"></i>
-                        </a>
+
+                    <!-- محتوى الشريحة -->
+                    <div class="fw-slide-content-wrapper">
+                        <!-- عمود الصورة (يسار) -->
+                        <div class="fw-slide-image-col">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                            {% else %}
+                            <div class="fw-slide-image-placeholder">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <!-- عمود النص (يمين) -->
+                        <div class="fw-slide-text-col">
+                            <span class="fw-slide-cat">
+                                {% if item.category == 'decision' %}قرار{% elif item.category == 'announcement' %}إعلان{% elif item.category == 'event' %}فعالية{% else %}أخبار{% endif %}
+                            </span>
+                            <h2 class="fw-slide-title">{{ item.title }}</h2>
+                            <a href="{% url 'core:news_detail' item.id %}" class="fw-slide-btn">التفاصيل</a>
+                        </div>
                     </div>
-                    <div class="fw-slide-num">{{ forloop.counter }}/{{ latest_news|length }}</div>
                 </div>
             </div>
             {% empty %}
             <div class="swiper-slide">
                 <div class="fw-slide-inner">
-                    <div class="fw-slide-bg fw-slide-nopic">
-                        <i class="fa-solid fa-scale-balanced"></i>
-                    </div>
-                    <div class="fw-slide-overlay"></div>
-                    <div class="fw-slide-content container">
-                        <h2 class="fw-slide-title">مرحباً بكم في البوابة الرقمية لنقابة المحامين بالفيوم 🏛️</h2>
+                    <div class="fw-slide-bg" style="background: #0c2b4a;"></div>
+                    <div class="fw-slide-content-wrapper">
+                        <div class="fw-slide-text-col" style="flex: 0 0 100%; text-align: center;">
+                            <h2 class="fw-slide-title">مرحباً بكم في البوابة الرقمية لنقابة المحامين بالفيوم 🏛️</h2>
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
-        </div>
-
-        <!-- Navigation Arrows -->
-        <div class="swiper-button-next fw-arrow fw-arrow-next"></div>
-        <div class="swiper-button-prev fw-arrow fw-arrow-prev"></div>
-
-        <!-- Autoplay Progress Ring -->
-        <div class="fw-progress-ring" slot="container-end">
-            <svg viewBox="0 0 48 48">
-                <circle cx="24" cy="24" r="20"></circle>
-            </svg>
         </div>
     </div>
 
-    <!-- Thumbnails Nav Strip -->
-    <div class="swiper fwSwiperThumb">
-        <div class="swiper-wrapper">
-            {% for item in latest_news %}
-            <div class="swiper-slide fw-thumb-slide">
-                {% if item.image %}
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="fw-thumb-img">
-                {% else %}
-                <div class="fw-thumb-img fw-thumb-nopic">
-                    <i class="fa-solid fa-scale-balanced"></i>
+    <!-- شريط التحكم العمودي (أسهم + مصغرات) -->
+    <div class="fw-controls-wrapper">
+        <!-- سهم للأعلى -->
+        <button class="fw-arrow-btn fw-arrow-next" aria-label="التالي">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <!-- المصغرات الدائرية -->
+        <div class="swiper fwSwiperThumb">
+            <div class="swiper-wrapper">
+                {% for item in latest_news %}
+                <div class="swiper-slide fw-thumb-slide">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="fw-thumb-img">
+                    {% else %}
+                    <div class="fw-thumb-nopic"><i class="fa-solid fa-scale-balanced"></i></div>
+                    {% endif %}
                 </div>
-                {% endif %}
-                <div class="fw-thumb-overlay"></div>
-                <span class="fw-thumb-title">{{ item.title|truncatechars:40 }}</span>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="swiper-slide fw-thumb-slide">
-                <div class="fw-thumb-img fw-thumb-nopic"><i class="fa-solid fa-scale-balanced"></i></div>
-                <div class="fw-thumb-overlay"></div>
-                <span class="fw-thumb-title">لا توجد أخبار</span>
-            </div>
-            {% endfor %}
         </div>
+
+        <!-- سهم للأسفل -->
+        <button class="fw-arrow-btn fw-arrow-prev" aria-label="السابق">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
     </div>
 </section>
 
@@ -662,13 +688,14 @@
         //  FULLWIDTH SLIDER (طراز egyls.com)
         // ══════════════════════════════════════════════
 
-        // Thumbnails Swiper (must init first)
+        // Thumbnails Swiper (vertical, must init first)
         var fwThumb = new Swiper('.fwSwiperThumb', {
             direction: 'vertical',
-            slidesPerView: 4,
+            slidesPerView: 'auto',
             spaceBetween: 10,
             freeMode: true,
             watchSlidesProgress: true,
+            slideToClickedSlide: true,
         });
 
         // Main Fullwidth Swiper
@@ -680,14 +707,16 @@
                 delay: {{ site_settings.slider_speed|default:4000 }},
                 disableOnInteraction: false,
             },
-            navigation: {
-                nextEl: '.fw-arrow-next',
-                prevEl: '.fw-arrow-prev',
-            },
             thumbs: {
                 swiper: fwThumb,
             }
         });
+
+        // Wire up custom arrow buttons
+        var nextBtn = document.querySelector('.fw-arrow-next');
+        var prevBtn = document.querySelector('.fw-arrow-prev');
+        if (nextBtn) nextBtn.addEventListener('click', function() { fwMain.slideNext(); });
+        if (prevBtn) prevBtn.addEventListener('click', function() { fwMain.slidePrev(); });
 
         {% else %}
         // ══════════════════════════════════════════════
