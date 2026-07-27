@@ -74,48 +74,76 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.9);
+        background-color: rgba(0, 0, 0, 0.92);
         justify-content: center;
         align-items: center;
+        overflow-y: auto; /* السماح بالتمرير إذا كانت الصورة كبيرة */
+        -webkit-overflow-scrolling: touch; /* تمرير ناعم على الهاتف */
+        padding: 60px 15px 15px; /* مساحة لزر الإغلاق في الأعلى */
+        box-sizing: border-box;
     }
     .lightbox img {
-        max-width: 90%;
-        max-height: 90%;
+        max-width: 100%;
+        max-height: 85vh; /* لا تتجاوز 85% من ارتفاع الشاشة */
+        width: auto;
+        height: auto;
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        display: block;
+        margin: auto; /* توسيط */
+        object-fit: contain;
+        flex-shrink: 0;
     }
     .lightbox-close {
-        position: absolute;
-        top: 20px;
-        right: 30px;
+        position: fixed; /* fixed دائماً ظاهر في الأعلى */
+        top: 15px;
+        right: 20px;
         color: white;
-        font-size: 40px;
+        font-size: 44px;
         font-weight: bold;
         cursor: pointer;
         z-index: 10000;
+        background: rgba(0,0,0,0.5);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        transition: background 0.3s;
     }
     .lightbox-close:hover {
-        color: var(--gold);
+        background: var(--gold);
+        color: var(--primary-dark);
     }
 </style>
 
 <!-- Lightbox Modal -->
 <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
-    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-    <img id="lightboxImage" src="" alt="صورة مكبرة">
+    <span class="lightbox-close" onclick="closeLightbox()">&#x2715;</span>
+    <img id="lightboxImage" src="" alt="صورة مكبرة" onclick="event.stopPropagation()">
 </div>
 
 <script>
     function openLightbox(imgSrc) {
-        document.getElementById('lightboxImage').src = imgSrc;
-        document.getElementById('imageLightbox').style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        var lb = document.getElementById('imageLightbox');
+        var img = document.getElementById('lightboxImage');
+        img.src = imgSrc;
+        lb.style.display = 'flex';
+        lb.scrollTop = 0; // إعادة التمرير للأعلى دائماً
+        document.body.style.overflow = 'hidden';
     }
     
     function closeLightbox() {
         document.getElementById('imageLightbox').style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restore scrolling
+        document.body.style.overflow = 'auto';
     }
+
+    // إغلاق بضغط ESC من لوحة المفاتيح
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
 </script>
 
 {% endblock %}
