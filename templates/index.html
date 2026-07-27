@@ -421,28 +421,37 @@
         .fwSwiper { height: auto; min-height: 85vh; }
         .fw-slide-layout {
             flex-direction: column-reverse; /* الصورة فوق والنص تحت */
-            padding: 20px 15px 70px 15px; /* مساحة في الأسفل للأسهم والدائرة */
+            padding: 20px 20px 110px 20px; /* مساحة كبيرة في الأسفل للزر وأدوات التحكم */
             gap: 15px;
         }
         .fw-text-col { flex: 0 0 100%; max-width: 100%; text-align: center; }
-        .fw-text-col .fw-slide-btn { 
-            float: none; /* إلغاء الfloat في الموبايل */
-            margin: 0 auto; /* توسيط */
-        }
-        .fw-image-col { flex: 0 0 100%; max-width: 100%; perspective: 1000px; }
-        .fw-main-image { height: 220px; max-width: 100%; animation: mobile3DTilt 6s ease-in-out infinite alternate; }
+        .fw-text-col .fw-slide-title { font-size: 1.4rem !important; margin-bottom: 10px !important; }
+        .fw-text-col .fw-slide-cat { font-size: 0.8rem; padding: 4px 12px; }
         
-        /* وضع الدائرة والأسهم في الأسفل تحت النص */
+        /* زر التفاصيل في اليسار بصف موازي للتحكم */
+        .fw-text-col .fw-slide-btn { 
+            position: absolute;
+            bottom: 25px;
+            left: 20px;
+            float: none;
+            margin: 0;
+            z-index: 10;
+        }
+        
+        .fw-image-col { flex: 0 0 100%; max-width: 100%; perspective: 1000px; }
+        .fw-main-image { height: 280px; max-width: 100%; animation: mobile3DTilt 6s ease-in-out infinite alternate; }
+        
+        /* وضع الدائرة فوق الأسهم في اليمين بشكل موازي للزر */
         .fw-sidebar { 
             position: absolute;
             top: auto;
-            bottom: 15px;
-            right: 0;
-            left: 0;
+            bottom: 25px;
+            right: 20px;
+            left: auto;
             transform: none;
-            flex-direction: row;
-            justify-content: center;
-            gap: 15px;
+            flex-direction: column; /* الدائرة فوق الأسهم */
+            align-items: center;
+            gap: 10px;
         }
         .fwSwiperThumb { display: none; /* إخفاء الدوائر المصغرة في الموبايل */ }
     }
