@@ -791,8 +791,12 @@ def dashboard_settings(request):
         else:
             settings.maintenance_end_date = None
             
-        settings.save()
-        messages.success(request, "تم تحديث إعدادات الموقع بنجاح!")
+        try:
+            settings.save()
+            messages.success(request, "تم تحديث إعدادات الموقع بنجاح!")
+        except Exception as e:
+            messages.error(request, f"حدث خطأ أثناء الحفظ: {e}")
+            
         return redirect('core:dashboard_settings')
     return render(request, 'dashboard/settings.html', {'settings': settings})
 
