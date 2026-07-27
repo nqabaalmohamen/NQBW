@@ -774,6 +774,7 @@
             slidesPerView: 1,
             loop: true,
             speed: 800,
+            allowTouchMove: false, /* منع التنقل باللمس لتجنب التعارض مع تصفح الصفحة */
             autoplay: {
                 delay: {{ site_settings.slider_speed|default:4000 }},
                 disableOnInteraction: false,
