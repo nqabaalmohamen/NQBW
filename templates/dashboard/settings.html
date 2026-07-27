@@ -19,6 +19,42 @@
                 <input type="number" name="slider_speed" class="form-control" value="{{ settings.slider_speed }}" min="1000" max="15000" step="500" required>
             </div>
 
+            <div class="form-group form-full" style="margin-top: 25px;">
+                <label class="form-label" style="font-size: 1.05rem; font-weight: bold; margin-bottom: 14px; display: block;">
+                    🖼️ نوع السلايدر الرئيسي
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 18px;">
+                    
+                    <!-- Option 1: Classic -->
+                    <label for="slider_classic" style="flex: 1; min-width: 240px; cursor: pointer;">
+                        <div style="border: 2px solid {% if settings.slider_style == 'classic' or not settings.slider_style %}var(--primary){% else %}#ddd{% endif %}; border-radius: 12px; padding: 18px 20px; background: {% if settings.slider_style == 'classic' or not settings.slider_style %}rgba(17,63,103,0.06){% else %}#fff{% endif %}; transition: all 0.3s; display: flex; align-items: flex-start; gap: 14px;">
+                            <input type="radio" name="slider_style" id="slider_classic" value="classic"
+                                {% if settings.slider_style == 'classic' or not settings.slider_style %}checked{% endif %}
+                                style="width: 18px; height: 18px; margin-top: 2px; accent-color: var(--primary); flex-shrink: 0;">
+                            <div>
+                                <div style="font-weight: bold; font-size: 1rem; color: var(--primary-dark); margin-bottom: 5px;">🎨 السلايدر الكلاسيكي</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">التصميم الحالي — نص على اليمين وصورة على اليسار مع انحناء SVG بين القسمين.</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Option 2: Fullwidth -->
+                    <label for="slider_fullwidth" style="flex: 1; min-width: 240px; cursor: pointer;">
+                        <div style="border: 2px solid {% if settings.slider_style == 'fullwidth' %}var(--primary){% else %}#ddd{% endif %}; border-radius: 12px; padding: 18px 20px; background: {% if settings.slider_style == 'fullwidth' %}rgba(17,63,103,0.06){% else %}#fff{% endif %}; transition: all 0.3s; display: flex; align-items: flex-start; gap: 14px;">
+                            <input type="radio" name="slider_style" id="slider_fullwidth" value="fullwidth"
+                                {% if settings.slider_style == 'fullwidth' %}checked{% endif %}
+                                style="width: 18px; height: 18px; margin-top: 2px; accent-color: var(--primary); flex-shrink: 0;">
+                            <div>
+                                <div style="font-weight: bold; font-size: 1rem; color: var(--primary-dark); margin-bottom: 5px;">🖼️ سلايدر صور كاملة</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">طراز نقابة المحامين المصرية (egyls.com) — صورة تملأ الشاشة بالكامل مع شريط thumbnails للتنقل أسفل السلايدر.</div>
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+
             <hr style="border-top: 1px solid #eee; margin: 30px 0;">
             <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-building-columns"></i> إعدادات معهد المحاماة</h3>
 

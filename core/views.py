@@ -776,6 +776,10 @@ def dashboard_settings(request):
         speed = request.POST.get('slider_speed')
         if speed and speed.isdigit():
             settings.slider_speed = int(speed)
+
+        slider_style = request.POST.get('slider_style', 'classic')
+        if slider_style in ('classic', 'fullwidth'):
+            settings.slider_style = slider_style
         
         settings.institute_registration_link = request.POST.get('institute_registration_link', '')
         settings.is_institute_open = request.POST.get('is_institute_open') == 'on'

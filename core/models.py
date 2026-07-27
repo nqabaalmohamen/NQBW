@@ -196,15 +196,22 @@ class FAQ(models.Model):
     def __str__(self):
         return self.question
 
+
 class SiteSettings(models.Model):
     slider_speed = models.IntegerField(default=4000, verbose_name="سرعة السليدر (بالميلي ثانية)")
+    slider_style = models.CharField(
+        max_length=20,
+        choices=[('classic', 'الكلاسيكي (التصميم الحالي)'), ('fullwidth', 'صور كاملة (طراز نقابة المحامين المصرية)')],
+        default='classic',
+        verbose_name="نوع السلايدر الرئيسي"
+    )
     institute_registration_link = models.URLField(verbose_name="رابط التقديم في معهد المحاماة (مثل Google Form)", blank=True, null=True)
     is_institute_open = models.BooleanField(default=False, verbose_name="فتح التسجيل لمعهد المحاماة")
     is_inquiry_open = models.BooleanField(default=True, verbose_name="تفعيل قسم الاستعلام في الموقع")
     is_under_maintenance = models.BooleanField(default=False, verbose_name="وضع الصيانة (قيد التطوير)")
     maintenance_end_date = models.DateTimeField(blank=True, null=True, verbose_name="موعد انتهاء التطوير (للعد التنازلي)")
     total_visits = models.PositiveIntegerField(default=0, verbose_name="إجمالي زيارات الموقع")
-    
+
     class Meta:
         verbose_name = "إعدادات الموقع"
         verbose_name_plural = "إعدادات الموقع"
@@ -218,7 +225,6 @@ class SiteSettings(models.Model):
             settings, created = cls.objects.get_or_create(pk=1)
             return settings
         except Exception:
-            # Fallback: return unsaved default instance (migration may not be applied yet)
             return cls()
 
     @classmethod

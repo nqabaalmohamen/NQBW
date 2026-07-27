@@ -193,10 +193,272 @@
         stroke-dasharray: 125.6;
         transform: rotate(-90deg);
     }
+
+    /* ══════════════════════════════════════════
+       FULLWIDTH SLIDER (طراز egyls.com)
+    ══════════════════════════════════════════ */
+    .fw-slider-section { background: #0d1b2a; }
+
+    /* Main slide */
+    .fwSwiper { width: 100%; height: 72vh; min-height: 420px; max-height: 680px; }
+    .fw-slide-inner { width: 100%; height: 100%; position: relative; overflow: hidden; }
+    .fw-slide-bg {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        position: absolute; top: 0; left: 0;
+        transition: transform 8s ease;
+    }
+    .fwSwiper .swiper-slide-active .fw-slide-bg { transform: scale(1.06); }
+    .fw-slide-nopic {
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 6rem; color: rgba(255,255,255,0.15);
+        position: absolute; top: 0; left: 0;
+    }
+    .fw-slide-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to top,
+            rgba(0,0,0,0.9) 0%,
+            rgba(0,0,0,0.55) 40%,
+            rgba(0,0,0,0.15) 75%,
+            rgba(0,0,0,0.05) 100%);
+        z-index: 2;
+    }
+    .fw-slide-content {
+        position: absolute;
+        bottom: 0;
+        right: 0; left: 0;
+        z-index: 3;
+        padding: 0 40px 30px;
+        text-align: right;
+        direction: rtl;
+    }
+    .fw-slide-cat {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--primary-dark);
+        padding: 5px 18px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+        letter-spacing: 0.5px;
+    }
+    .fw-slide-title {
+        color: #fff !important;
+        font-size: clamp(1.4rem, 3vw, 2.4rem) !important;
+        font-weight: 800 !important;
+        line-height: 1.5 !important;
+        margin-bottom: 22px !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        max-width: 80%;
+    }
+    .fw-slide-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        color: var(--primary) !important;
+        text-decoration: none !important;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        transition: background 0.3s, transform 0.3s;
+    }
+    .fw-slide-btn:hover { background: var(--gold); transform: translateY(-2px); }
+    .fw-slide-num {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 4;
+        background: rgba(0,0,0,0.45);
+        color: #fff;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        backdrop-filter: blur(4px);
+    }
+
+    /* Arrows */
+    .fw-arrow { color: #fff !important; background: rgba(0,0,0,0.35) !important; border-radius: 50% !important; width: 48px !important; height: 48px !important; backdrop-filter: blur(4px); transition: background 0.3s !important; }
+    .fw-arrow:hover { background: var(--gold) !important; }
+    .fw-arrow::after { font-size: 1rem !important; font-weight: 900 !important; }
+
+    /* Progress ring */
+    .fw-progress-ring {
+        position: absolute;
+        bottom: 22px; left: 22px;
+        z-index: 10;
+        width: 46px; height: 46px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(0,0,0,0.4);
+        border-radius: 50%;
+        backdrop-filter: blur(4px);
+    }
+    .fw-progress-ring svg {
+        --progress: 0;
+        position: absolute; left: 0; top: 0;
+        width: 100%; height: 100%;
+        stroke-width: 3px;
+        stroke: var(--gold);
+        fill: none;
+        stroke-dashoffset: calc(125.6 * (1 - var(--progress)));
+        stroke-dasharray: 125.6;
+        transform: rotate(-90deg);
+    }
+
+    /* Thumbnails strip */
+    .fwSwiperThumb {
+        width: 100%;
+        height: 100px;
+        background: var(--primary-dark);
+        padding: 6px 0 !important;
+        box-sizing: border-box;
+    }
+    .fwSwiperThumb .swiper-wrapper { align-items: stretch; }
+    .fw-thumb-slide {
+        width: 160px !important;
+        height: 88px !important;
+        border-radius: 6px;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        flex-shrink: 0;
+        border: 2px solid transparent;
+        transition: border-color 0.3s;
+        margin: 0 4px;
+    }
+    .fw-thumb-slide.swiper-slide-thumb-active { border-color: var(--gold) !important; }
+    .fw-thumb-img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        position: absolute; top: 0; left: 0;
+    }
+    .fw-thumb-nopic {
+        background: rgba(255,255,255,0.08);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; color: rgba(255,255,255,0.2);
+    }
+    .fw-thumb-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 100%);
+        z-index: 2;
+    }
+    .fw-thumb-title {
+        position: absolute; bottom: 6px; right: 6px; left: 6px;
+        z-index: 3;
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 600;
+        line-height: 1.3;
+        text-align: right;
+        direction: rtl;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    @media (max-width: 768px) {
+        .fwSwiper { height: 65vh; min-height: 380px; max-height: 520px; }
+        .fw-slide-content { padding: 0 16px 20px; }
+        .fw-slide-title { max-width: 100%; font-size: 1.3rem !important; }
+        .fwSwiperThumb { height: 80px; }
+        .fw-thumb-slide { width: 120px !important; height: 68px !important; }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+{% if site_settings.slider_style == 'fullwidth' %}
+{# ══════════════════════════════════════════════════════════════ #}
+{#  FULLWIDTH SLIDER  (طراز نقابة المحامين المصرية - egyls.com)  #}
+{# ══════════════════════════════════════════════════════════════ #}
+<section class="fw-slider-section" style="position:relative; z-index:1;">
+    <!-- Main Fullwidth Slider -->
+    <div class="swiper fwSwiper">
+        <div class="swiper-wrapper">
+            {% for item in latest_news %}
+            <div class="swiper-slide">
+                <div class="fw-slide-inner">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="fw-slide-bg">
+                    {% else %}
+                    <div class="fw-slide-bg fw-slide-nopic">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    {% endif %}
+                    <div class="fw-slide-overlay"></div>
+                    <div class="fw-slide-content container">
+                        <span class="fw-slide-cat">
+                            {% if item.category == 'decision' %}⚖️ قرار{% elif item.category == 'announcement' %}📢 إعلان{% elif item.category == 'event' %}🎪 فعالية{% else %}📰 خبر{% endif %}
+                        </span>
+                        <h2 class="fw-slide-title">{{ item.title }}</h2>
+                        <a href="{% url 'core:news_detail' item.id %}" class="fw-slide-btn">
+                            للمزيد من التفاصيل <i class="fa-solid fa-arrow-left ms-2"></i>
+                        </a>
+                    </div>
+                    <div class="fw-slide-num">{{ forloop.counter }}/{{ latest_news|length }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="swiper-slide">
+                <div class="fw-slide-inner">
+                    <div class="fw-slide-bg fw-slide-nopic">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div class="fw-slide-overlay"></div>
+                    <div class="fw-slide-content container">
+                        <h2 class="fw-slide-title">مرحباً بكم في البوابة الرقمية لنقابة المحامين بالفيوم 🏛️</h2>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Navigation Arrows -->
+        <div class="swiper-button-next fw-arrow fw-arrow-next"></div>
+        <div class="swiper-button-prev fw-arrow fw-arrow-prev"></div>
+
+        <!-- Autoplay Progress Ring -->
+        <div class="fw-progress-ring" slot="container-end">
+            <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="20"></circle>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Thumbnails Nav Strip -->
+    <div class="swiper fwSwiperThumb">
+        <div class="swiper-wrapper">
+            {% for item in latest_news %}
+            <div class="swiper-slide fw-thumb-slide">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="fw-thumb-img">
+                {% else %}
+                <div class="fw-thumb-img fw-thumb-nopic">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                {% endif %}
+                <div class="fw-thumb-overlay"></div>
+                <span class="fw-thumb-title">{{ item.title|truncatechars:40 }}</span>
+            </div>
+            {% empty %}
+            <div class="swiper-slide fw-thumb-slide">
+                <div class="fw-thumb-img fw-thumb-nopic"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="fw-thumb-overlay"></div>
+                <span class="fw-thumb-title">لا توجد أخبار</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% else %}
+{# ════════════════════════════════════ #}
+{#  CLASSIC SLIDER (التصميم الأصلي)   #}
+{# ════════════════════════════════════ #}
 <section class="news-slider-container" style="padding: 0; background: #fff;">
     <!-- DESKTOP SLIDER -->
     <div class="swiper mySwiper desktop-slider-only" style="width: 100%;">
@@ -325,6 +587,8 @@
         </div>
     </div>
 </section>
+{% endif %}
+
 
 <!-- SERVICES HIGHLIGHT -->
 <section class="section-padding">
@@ -392,6 +656,52 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        {% if site_settings.slider_style == 'fullwidth' %}
+        // ══════════════════════════════════════════════
+        //  FULLWIDTH SLIDER (طراز egyls.com)
+        // ══════════════════════════════════════════════
+
+        // Thumbnails Swiper (must init first)
+        var fwThumb = new Swiper('.fwSwiperThumb', {
+            slidesPerView: 'auto',
+            spaceBetween: 8,
+            freeMode: true,
+            watchSlidesProgress: true,
+            centeredSlides: false,
+            centerInsufficientSlides: true,
+            slideToClickedSlide: true,
+        });
+
+        // Main Fullwidth Swiper
+        var fwMain = new Swiper('.fwSwiper', {
+            slidesPerView: 1,
+            loop: true,
+            speed: 800,
+            autoplay: {
+                delay: {{ site_settings.slider_speed|default:4000 }},
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: '.fw-arrow-next',
+                prevEl: '.fw-arrow-prev',
+            },
+            thumbs: {
+                swiper: fwThumb,
+            },
+            on: {
+                autoplayTimeLeft(s, time, progress) {
+                    const ring = document.querySelector('.fw-progress-ring svg');
+                    if (ring) ring.style.setProperty('--progress', 1 - progress);
+                }
+            }
+        });
+
+        {% else %}
+        // ══════════════════════════════════════════════
+        //  CLASSIC SLIDER (التصميم الأصلي)
+        // ══════════════════════════════════════════════
+
         // Desktop Slider
         var swiperDesktop = new Swiper('.mySwiper', {
             slidesPerView: 1,
@@ -437,54 +747,39 @@
             container.addEventListener('mousemove', function(e) {
                 const img = this.querySelector('.parallax-img-desktop');
                 if (!img) return;
-                
                 const rect = this.getBoundingClientRect();
-                const x = e.clientX - rect.left; // x position within the element
-                const y = e.clientY - rect.top;  // y position within the element
-                
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
-                // Calculate movement (limit to max 20px)
                 const moveX = ((x - centerX) / centerX) * 15;
                 const moveY = ((y - centerY) / centerY) * 15;
-                
                 img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.03)`;
             });
-            
             container.addEventListener('mouseleave', function() {
                 const img = this.querySelector('.parallax-img-desktop');
-                if (img) {
-                    img.style.transform = `translate(0px, 0px) scale(1)`;
-                }
+                if (img) img.style.transform = `translate(0px, 0px) scale(1)`;
             });
         });
 
         // --- Device Orientation Parallax (Mobile) ---
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', function(e) {
-                // gamma is the left-to-right tilt in degrees, where right is positive
-                // beta is the front-to-back tilt in degrees, where front is positive
-                const gamma = e.gamma; 
+                const gamma = e.gamma;
                 const beta = e.beta;
-                
                 if (gamma !== null && beta !== null) {
-                    // Limit angles
-                    const maxTilt = 20;
-                    let moveX = (gamma / 90) * 20; // max 20px
-                    let moveY = ((beta - 45) / 90) * 20; // offset by 45deg typical holding angle
-
-                    // constrain movement
+                    let moveX = (gamma / 90) * 20;
+                    let moveY = ((beta - 45) / 90) * 20;
                     moveX = Math.max(-20, Math.min(20, moveX));
                     moveY = Math.max(-20, Math.min(20, moveY));
-
                     document.querySelectorAll('.parallax-img-mobile').forEach(img => {
-                        // Apply movement to all mobile images
                         img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
                     });
                 }
             });
         }
+        {% endif %}
+
     });
 </script>
 {% endblock %}
