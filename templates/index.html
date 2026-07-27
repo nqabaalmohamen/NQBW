@@ -429,7 +429,7 @@
         
         /* تخطيط عمودي: صورة فوق، كلام تحت */
         .fw-slide-layout {
-            flex-direction: column;
+            flex-direction: column-reverse; /* ضروري لرفع الصورة (لأنها الثانية في الـ HTML) أعلى النص */
             padding: 0 0 90px 0; /* مساحة سفلية للزر والأدوات */
             gap: 0;
             height: 100%;
