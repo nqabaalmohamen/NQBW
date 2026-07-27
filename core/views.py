@@ -800,6 +800,19 @@ def dashboard_settings(request):
         return redirect('core:dashboard_settings')
     return render(request, 'dashboard/settings.html', {'settings': settings})
 
+
+@user_passes_test(is_admin, login_url='/dashboard/login/')
+def run_vercel_migrations(request):
+    from django.core.management import call_command
+    import io
+    out = io.StringIO()
+    try:
+        call_command('migrate', interactive=False, stdout=out)
+        messages.success(request, f"تم تحديث قاعدة البيانات بنجاح: {out.getvalue()}")
+    except Exception as e:
+        messages.error(request, f"خطأ أثناء تحديث قاعدة البيانات: {e}")
+    return redirect('core:dashboard_settings')
+
 # ── Complaints ──
 @user_passes_test(is_admin, login_url='/dashboard/login/')
 def dashboard_complaints(request):

@@ -39,6 +39,7 @@ urlpatterns = [
     # ── Dashboard ──
     path('dashboard/', views.dashboard_home, name='dashboard_home'),
     path('dashboard/settings/', views.dashboard_settings, name='dashboard_settings'),
+    path('dashboard/settings/run-migrations/', views.run_vercel_migrations, name='run_vercel_migrations'),
     path('dashboard/notifications-count/', views.dashboard_notifications_count, name='dashboard_notifications_count'),
 
     path('dashboard/complaints/', views.dashboard_complaints, name='dashboard_complaints'),

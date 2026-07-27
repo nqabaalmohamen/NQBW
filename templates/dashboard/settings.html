@@ -95,8 +95,11 @@
                 </div>
             </div>
             
-            <div class="form-group form-full" style="margin-top: 20px;">
+            <div class="form-group form-full" style="margin-top: 20px; display: flex; gap: 15px;">
                 <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> حفظ الإعدادات</button>
+                <a href="{% url 'core:run_vercel_migrations' %}" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من رغبتك في تشغيل التحديثات على قاعدة البيانات؟ (استخدم هذا الخيار فقط إذا ظهر لك خطأ يخص عدم وجود عمود في قاعدة البيانات)')">
+                    <i class="fa-solid fa-database"></i> إصلاح قاعدة البيانات (Run Migrations)
+                </a>
             </div>
         </form>
     </div>
