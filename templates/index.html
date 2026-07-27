@@ -422,10 +422,12 @@
         .fw-main-image { height: 320px; }
     }
     @media (max-width: 767px) {
-        .fwSwiper { height: auto; min-height: 85vh; }
+        /* السماح بالتصفح الطبيعي للصفحة عبر اللمس */
+        .fw-slider-section { touch-action: pan-y; }
+        .fwSwiper { height: auto; min-height: 0; touch-action: pan-y; }
         .fw-slide-layout {
             flex-direction: column-reverse; /* الصورة فوق والنص تحت */
-            padding: 5px 20px 110px 20px; /* تقليل المسافة العلوية لرفع السلايدر */
+            padding: 5px 20px 110px 20px;
             gap: 10px;
         }
         .fw-text-col { flex: 0 0 100%; max-width: 100%; text-align: center; }
@@ -442,8 +444,15 @@
             z-index: 10;
         }
         
-        .fw-image-col { flex: 0 0 100%; max-width: 100%; perspective: 1000px; }
-        .fw-main-image { height: 280px; max-width: 100%; }
+        .fw-image-col { flex: 0 0 100%; max-width: 100%; }
+        /* الصورة تملأ الفراغات في الموبايل */
+        .fw-main-image { 
+            height: 240px; 
+            max-width: 100%; 
+            width: 100%; 
+            object-fit: cover; /* تملأ المساحة بدون فراغات */
+            border-radius: 12px;
+        }
         
         /* وضع الدائرة فوق الأسهم في اليمين بشكل موازي للزر */
         .fw-sidebar { 
@@ -775,6 +784,7 @@
             loop: true,
             speed: 800,
             allowTouchMove: false, /* منع التنقل باللمس لتجنب التعارض مع تصفح الصفحة */
+            touchStartPreventDefault: false, /* السماح للمتصفح بتصفح الصفحة */
             autoplay: {
                 delay: {{ site_settings.slider_speed|default:4000 }},
                 disableOnInteraction: false,
