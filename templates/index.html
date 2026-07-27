@@ -429,7 +429,7 @@
         
         /* تخطيط عمودي: صورة فوق، كلام تحت */
         .fw-slide-layout {
-            flex-direction: column-reverse; /* ضروري لرفع الصورة (لأنها الثانية في الـ HTML) أعلى النص */
+            flex-direction: column;
             padding: 0 0 90px 0; /* مساحة سفلية للزر والأدوات */
             gap: 0;
             height: 100%;
@@ -438,11 +438,14 @@
 
         /* الصورة تملأ الجزء العلوي */
         .fw-image-col { 
+            order: 1; /* إجبار الصورة لتكون في الأعلى */
             flex: 0 0 56%; 
             max-width: 100%; 
             width: 100%;
             overflow: hidden;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .fw-main-image { 
             width: 100%;
@@ -456,6 +459,7 @@
 
         /* النص تحت الصورة */
         .fw-text-col { 
+            order: 2; /* إجبار النص ليكون في الأسفل */
             flex: 1;
             max-width: 100%; 
             text-align: center;
