@@ -311,16 +311,12 @@
         max-height: 520px;
         object-fit: contain;
         border-radius: 14px;
-        box-shadow:
-            0 30px 80px rgba(0,0,0,0.7),
-            0 0 0 1px rgba(255,255,255,0.07),
-            inset 0 1px 0 rgba(255,255,255,0.15);
-        /* شكل 3D خفيف وأنيق في الحالة الافتراضية */
-        transform: perspective(900px) rotateY(-5deg) rotateX(2deg) scale(1);
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    box-shadow 0.4s ease;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        /* حالة طبيعية بدون 3D معزز */
+        transform: translate(0, 0) scale(1);
+        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    box-shadow 0.6s ease;
         display: block;
-        transform-style: preserve-3d;
         will-change: transform;
     }
     .fw-image-placeholder {
@@ -800,7 +796,7 @@
         if (btnNext) btnNext.addEventListener('click', function() { fwMain.slideNext(); });
         if (btnPrev) btnPrev.addEventListener('click', function() { fwMain.slidePrev(); });
 
-        // 4) تأثير 3D Tilt المميز عند تحريك الماوس أو اللمس (يحاكي السلايدر الأصلي egyls.com)
+        // 4) تأثير 2D ناعم (يحاكي السلايدر الأصلي egyls.com)
         var fwSwiperEl = document.querySelector('.fwSwiper');
         if (fwSwiperEl) {
             function handleTilt(e) {
