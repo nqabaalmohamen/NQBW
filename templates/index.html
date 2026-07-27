@@ -421,8 +421,8 @@
         .fwSwiper { height: auto; min-height: 85vh; }
         .fw-slide-layout {
             flex-direction: column-reverse; /* الصورة فوق والنص تحت */
-            padding: 20px 20px 110px 20px; /* مساحة كبيرة في الأسفل للزر وأدوات التحكم */
-            gap: 15px;
+            padding: 5px 20px 110px 20px; /* تقليل المسافة العلوية لرفع السلايدر */
+            gap: 10px;
         }
         .fw-text-col { flex: 0 0 100%; max-width: 100%; text-align: center; }
         .fw-text-col .fw-slide-title { font-size: 1.4rem !important; margin-bottom: 10px !important; }
@@ -484,7 +484,7 @@
 
                         <!-- عمود النص -->
                         <div class="fw-text-col">
-                            <span class="fw-slide-cat">{% if item.category == 'decision' %}قرار{% elif item.category == 'announcement' %}إعلان{% elif item.category == 'event' %}فعالية{% else %}أخبار{% endif %}</span>
+                            {% if item.category == 'decision' %}<span class="fw-slide-cat">قرار</span>{% elif item.category == 'announcement' %}<span class="fw-slide-cat">إعلان</span>{% elif item.category == 'event' %}<span class="fw-slide-cat">فعالية</span>{% endif %}
                             <h2 class="fw-slide-title">{{ item.title }}</h2>
                             <a href="{% url 'core:news_detail' item.id %}" class="fw-slide-btn">التفاصيل</a>
                         </div>
