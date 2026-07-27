@@ -796,45 +796,35 @@
         if (btnNext) btnNext.addEventListener('click', function() { fwMain.slideNext(); });
         if (btnPrev) btnPrev.addEventListener('click', function() { fwMain.slidePrev(); });
 
-        // 4) تأثير 2D ناعم (يحاكي السلايدر الأصلي egyls.com)
+        // 4) تأثير Parallax ناعم (translate فقط - مثل egyls.com)
         var fwSwiperEl = document.querySelector('.fwSwiper');
         if (fwSwiperEl) {
-            function handleTilt(e) {
+            function handleParallax(e) {
                 var clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 var clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-                
                 var imgs = fwSwiperEl.querySelectorAll('.swiper-slide-active .fw-parallax-img');
                 var rect = fwSwiperEl.getBoundingClientRect();
                 var cx = rect.width / 2;
                 var cy = rect.height / 2;
                 var mx = clientX - rect.left - cx;
                 var my = clientY - rect.top - cy;
-                
-                // ميل خفيف وأنيق (أقصى 8 درجات)
-                var tiltX = (my / cy) * -6;
-                var tiltY = (mx / cx) * 8;
-                
+                // حركة ناعمة جداً - انزياح بضعة بكسلات فقط مثل egyls.com
+                var moveX = (mx / cx) * -10;
+                var moveY = (my / cy) * -7;
                 imgs.forEach(function(img) {
-                    img.style.transform = 'perspective(900px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) scale3d(1.03, 1.03, 1.03)';
-                    img.style.boxShadow = '0 35px 80px rgba(0,0,0,0.65)';
+                    img.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px) scale(1.03)';
                 });
             }
-            
-            function resetTilt() {
+            function resetParallax() {
                 var imgs = fwSwiperEl.querySelectorAll('.fw-parallax-img');
                 imgs.forEach(function(img) {
-                    // العودة للشكل 3D الخفيف الافتراضي
-                    img.style.transform = 'perspective(900px) rotateY(-5deg) rotateX(2deg) scale(1)';
-                    img.style.boxShadow = '0 30px 80px rgba(0,0,0,0.7)';
-                });
+                    img.style.transform = 'translate(0px, 0px) scale(1)';
                 });
             }
-
-            fwSwiperEl.addEventListener('mousemove', handleTilt);
-            fwSwiperEl.addEventListener('touchmove', handleTilt, {passive: true});
-            
-            fwSwiperEl.addEventListener('mouseleave', resetTilt);
-            fwSwiperEl.addEventListener('touchend', resetTilt);
+            fwSwiperEl.addEventListener('mousemove', handleParallax);
+            fwSwiperEl.addEventListener('touchmove', handleParallax, {passive: true});
+            fwSwiperEl.addEventListener('mouseleave', resetParallax);
+            fwSwiperEl.addEventListener('touchend', resetParallax);
         }
 
         {% else %}
