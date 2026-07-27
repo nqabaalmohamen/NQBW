@@ -195,11 +195,229 @@
     }
 
     /* ══════════════════════════════════════════
-       FULLWIDTH SLIDER (طراز egyls.com)
+       FULLWIDTH SLIDER (طراز egyls.com - طبق الأصل)
     ══════════════════════════════════════════ */
 
-    /* القسم الخارجي */
-    .fw-slider-section { background: #1a1a2e; position: relative; overflow: hidden; }
+    .fw-slider-section {
+        position: relative;
+        overflow: hidden;
+        background: #111;
+        direction: rtl;
+    }
+
+    /* --- السلايدر الرئيسي --- */
+    .fwSwiper {
+        width: 100%;
+        height: 88vh;
+        min-height: 520px;
+        max-height: 780px;
+    }
+
+    .fw-slide-inner {
+        width: 100%; height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* الخلفية المموهة */
+    .fw-bg-blur {
+        position: absolute; inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: blur(18px) brightness(0.3);
+        transform: scale(1.15);
+        z-index: 1;
+    }
+
+    /* هيكل الشريحة: نص + صورة + تحكم */
+    .fw-slide-layout {
+        position: relative; z-index: 3;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 90px 0 30px; /* مساحة للدوائر على اليمين */
+        gap: 40px;
+    }
+
+    /* عمود النص (اليسار في RTL) */
+    .fw-text-col {
+        flex: 0 0 40%;
+        max-width: 40%;
+        color: #fff;
+        direction: rtl;
+        text-align: right;
+    }
+    .fw-text-col .fw-slide-cat {
+        display: block;
+        color: rgba(255,255,255,0.65);
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+    .fw-text-col .fw-slide-title {
+        color: #fff !important;
+        font-size: clamp(1.5rem, 2.5vw, 2.3rem) !important;
+        font-weight: 800 !important;
+        line-height: 1.6 !important;
+        margin-bottom: 30px !important;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .fw-text-col .fw-slide-btn {
+        display: inline-block;
+        background: #144473;
+        color: #fff !important;
+        text-decoration: none !important;
+        padding: 11px 32px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: background 0.3s, transform 0.2s;
+    }
+    .fw-text-col .fw-slide-btn:hover {
+        background: #0c2b4a;
+        transform: translateY(-2px);
+    }
+
+    /* عمود الصورة (الوسط) */
+    .fw-image-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        display: flex;
+        justify-content: center;
+    }
+    .fw-main-image {
+        width: 100%;
+        max-width: 600px;
+        height: 420px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.55);
+        transition: transform 0.1s ease-out;
+        display: block;
+    }
+    .fw-image-placeholder {
+        width: 100%; max-width: 600px; height: 420px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.2); font-size: 5rem;
+    }
+
+    /* --- شريط التحكم: دوائر + أسهم (أقصى اليمين) --- */
+    .fw-sidebar {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* الدوائر المصغرة */
+    .fwSwiperThumb {
+        width: 64px;
+        height: 240px;
+        overflow: hidden;
+        margin: 4px 0;
+    }
+    .fw-thumb-slide {
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+        overflow: hidden;
+        cursor: pointer;
+        opacity: 0.5;
+        border: 3px solid transparent;
+        box-sizing: border-box;
+        transition: opacity 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    .fwSwiperThumb .swiper-slide-thumb-active {
+        opacity: 1;
+        border-color: rgba(255,255,255,0.9);
+        transform: scale(1.08);
+    }
+    .fw-thumb-img {
+        width: 100%; height: 100%; object-fit: cover;
+    }
+    .fw-thumb-nopic {
+        width: 100%; height: 100%;
+        background: #143a64;
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.4); font-size: 1rem;
+    }
+
+    /* الأسهم < > */
+    .fw-nav-arrows {
+        display: flex;
+        gap: 4px;
+    }
+    .fw-nav-btn {
+        width: 34px; height: 34px;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 0.75rem;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: background 0.25s;
+        padding: 0;
+    }
+    .fw-nav-btn:hover { background: rgba(255,255,255,0.35); }
+
+    /* شريط تقدم التشغيل التلقائي */
+    .fw-progress-bar {
+        width: 36px; height: 36px;
+        position: relative;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .fw-progress-bar svg {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        transform: rotate(-90deg);
+    }
+    .fw-progress-bar svg circle {
+        fill: none;
+        stroke: rgba(255,255,255,0.5);
+        stroke-width: 3;
+        stroke-dasharray: 100;
+        stroke-dashoffset: var(--fw-progress, 100);
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.1s linear;
+    }
+
+    /* متجاوب */
+    @media (max-width: 1024px) {
+        .fw-slide-layout { padding: 0 80px 0 20px; gap: 20px; }
+        .fw-text-col { flex: 0 0 45%; max-width: 45%; }
+        .fw-image-col { flex: 0 0 50%; max-width: 50%; }
+        .fw-main-image { height: 320px; }
+    }
+    @media (max-width: 767px) {
+        .fwSwiper { height: auto; min-height: 85vh; }
+        .fw-slide-layout {
+            flex-direction: column;
+            padding: 30px 80px 30px 15px;
+            gap: 20px;
+        }
+        .fw-text-col { flex: 0 0 100%; max-width: 100%; text-align: center; }
+        .fw-image-col { flex: 0 0 100%; max-width: 100%; }
+        .fw-main-image { height: 220px; max-width: 100%; }
+        .fw-sidebar { right: 6px; }
+        .fwSwiperThumb { width: 50px; height: 190px; }
+        .fw-thumb-slide { width: 46px !important; height: 46px !important; }
+    }
+</style>
 
     /* السلايدر الرئيسي */
     .fwSwiper { width: 100%; height: 85vh; min-height: 500px; max-height: 750px; position: relative; }
@@ -376,32 +594,7 @@
     /* Responsive */
     @media (max-width: 991px) {
         .fw-slide-content-wrapper {
-            flex-direction: column;
-            padding: 30px 80px 30px 20px;
-            text-align: center;
-            gap: 20px;
-        }
-        .fw-slide-text-col { flex: 0 0 100%; text-align: center; }
-        .fw-slide-image-col { flex: 0 0 100%; justify-content: center; }
-        .fw-slide-image-col img { max-width: 100%; aspect-ratio: 16/9; }
-        .fwSwiper { height: auto; min-height: 80vh; }
-        .fw-slide-title { font-size: 1.4rem !important; }
-        .fw-controls-wrapper { left: 8px; }
-        .fwSwiperThumb { height: 170px; }
-        .fw-thumb-slide { width: 44px !important; height: 44px !important; }
-        .fw-arrow-btn { width: 30px; height: 30px; }
-    }
-</style>
-{% endblock %}
-
-
-{% block content %}
-{% if site_settings.slider_style == 'fullwidth' %}
-{# ══════════════════════════════════════════════════════════════ #}
-{#  FULLWIDTH SLIDER  (طراز نقابة المحامين المصرية - egyls.com)  #}
-{# ══════════════════════════════════════════════════════════════ #}
 <section class="fw-slider-section">
-    <!-- Main Fullwidth Swiper -->
     <div class="swiper fwSwiper">
         <div class="swiper-wrapper">
             {% for item in latest_news %}
@@ -409,30 +602,28 @@
                 <div class="fw-slide-inner">
                     <!-- خلفية مموهة -->
                     {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="" class="fw-slide-bg" aria-hidden="true">
+                    <div class="fw-bg-blur" style="background-image: url('{{ item.image.url }}')"></div>
                     {% else %}
-                    <div class="fw-slide-bg" style="background: #0c2b4a;"></div>
+                    <div class="fw-bg-blur" style="background: #0c2b4a;"></div>
                     {% endif %}
 
-                    <!-- محتوى الشريحة -->
-                    <div class="fw-slide-content-wrapper">
-                        <!-- عمود الصورة (يسار) -->
-                        <div class="fw-slide-image-col">
-                            {% if item.image %}
-                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
-                            {% else %}
-                            <div class="fw-slide-image-placeholder">
-                                <i class="fa-solid fa-scale-balanced"></i>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <!-- عمود النص (يمين) -->
-                        <div class="fw-slide-text-col">
-                            <span class="fw-slide-cat">
-                                {% if item.category == 'decision' %}قرار{% elif item.category == 'announcement' %}إعلان{% elif item.category == 'event' %}فعالية{% else %}أخبار{% endif %}
-                            </span>
+                    <!-- تخطيط الشريحة -->
+                    <div class="fw-slide-layout">
+
+                        <!-- عمود النص -->
+                        <div class="fw-text-col">
+                            <span class="fw-slide-cat">{% if item.category == 'decision' %}قرار{% elif item.category == 'announcement' %}إعلان{% elif item.category == 'event' %}فعالية{% else %}أخبار{% endif %}</span>
                             <h2 class="fw-slide-title">{{ item.title }}</h2>
                             <a href="{% url 'core:news_detail' item.id %}" class="fw-slide-btn">التفاصيل</a>
+                        </div>
+
+                        <!-- عمود الصورة مع تأثير التحريك -->
+                        <div class="fw-image-col">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="fw-main-image fw-parallax-img">
+                            {% else %}
+                            <div class="fw-image-placeholder"><i class="fa-solid fa-scale-balanced"></i></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -440,9 +631,9 @@
             {% empty %}
             <div class="swiper-slide">
                 <div class="fw-slide-inner">
-                    <div class="fw-slide-bg" style="background: #0c2b4a;"></div>
-                    <div class="fw-slide-content-wrapper">
-                        <div class="fw-slide-text-col" style="flex: 0 0 100%; text-align: center;">
+                    <div class="fw-bg-blur" style="background: #0c2b4a;"></div>
+                    <div class="fw-slide-layout">
+                        <div class="fw-text-col" style="max-width: 100%; text-align: center;">
                             <h2 class="fw-slide-title">مرحباً بكم في البوابة الرقمية لنقابة المحامين بالفيوم 🏛️</h2>
                         </div>
                     </div>
@@ -452,14 +643,16 @@
         </div>
     </div>
 
-    <!-- شريط التحكم العمودي (أسهم + مصغرات) -->
-    <div class="fw-controls-wrapper">
-        <!-- سهم للأعلى -->
-        <button class="fw-arrow-btn fw-arrow-next" aria-label="التالي">
-            <i class="fa-solid fa-chevron-up"></i>
-        </button>
+    <!-- شريط التحكم الجانبي (أقصى اليمين) -->
+    <div class="fw-sidebar" id="fwSidebar">
+        <!-- شريط التقدم الدائري -->
+        <div class="fw-progress-bar">
+            <svg viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="16"></circle>
+            </svg>
+        </div>
 
-        <!-- المصغرات الدائرية -->
+        <!-- الدوائر المصغرة -->
         <div class="swiper fwSwiperThumb">
             <div class="swiper-wrapper">
                 {% for item in latest_news %}
@@ -685,20 +878,20 @@
 
         {% if site_settings.slider_style == 'fullwidth' %}
         // ══════════════════════════════════════════════
-        //  FULLWIDTH SLIDER (طراز egyls.com)
+        //  FULLWIDTH SLIDER (طبق egyls.com)
         // ══════════════════════════════════════════════
 
-        // Thumbnails Swiper (vertical, must init first)
+        // 1) تهيئة سلايدر المصغرات العمودي
         var fwThumb = new Swiper('.fwSwiperThumb', {
             direction: 'vertical',
             slidesPerView: 'auto',
-            spaceBetween: 10,
+            spaceBetween: 8,
             freeMode: true,
             watchSlidesProgress: true,
             slideToClickedSlide: true,
         });
 
-        // Main Fullwidth Swiper
+        // 2) السلايدر الرئيسي
         var fwMain = new Swiper('.fwSwiper', {
             slidesPerView: 1,
             loop: true,
@@ -707,16 +900,48 @@
                 delay: {{ site_settings.slider_speed|default:4000 }},
                 disableOnInteraction: false,
             },
-            thumbs: {
-                swiper: fwThumb,
+            thumbs: { swiper: fwThumb },
+            on: {
+                autoplayTimeLeft: function(s, time, progress) {
+                    var circle = document.querySelector('.fw-progress-bar svg circle');
+                    if (circle) {
+                        var offset = 100 - (100 * (1 - progress));
+                        circle.style.setProperty('--fw-progress', offset);
+                        circle.style.strokeDashoffset = offset;
+                    }
+                }
             }
         });
 
-        // Wire up custom arrow buttons
-        var nextBtn = document.querySelector('.fw-arrow-next');
-        var prevBtn = document.querySelector('.fw-arrow-prev');
-        if (nextBtn) nextBtn.addEventListener('click', function() { fwMain.slideNext(); });
-        if (prevBtn) prevBtn.addEventListener('click', function() { fwMain.slidePrev(); });
+        // 3) أسهم التحكم
+        var btnNext = document.getElementById('fwNextBtn');
+        var btnPrev = document.getElementById('fwPrevBtn');
+        if (btnNext) btnNext.addEventListener('click', function() { fwMain.slideNext(); });
+        if (btnPrev) btnPrev.addEventListener('click', function() { fwMain.slidePrev(); });
+
+        // 4) تأثير Parallax عند تحريك الماوس على السلايدر
+        var fwSwiperEl = document.querySelector('.fwSwiper');
+        if (fwSwiperEl) {
+            fwSwiperEl.addEventListener('mousemove', function(e) {
+                var imgs = this.querySelectorAll('.fw-parallax-img');
+                var rect = this.getBoundingClientRect();
+                var cx = rect.width / 2;
+                var cy = rect.height / 2;
+                var mx = e.clientX - rect.left - cx;
+                var my = e.clientY - rect.top - cy;
+                var moveX = (mx / cx) * 12;
+                var moveY = (my / cy) * 8;
+                imgs.forEach(function(img) {
+                    img.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px) scale(1.03)';
+                });
+            });
+            fwSwiperEl.addEventListener('mouseleave', function() {
+                var imgs = this.querySelectorAll('.fw-parallax-img');
+                imgs.forEach(function(img) {
+                    img.style.transform = 'translate(0,0) scale(1)';
+                });
+            });
+        }
 
         {% else %}
         // ══════════════════════════════════════════════
