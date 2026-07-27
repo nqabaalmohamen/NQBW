@@ -398,34 +398,6 @@
         transition: stroke-dashoffset 0.1s linear;
     }
 
-    /* الأسهم الجانبية الكبيرة */
-    .fw-side-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 20;
-        width: 50px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 1.2rem;
-        cursor: pointer;
-        backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
-    }
-    .fw-side-arrow:hover {
-        background: var(--gold);
-        color: var(--primary-dark);
-        border-color: var(--gold);
-    }
-    .fw-side-next { left: 20px; }
-    .fw-side-prev { right: 100px; } /* لعدم تغطية الدوائر */
-
     /* متجاوب */
     @media (max-width: 1024px) {
         .fw-slide-layout { padding: 0 80px 0 20px; gap: 20px; }
@@ -501,19 +473,8 @@
         </div>
     </div>
 
-    <!-- الأسهم الجانبية الكبيرة الرئيسية -->
-    <div class="fw-side-arrow fw-side-prev" id="fwMainPrev" aria-label="السابق"><i class="fa-solid fa-chevron-right"></i></div>
-    <div class="fw-side-arrow fw-side-next" id="fwMainNext" aria-label="التالي"><i class="fa-solid fa-chevron-left"></i></div>
-
     <!-- شريط التحكم الجانبي (أقصى اليمين) -->
     <div class="fw-sidebar" id="fwSidebar">
-        <!-- شريط التقدم الدائري -->
-        <div class="fw-progress-bar">
-            <svg viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="16"></circle>
-            </svg>
-        </div>
-
         <!-- الدوائر المصغرة -->
         <div class="swiper fwSwiperThumb">
             <div class="swiper-wrapper">
@@ -529,10 +490,18 @@
             </div>
         </div>
 
-        <!-- سهم للأسفل -->
-        <button class="fw-arrow-btn fw-arrow-prev" aria-label="السابق">
-            <i class="fa-solid fa-chevron-down"></i>
-        </button>
+        <!-- شريط التقدم الدائري -->
+        <div class="fw-progress-bar">
+            <svg viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="16"></circle>
+            </svg>
+        </div>
+
+        <!-- أسهم التنقل -->
+        <div class="fw-nav-arrows">
+            <button class="fw-nav-btn" id="fwPrevBtn" aria-label="السابق"><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="fw-nav-btn" id="fwNextBtn" aria-label="التالي"><i class="fa-solid fa-chevron-left"></i></button>
+        </div>
     </div>
 </section>
 
@@ -780,11 +749,6 @@
         var btnPrev = document.getElementById('fwPrevBtn');
         if (btnNext) btnNext.addEventListener('click', function() { fwMain.slideNext(); });
         if (btnPrev) btnPrev.addEventListener('click', function() { fwMain.slidePrev(); });
-        
-        var mainNext = document.getElementById('fwMainNext');
-        var mainPrev = document.getElementById('fwMainPrev');
-        if (mainNext) mainNext.addEventListener('click', function() { fwMain.slideNext(); });
-        if (mainPrev) mainPrev.addEventListener('click', function() { fwMain.slidePrev(); });
 
         // 4) تأثير Parallax عند تحريك الماوس على السلايدر
         var fwSwiperEl = document.querySelector('.fwSwiper');
