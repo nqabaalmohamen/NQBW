@@ -420,16 +420,19 @@
     @media (max-width: 767px) {
         .fwSwiper { height: auto; min-height: 85vh; }
         .fw-slide-layout {
-            flex-direction: column;
-            padding: 30px 80px 30px 15px;
+            flex-direction: column-reverse; /* الصورة فوق والنص تحت */
+            padding: 30px 45px 30px 15px; /* تقليل البادينج الأيمن لغياب الدوائر */
             gap: 20px;
         }
         .fw-text-col { flex: 0 0 100%; max-width: 100%; text-align: center; }
+        .fw-text-col .fw-slide-btn { 
+            float: none; /* إلغاء الfloat في الموبايل */
+            margin: 0 auto; /* توسيط */
+        }
         .fw-image-col { flex: 0 0 100%; max-width: 100%; }
         .fw-main-image { height: 220px; max-width: 100%; }
-        .fw-sidebar { right: 6px; }
-        .fwSwiperThumb { width: 50px; height: 190px; }
-        .fw-thumb-slide { width: 46px !important; height: 46px !important; }
+        .fw-sidebar { right: 10px; }
+        .fwSwiperThumb { display: none; /* إخفاء الدوائر المصغرة في الموبايل */ }
     }
 </style>
 {% endblock %}
