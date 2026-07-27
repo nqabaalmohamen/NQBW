@@ -315,10 +315,10 @@
             0 30px 80px rgba(0,0,0,0.7),
             0 0 0 1px rgba(255,255,255,0.07),
             inset 0 1px 0 rgba(255,255,255,0.15);
-        /* شكل 3D حقيقي في الحالة الافتراضية */
-        transform: perspective(900px) rotateY(-12deg) rotateX(4deg) scale(1);
-        transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    box-shadow 0.35s ease;
+        /* شكل 3D خفيف وأنيق في الحالة الافتراضية */
+        transform: perspective(900px) rotateY(-5deg) rotateX(2deg) scale(1);
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    box-shadow 0.4s ease;
         display: block;
         transform-style: preserve-3d;
         will-change: transform;
@@ -814,22 +814,23 @@
                 var mx = clientX - rect.left - cx;
                 var my = clientY - rect.top - cy;
                 
-                // ميل 3D قوي جداً (حتى 20 درجة)
-                var tiltX = (my / cy) * -18;
-                var tiltY = (mx / cx) * 20;
+                // ميل خفيف وأنيق (أقصى 8 درجات)
+                var tiltX = (my / cy) * -6;
+                var tiltY = (mx / cx) * 8;
                 
                 imgs.forEach(function(img) {
-                    img.style.transform = 'perspective(900px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) scale3d(1.07, 1.07, 1.07)';
-                    img.style.boxShadow = '0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)';
+                    img.style.transform = 'perspective(900px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) scale3d(1.03, 1.03, 1.03)';
+                    img.style.boxShadow = '0 35px 80px rgba(0,0,0,0.65)';
                 });
             }
             
             function resetTilt() {
                 var imgs = fwSwiperEl.querySelectorAll('.fw-parallax-img');
                 imgs.forEach(function(img) {
-                    // العودة للشكل 3D الافتراضي (مش flat)
-                    img.style.transform = 'perspective(900px) rotateY(-12deg) rotateX(4deg) scale(1)';
-                    img.style.boxShadow = '0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07)';
+                    // العودة للشكل 3D الخفيف الافتراضي
+                    img.style.transform = 'perspective(900px) rotateY(-5deg) rotateX(2deg) scale(1)';
+                    img.style.boxShadow = '0 30px 80px rgba(0,0,0,0.7)';
+                });
                 });
             }
 

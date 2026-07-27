@@ -65,89 +65,112 @@
         transform: scale(1.1);
     }
     
-    /* Lightbox Styles */
-    .lightbox {
-        display: none;
+    /* Lightbox - يُضاف مباشرة لـ body عبر JS */
+    #lbOverlay {
         position: fixed;
-        z-index: 99999;
         inset: 0;
-        background-color: rgba(0, 0, 0, 0.93);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    .lightbox-inner {
-        min-height: 100%;
+        z-index: 999999;
+        background: rgba(0,0,0,0.93);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 70px 15px 30px;
+        padding: 60px 15px 15px;
         box-sizing: border-box;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        overflow-y: auto;
     }
-    .lightbox img {
-        max-width: 100%;
+    #lbOverlay img {
+        max-width: min(95vw, 1200px);
         max-height: 80vh;
         width: auto;
         height: auto;
         border-radius: 10px;
         box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-        display: block;
         object-fit: contain;
+        display: block;
+        pointer-events: none;
     }
-    .lightbox-close {
+    #lbClose {
         position: fixed;
-        top: 15px;
-        right: 15px;
-        color: white;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-        z-index: 100000;
-        background: rgba(0,0,0,0.6);
-        width: 48px;
-        height: 48px;
+        top: 12px;
+        right: 12px;
+        z-index: 1000000;
+        background: rgba(30,30,30,0.85);
+        color: #fff;
+        border: 2px solid rgba(255,255,255,0.35);
         border-radius: 50%;
+        width: 46px;
+        height: 46px;
+        font-size: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid rgba(255,255,255,0.3);
-        transition: background 0.3s;
-        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.25s;
+        line-height: 1;
+        user-select: none;
     }
-    .lightbox-close:hover {
-        background: var(--gold, #c9a227);
-        border-color: var(--gold, #c9a227);
-        color: #111;
-    }
+    #lbClose:hover { background: #c9a227; border-color: #c9a227; color: #111; }
 </style>
 
-<!-- Lightbox Modal -->
-<div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
-    <span class="lightbox-close" onclick="closeLightbox()" title="إغلاق">&#x2715;</span>
-    <div class="lightbox-inner">
-        <img id="lightboxImage" src="" alt="صورة مكبرة" onclick="event.stopPropagation()">
-    </div>
-</div>
-
 <script>
-    function openLightbox(imgSrc) {
-        var lb = document.getElementById('imageLightbox');
-        document.getElementById('lightboxImage').src = imgSrc;
-        lb.style.display = 'block';
-        lb.scrollTop = 0;
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-    }
-    
-    function closeLightbox() {
-        document.getElementById('imageLightbox').style.display = 'none';
-        document.getElementById('lightboxImage').src = '';
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-    }
+    /* ── Lightbox ── */
+    (function() {
+        var overlay, img, closeBtn;
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeLightbox();
-    });
+        function buildLB() {
+            overlay = document.createElement('div');
+            overlay.id = 'lbOverlay';
+            overlay.style.display = 'none';
+
+            closeBtn = document.createElement('div');
+            closeBtn.id = 'lbClose';
+            closeBtn.innerHTML = '&#x2715;';
+            closeBtn.onclick = closeLB;
+
+            img = document.createElement('img');
+            img.alt = 'صورة';
+
+            overlay.appendChild(img);
+            document.body.appendChild(overlay);
+            document.body.appendChild(closeBtn);
+            closeBtn.style.display = 'none';
+
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closeLB();
+            });
+        }
+
+        function openLB(src) {
+            if (!overlay) buildLB();
+            img.src = src;
+            overlay.style.display = 'flex';
+            closeBtn.style.display = 'flex';
+            overlay.style.opacity = '0';
+            document.body.style.overflow = 'hidden';
+            requestAnimationFrame(function() {
+                overlay.style.opacity = '1';
+            });
+        }
+
+        function closeLB() {
+            overlay.style.opacity = '0';
+            setTimeout(function() {
+                overlay.style.display = 'none';
+                closeBtn.style.display = 'none';
+                img.src = '';
+            }, 250);
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay && overlay.style.display !== 'none') closeLB();
+        });
+
+        window.openLightbox = openLB;
+        window.closeLightbox = closeLB;
+    })();
 </script>
 
 {% endblock %}
