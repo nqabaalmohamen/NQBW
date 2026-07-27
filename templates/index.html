@@ -429,10 +429,16 @@
             float: none; /* إلغاء الfloat في الموبايل */
             margin: 0 auto; /* توسيط */
         }
-        .fw-image-col { flex: 0 0 100%; max-width: 100%; }
-        .fw-main-image { height: 220px; max-width: 100%; }
+        .fw-image-col { flex: 0 0 100%; max-width: 100%; perspective: 1000px; }
+        .fw-main-image { height: 220px; max-width: 100%; animation: mobile3DTilt 6s ease-in-out infinite alternate; }
         .fw-sidebar { right: 10px; }
         .fwSwiperThumb { display: none; /* إخفاء الدوائر المصغرة في الموبايل */ }
+    }
+
+    /* تأثير 3D مستمر للهواتف */
+    @keyframes mobile3DTilt {
+        0% { transform: rotateX(4deg) rotateY(-4deg) scale3d(1.02, 1.02, 1.02) translateY(-4px); }
+        100% { transform: rotateX(-4deg) rotateY(4deg) scale3d(1.01, 1.01, 1.01) translateY(4px); }
     }
 </style>
 {% endblock %}
