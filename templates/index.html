@@ -664,13 +664,11 @@
 
         // Thumbnails Swiper (must init first)
         var fwThumb = new Swiper('.fwSwiperThumb', {
-            slidesPerView: 'auto',
-            spaceBetween: 8,
+            direction: 'vertical',
+            slidesPerView: 4,
+            spaceBetween: 10,
             freeMode: true,
             watchSlidesProgress: true,
-            centeredSlides: false,
-            centerInsufficientSlides: true,
-            slideToClickedSlide: true,
         });
 
         // Main Fullwidth Swiper
@@ -688,12 +686,6 @@
             },
             thumbs: {
                 swiper: fwThumb,
-            },
-            on: {
-                autoplayTimeLeft(s, time, progress) {
-                    const ring = document.querySelector('.fw-progress-ring svg');
-                    if (ring) ring.style.setProperty('--progress', 1 - progress);
-                }
             }
         });
 
