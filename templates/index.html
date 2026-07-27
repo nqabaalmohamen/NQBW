@@ -222,7 +222,11 @@
         overflow: hidden;
     }
 
-    /* الخلفية المموهة */
+    /* الخلفية المموهة وتأثير Ken Burns */
+    @keyframes fwKenBurns {
+        0% { transform: scale(1.15); }
+        100% { transform: scale(1.25); }
+    }
     .fw-bg-blur {
         position: absolute; inset: 0;
         background-size: cover;
@@ -230,6 +234,9 @@
         filter: blur(18px) brightness(0.3);
         transform: scale(1.15);
         z-index: 1;
+    }
+    .swiper-slide-active .fw-bg-blur {
+        animation: fwKenBurns 12s linear infinite alternate;
     }
 
     /* هيكل الشريحة: نص + صورة + تحكم */
@@ -251,6 +258,10 @@
         color: #fff;
         direction: rtl;
         text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* flex-start in RTL aligns to the right */
+        justify-content: center;
     }
     .fw-text-col .fw-slide-cat {
         display: block;
@@ -270,7 +281,8 @@
         text-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
     .fw-text-col .fw-slide-btn {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         background: #144473;
         color: #fff !important;
         text-decoration: none !important;
@@ -279,6 +291,7 @@
         font-weight: bold;
         font-size: 1rem;
         transition: background 0.3s, transform 0.2s;
+        align-self: flex-start; /* Ensures it stays right-aligned in RTL */
     }
     .fw-text-col .fw-slide-btn:hover {
         background: #0c2b4a;
@@ -300,8 +313,10 @@
         object-fit: contain; /* تظهر كاملة بدون قطع */
         border-radius: 12px;
         box-shadow: 0 25px 60px rgba(0,0,0,0.55);
-        transition: transform 0.1s ease-out;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         display: block;
+        transform-style: preserve-3d;
+        will-change: transform;
     }
     .fw-image-placeholder {
         width: 100%; max-width: 650px; height: 420px;
@@ -750,26 +765,29 @@
         if (btnNext) btnNext.addEventListener('click', function() { fwMain.slideNext(); });
         if (btnPrev) btnPrev.addEventListener('click', function() { fwMain.slidePrev(); });
 
-        // 4) تأثير Parallax عند تحريك الماوس على السلايدر
+        // 4) تأثير 3D Tilt المميز عند تحريك الماوس (يحاكي السلايدر الأصلي egyls.com)
         var fwSwiperEl = document.querySelector('.fwSwiper');
         if (fwSwiperEl) {
             fwSwiperEl.addEventListener('mousemove', function(e) {
-                var imgs = this.querySelectorAll('.fw-parallax-img');
+                var imgs = this.querySelectorAll('.swiper-slide-active .fw-parallax-img');
                 var rect = this.getBoundingClientRect();
                 var cx = rect.width / 2;
                 var cy = rect.height / 2;
                 var mx = e.clientX - rect.left - cx;
                 var my = e.clientY - rect.top - cy;
-                var moveX = (mx / cx) * 12;
-                var moveY = (my / cy) * 8;
+                
+                // حساب زاوية الميل (أقصى ميل 8 درجات)
+                var tiltX = (my / cy) * -8;
+                var tiltY = (mx / cx) * 8;
+                
                 imgs.forEach(function(img) {
-                    img.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px) scale(1.03)';
+                    img.style.transform = 'perspective(1200px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) scale3d(1.05, 1.05, 1.05)';
                 });
             });
             fwSwiperEl.addEventListener('mouseleave', function() {
                 var imgs = this.querySelectorAll('.fw-parallax-img');
                 imgs.forEach(function(img) {
-                    img.style.transform = 'translate(0,0) scale(1)';
+                    img.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
                 });
             });
         }
