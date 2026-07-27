@@ -424,49 +424,79 @@
     @media (max-width: 767px) {
         /* السماح بالتصفح الطبيعي للصفحة عبر اللمس */
         .fw-slider-section { touch-action: pan-y; }
-        .fwSwiper { height: auto; min-height: 0; touch-action: pan-y; }
+        
+        /* السلايدر يأخذ ارتفاعاً محدداً ومناسباً للهاتف */
+        .fwSwiper { height: 75vh; min-height: 0; max-height: 680px; touch-action: pan-y; }
+        .fw-slide-inner { align-items: stretch; }
+        
+        /* تخطيط عمودي يستغل كل المساحة */
         .fw-slide-layout {
-            flex-direction: column-reverse; /* الصورة فوق والنص تحت */
-            padding: 5px 20px 110px 20px;
-            gap: 10px;
+            flex-direction: column; /* الصورة فوق، النص تحت */
+            padding: 0;
+            gap: 0;
+            height: 100%;
+            align-items: stretch;
+            justify-content: stretch;
         }
-        .fw-text-col { flex: 0 0 100%; max-width: 100%; text-align: center; }
-        .fw-text-col .fw-slide-title { font-size: 1.4rem !important; margin-bottom: 10px !important; }
-        .fw-text-col .fw-slide-cat { font-size: 0.8rem; padding: 4px 12px; }
+
+        /* الصورة تأخذ 58% من الارتفاع */
+        .fw-image-col { 
+            flex: 0 0 58%; 
+            max-width: 100%; 
+            width: 100%;
+            overflow: hidden;
+            display: block;
+        }
+        .fw-main-image { 
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover; /* تملأ المساحة بالكامل */
+            border-radius: 0; /* بدون حواف دائرية لتملأ الشاشة */
+            transform: none !important; /* إلغاء تأثير 3D على الموبايل */
+        }
+
+        /* النص يأخذ الـ 42% المتبقية */
+        .fw-text-col { 
+            flex: 1; 
+            max-width: 100%; 
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 15px 80px 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+        }
+        .fw-text-col .fw-slide-title { font-size: 1.2rem !important; margin-bottom: 8px !important; }
+        .fw-text-col .fw-slide-cat { font-size: 0.75rem; margin-bottom: 6px; }
         
         /* زر التفاصيل في اليسار بصف موازي للتحكم */
         .fw-text-col .fw-slide-btn { 
             position: absolute;
-            bottom: 25px;
-            left: 20px;
+            bottom: 20px;
+            left: 15px;
             float: none;
             margin: 0;
             z-index: 10;
+            padding: 8px 20px;
+            font-size: 0.9rem;
         }
         
-        .fw-image-col { flex: 0 0 100%; max-width: 100%; }
-        /* الصورة تملأ الفراغات في الموبايل */
-        .fw-main-image { 
-            height: 240px; 
-            max-width: 100%; 
-            width: 100%; 
-            object-fit: cover; /* تملأ المساحة بدون فراغات */
-            border-radius: 12px;
-        }
-        
-        /* وضع الدائرة فوق الأسهم في اليمين بشكل موازي للزر */
+        /* الشريط الجانبي في اليمين */
         .fw-sidebar { 
             position: absolute;
             top: auto;
-            bottom: 25px;
-            right: 20px;
+            bottom: 20px;
+            right: 15px;
             left: auto;
             transform: none;
-            flex-direction: column; /* الدائرة فوق الأسهم */
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        .fwSwiperThumb { display: none; /* إخفاء الدوائر المصغرة في الموبايل */ }
+        .fwSwiperThumb { display: none; }
     }
 
     /* تأثير 3D مستمر للهواتف */
