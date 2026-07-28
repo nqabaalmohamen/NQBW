@@ -20,13 +20,17 @@
         padding-bottom: 30px;
     }
     @media (max-width: 767px) {
-        .news-detail-container {
-            padding: 0 5px !important; /* إزالة الهوامش الجانبية تقريباً ليمتد النص من أقصى اليمين لأقصى اليسار */
-        }
+        .section-padding { padding-left: 0 !important; padding-right: 0 !important; }
+        .news-detail-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+        .news-detail-container > div { padding-left: 0 !important; padding-right: 0 !important; }
         .news-text-body {
-            text-align: justify !important; /* محاذاة متساوية من الجهتين (يمين ويسار) */
+            text-align: justify !important;
             font-size: 1.05rem; 
+            padding: 0 !important;
+            margin: 0 !important;
         }
+        /* إزالة الهوامش من نصوص الخبر الافتراضية (p) */
+        .news-text-body p { margin-left: 0 !important; margin-right: 0 !important; padding: 0 !important; }
     }
 </style>
 
