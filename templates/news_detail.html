@@ -5,47 +5,9 @@
 {% block content %}
 <div style="padding-top: 40px; background: white;"></div>
 
-<style>
-    .news-detail-container {
-        width: 100%;
-        padding: 0 5%;
-    }
-    .news-text-body {
-        font-size: 1.15rem;
-        line-height: 2;
-        color: #333;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 500;
-        text-align: justify;
-        padding-bottom: 30px;
-    }
-    @media (max-width: 767px) {
-        .section-padding { padding-left: 0 !important; padding-right: 0 !important; }
-        .news-detail-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
-        .news-detail-container > div { padding-left: 0 !important; padding-right: 0 !important; }
-        .news-text-body {
-            text-align: justify !important;
-            text-align-last: justify !important; /* لشد السطر الأخير في كل فقرة بالكامل */
-            text-justify: inter-character !important; /* لضمان شد الكلمات بدون فراغات قبيحة */
-            font-size: 1.05rem; 
-            padding: 0 !important;
-            margin: 0 !important;
-            word-break: break-word; /* لمنع خروج الكلمات الطويلة */
-        }
-        /* إزالة الهوامش من نصوص الخبر الافتراضية (p) وشد السطور */
-        .news-text-body p { 
-            margin-left: 0 !important; 
-            margin-right: 0 !important; 
-            padding: 0 !important;
-            text-align: justify !important;
-            text-align-last: justify !important;
-        }
-    }
-</style>
-
 <!-- Article Content -->
 <section class="section-padding" style="background: white;">
-    <div class="news-detail-container">
+    <div style="width: 100%; padding: 0 5%;">
         
         <!-- Main Content (No Sidebar) -->
         <div style="background: white; padding: 20px 0;">
@@ -66,7 +28,7 @@
                 </div>
             </div>
 
-            <div class="news-text-body">
+            <div style="font-size: 1.15rem; line-height: 2; color: #333; font-family: 'Cairo', sans-serif; font-weight: 500; text-align: justify; padding-bottom: 30px;">
                 {% if news_item.image %}
                 <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 35px; background: #f8f9fa; border-radius: var(--radius-md); padding: 10px; border: 1px solid #eee;">
                     <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" style="width: 90%; max-width: 900px; height: auto; max-height: 700px; object-fit: contain; border-radius: var(--radius-sm); margin: 0 auto; display: block;">
